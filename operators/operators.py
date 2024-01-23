@@ -1,6 +1,6 @@
 import bpy, os, json
 
-from .. operations import compile
+from .. operations import compile, clean
 
 class NX_Start(bpy.types.Operator):
     bl_idname = "nx.compile_start"
@@ -9,6 +9,9 @@ class NX_Start(bpy.types.Operator):
     bl_options = {"REGISTER", "UNDO"}
 
     def execute(self, context):
+
+        #TODO: MAKE START/STOP BASED ON A POPEN PROCESS
+        #https://github.com/armory3d/armory/blob/main/blender/arm/make.py
 
         print("Start")
 
@@ -28,6 +31,9 @@ class NX_Clean(bpy.types.Operator):
     def execute(self, context):
 
         print("Clean")
+
+        clean.clean_soft()
+
         #compiled = json.dumps(compile_project_data())
         #print(compiled)
 

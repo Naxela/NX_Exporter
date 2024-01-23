@@ -64,7 +64,7 @@ def export_scenes(path):
             export_cameras=False,
             export_lights=False,
             export_attributes=True,
-            export_skins=False,
+            export_skins=True,
             export_draco_mesh_compression_enable=True,
             export_animations=True
         )
@@ -123,6 +123,8 @@ def compile_project_data():
             "name":scene.name,
             "glb_groups":[],
             "scene_empty" : [],
+            "scene_meshes" : [],
+            "scene_materials" : [],
             "scene_camera" : [],
             "scene_light" : [],
             "scene_speaker" : [],
@@ -130,6 +132,7 @@ def compile_project_data():
             "scene_decals" : [],
             "scene_text" : [],
             "scene_curves" : [],
+            "scene_modules" : [],
             "environment" : {
             }
         }
@@ -145,14 +148,35 @@ def compile_project_data():
                 empty = {
                     "name" : obj.name,
                     "matrix" : util.get_object_matrix_y_axis(obj),
-                    "parent" : util.getObjectParent(obj)
+                    "parent" : util.getObjectParent(obj),
+                    "modules" : []
                 }
 
                 data_scene["scene_empty"].append(empty)
 
             if obj.type == "MESH":
-                pass
-                #LIGHTMAP TRANSFER
+
+                mesh = {
+                    "name" : obj.name,
+                    "modules" : [],
+                    "lightmaps" : [],
+                    "cast_shadows" : True,
+                    "receive_shadows" : True
+                }
+
+                data_scene["scene_meshes"].append(mesh)
+
+                if len(obj.material_slots) > 0:
+
+                    for slots in obj.material_slots:
+
+                        mat = slots.material
+
+                        if(mat.name not in data_scene["scene_materials"]):
+
+                            mat = {
+                                "name" : mat.name
+                            }
 
             if obj.type == "CAMERA":
 
@@ -162,7 +186,8 @@ def compile_project_data():
                     "fov" : obj.data.angle,
                     "clip_near" : obj.data.clip_start,
                     "clip_far" : obj.data.clip_end,
-                    "parent" : util.getObjectParent(obj)
+                    "parent" : util.getObjectParent(obj),
+                    "modules" : []
                 }
 
                 if obj.data.type == "PERSP":
@@ -192,7 +217,8 @@ def compile_project_data():
                     "shadow" : obj.data.use_shadow,
                     "shadowBias" : obj.data.shadow_buffer_bias,
                     "contactShadow" : obj.data.use_contact_shadow,
-                    "parent" : util.getObjectParent(obj)
+                    "parent" : util.getObjectParent(obj),
+                    "modules" : []
                 }
 
                 if(obj.data.type == 'POINT'):
@@ -229,7 +255,8 @@ def compile_project_data():
                     "matrix" : util.get_object_matrix_y_axis(obj),
                     "volume" : obj.data.volume,
                     "pitch" : obj.data.pitch,
-                    "parent" : util.getObjectParent(obj)
+                    "parent" : util.getObjectParent(obj),
+                    "modules" : []
                 }
 
                 data_scene["scene_speaker"].append(speaker)
