@@ -24,7 +24,7 @@ from bpy.types import (
 #         row.label(text="Lightmap manifest:", icon="LIGHT_SUN")
 
 class NX_PT_Panel(bpy.types.Panel):
-    bl_label = "NX Exporter"
+    bl_label = "NX Engine"
     bl_space_type = "PROPERTIES"
     bl_region_type = "WINDOW"
     bl_context = "render"

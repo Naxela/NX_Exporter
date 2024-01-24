@@ -46,6 +46,17 @@ def export_scenes(path):
 
     initialScene = bpy.context.scene
 
+    #Hide objects not set to export
+    for obj in bpy.data.objects:
+        if not obj.NX_ObjectProperties.nx_object_export:
+            obj.hide_set(True)
+
+    #Before compile, we need to set a unique id for each object as a property
+    id_iterator = 0
+    for obj in bpy.data.objects:
+        obj.data['nx_id'] = id_iterator
+        id_iterator += 1
+
     for scene in bpy.data.scenes:
         # Set the current scene
         bpy.context.window.scene = scene
@@ -68,6 +79,13 @@ def export_scenes(path):
             export_draco_mesh_compression_enable=True,
             export_animations=True
         )
+
+    #After export we want to unhide the objects not set to export
+    for obj in bpy.data.objects:
+        if not obj.NX_ObjectProperties.nx_object_export:
+            obj.hide_set(False)
+
+    bpy.context.window.scene = initialScene
 
 def compile_project_data():
     """
@@ -154,14 +172,16 @@ def compile_project_data():
 
                 data_scene["scene_empty"].append(empty)
 
-            if obj.type == "MESH":
+            if obj.type == "MESH" and obj.NX_ObjectProperties.nx_object_export:
 
                 mesh = {
                     "name" : obj.name,
                     "modules" : [],
                     "lightmaps" : [],
                     "cast_shadows" : True,
-                    "receive_shadows" : True
+                    "receive_shadows" : True,
+                    "spawn" : obj.NX_ObjectProperties.nx_object_spawn,
+                    "object_status" : obj.NX_ObjectProperties.nx_object_object_status
                 }
 
                 data_scene["scene_meshes"].append(mesh)

@@ -1,10 +1,11 @@
 import bpy, os
 from bpy.utils import register_class, unregister_class
-from . import scene
+from . import scene, object
 
 classes = [
     scene.NX_PT_Panel,
-    scene.NX_PT_Settings
+    scene.NX_PT_Settings,
+    object.NX_PT_ObjectMenu
 ]
 
 def register():
