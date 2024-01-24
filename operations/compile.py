@@ -30,7 +30,7 @@ def build_assets():
 
         #Transfer assets
         for file in transfer_files:
-            shutil.copy(file, project_folder)
+            shutil.copy(bpy.path.abspath(file), project_folder) 
 
         #Export GLB files
         export_scenes(project_folder)
@@ -50,12 +50,6 @@ def export_scenes(path):
     for obj in bpy.data.objects:
         if not obj.NX_ObjectProperties.nx_object_export:
             obj.hide_set(True)
-
-    #Before compile, we need to set a unique id for each object as a property
-    id_iterator = 0
-    for obj in bpy.data.objects:
-        obj.data['nx_id'] = id_iterator
-        id_iterator += 1
 
     for scene in bpy.data.scenes:
         # Set the current scene
@@ -159,12 +153,19 @@ def compile_project_data():
         glb_name = scene.name + ".glb"
         data_scene["glb_groups"].append(glb_name)
 
+        id_iterator = 1
+
         for obj in scene.objects:
+
+            #Before compile, we need to set a unique id for each object as a property
+            obj['nx_id'] = id_iterator
+            id_iterator += 1
 
             if obj.type == "EMPTY":
 
                 empty = {
                     "name" : obj.name,
+                    "identifier" : obj['nx_id'],
                     "matrix" : util.get_object_matrix_y_axis(obj),
                     "parent" : util.getObjectParent(obj),
                     "modules" : []
@@ -176,6 +177,7 @@ def compile_project_data():
 
                 mesh = {
                     "name" : obj.name,
+                    "identifier" : obj['nx_id'],
                     "modules" : [],
                     "lightmaps" : [],
                     "cast_shadows" : obj.NX_ObjectProperties.nx_object_cast_shadows,
@@ -202,6 +204,7 @@ def compile_project_data():
 
                 camera = {
                     "name" : obj.name,
+                    "identifier" : obj['nx_id'],
                     "matrix" : util.get_object_matrix_y_axis(obj),
                     "fov" : obj.data.angle,
                     "clip_near" : obj.data.clip_start,
@@ -230,6 +233,7 @@ def compile_project_data():
 
                 light = {
                     "name" : obj.name,
+                    "identifier" : obj['nx_id'],
                     "matrix" : util.get_object_matrix_y_axis(obj),
                     "color" : list(obj.data.color),
                     "intensity" : obj.data.energy,
@@ -272,12 +276,24 @@ def compile_project_data():
 
                 speaker = {
                     "name" : obj.name,
+                    "identifier" : obj['nx_id'],
                     "matrix" : util.get_object_matrix_y_axis(obj),
                     "volume" : obj.data.volume,
                     "pitch" : obj.data.pitch,
+                    "distance_ref" : obj.data.distance_reference,
+                    "distance_max" : obj.data.distance_max,
+                    "volume_min" : obj.data.volume_min,
+                    "volume_max" : obj.data.volume_max,
+                    "attenuation" : obj.data.attenuation,
+                    "cone_outer" : obj.data.cone_angle_outer,
+                    "cone_inner" : obj.data.cone_angle_inner,
+                    "cone_outer_volume": obj.data.cone_volume_outer,
                     "parent" : util.getObjectParent(obj),
-                    "modules" : []
+                    "modules" : [],
+                    "sound" : os.path.basename(obj.data.sound.filepath)
                 }
+
+                parallel_transfer_assets.append(obj.data.sound.filepath)
 
                 data_scene["scene_speaker"].append(speaker)
 
