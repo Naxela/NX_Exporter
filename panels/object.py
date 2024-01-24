@@ -23,3 +23,7 @@ class NX_PT_ObjectMenu(bpy.types.Panel):
             row.prop(obj.NX_ObjectProperties, "nx_object_spawn")
             row = layout.row(align=True)
             row.prop(obj.NX_ObjectProperties, "nx_object_object_status")
+            row = layout.row(align=True)
+            row.prop(obj.NX_ObjectProperties, "nx_object_cast_shadows")
+            row = layout.row(align=True)
+            row.prop(obj.NX_ObjectProperties, "nx_object_receive_shadows")

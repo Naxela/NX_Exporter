@@ -178,8 +178,8 @@ def compile_project_data():
                     "name" : obj.name,
                     "modules" : [],
                     "lightmaps" : [],
-                    "cast_shadows" : True,
-                    "receive_shadows" : True,
+                    "cast_shadows" : obj.NX_ObjectProperties.nx_object_cast_shadows,
+                    "receive_shadows" : obj.NX_ObjectProperties.nx_object_receive_shadows,
                     "spawn" : obj.NX_ObjectProperties.nx_object_spawn,
                     "object_status" : obj.NX_ObjectProperties.nx_object_object_status
                 }
