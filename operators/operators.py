@@ -68,7 +68,7 @@ class NX_ModuleListRemoveItem(bpy.types.Operator):
     @classmethod
     def poll(self, context):
         """ Enable if there's something in the list """
-        obj = context.obj
+        obj = context.object
         return len(obj.NX_UL_ModuleList) > 0
 
     def execute(self, context):
@@ -82,5 +82,25 @@ class NX_ModuleListRemoveItem(bpy.types.Operator):
             index = index - 1
 
         obj.NX_UL_ModuleListItem = index
-        
+
         return{'FINISHED'}
+    
+class NX_CreateJavascriptFile(bpy.types.Operator):
+    bl_idname = "nx_modulelist.add_script"
+    bl_label = "Add script"
+
+    #filepath: bpy.props.StringProperty(subtype="FILE_PATH")
+
+    #my_float: bpy.props.FloatProperty(name="Float")
+    #my_bool: bpy.props.BoolProperty(name="Toggle Option")
+    #my_string: bpy.props.StringProperty(name="String Value")
+
+    filename: bpy.props.StringProperty(name="Filename (*.js)")
+
+    def execute(self, context):
+        print("Creating javascript file at sources folder", self)
+        return {'FINISHED'}
+
+    def invoke(self, context, event):
+        wm = context.window_manager
+        return wm.invoke_props_dialog(self)

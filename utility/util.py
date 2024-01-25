@@ -64,3 +64,43 @@ def is_generated_project_present():
         return False
 
     return False
+
+def get_project_path():
+
+    currentSavePath = bpy.data.filepath
+    currentSaveDir = os.path.dirname(currentSavePath)
+
+    project_name = "nx-project"
+    directory = os.path.join(currentSaveDir, project_name)  # Set your desired path here
+
+    return directory
+
+def get_assets_path():
+
+    currentSavePath = bpy.data.filepath
+    currentSaveDir = os.path.dirname(currentSavePath)
+
+    project_name = "nx-project"
+    directory = os.path.join(currentSaveDir, project_name, "assets")  # Set your desired path here
+
+    return directory
+
+def get_sources_path():
+
+    currentSavePath = bpy.data.filepath
+    currentSaveDir = os.path.dirname(currentSavePath)
+
+    project_name = "nx-project"
+    directory = os.path.join(currentSaveDir, project_name, "sources")  # Set your desired path here
+
+    return directory
+
+def get_shaders_path():
+
+    currentSavePath = bpy.data.filepath
+    currentSaveDir = os.path.dirname(currentSavePath)
+
+    project_name = "nx-project"
+    directory = os.path.join(currentSaveDir, project_name, "shaders")  # Set your desired path here
+
+    return directory
