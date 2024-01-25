@@ -284,6 +284,8 @@ def compile_project_data():
 
             if obj.type == "SPEAKER":
 
+                #TODO - IMPLEMENT AUDIO AUTOPLAY, LOOP, etc.
+
                 speaker = {
                     "name" : obj.name,
                     "identifier" : obj['nx_id'],
