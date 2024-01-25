@@ -155,6 +155,8 @@ def compile_project_data():
 
         id_iterator = 1
 
+        scene_materials = set()
+
         for obj in scene.objects:
 
             #Before compile, we need to set a unique id for each object as a property
@@ -188,17 +190,25 @@ def compile_project_data():
 
                 data_scene["scene_meshes"].append(mesh)
 
-                if len(obj.material_slots) > 0:
+                if obj.material_slots:
 
-                    for slots in obj.material_slots:
+                    for slot in obj.material_slots:
 
-                        mat = slots.material
+                        if slot.material:
 
-                        if(mat.name not in data_scene["scene_materials"]):
+                            scene_materials.add(slot.material.name)
 
-                            mat = {
-                                "name" : mat.name
-                            }
+                # if len(obj.material_slots) > 0:
+
+                #     for slots in obj.material_slots:
+
+                #         mat = slots.material
+
+                #         if(mat.name not in data_scene["scene_materials"]):
+
+                #             mat = {
+                #                 "name" : mat.name
+                #             }
 
             if obj.type == "CAMERA":
 
@@ -297,6 +307,19 @@ def compile_project_data():
 
                 data_scene["scene_speaker"].append(speaker)
 
+        for mat in scene_materials:
+
+            #TODO - IMPLEMENT SOME KIND OF MOVIETEXTURE CONTROL
+            #TODO - IMPLEMENT SOME KIND OF ANIMATED UV CONTROL - EXPRESSION PERHAPS? X=DELTA*0.1; Y=DELTA*0.1 => Uses material.map.offset
+
+            mat = {
+                "name" : mat
+            }
+
+            data_scene["scene_materials"].append(mat)
+
+        #data_scene["scene_materials"] = list(scene_materials)
+
         project["manifest"]["scenes"].append(data_scene)
 
         #Get the active environment
@@ -333,10 +356,12 @@ def compile_project_data():
                                     print("BG:", "RGB")
                                     data_scene["environment"]["backgroundType"] = "color"
                                     data_scene["environment"]["backgroundColor"] = [input_node.outputs[0].default_value[0], input_node.outputs[0].default_value[1], input_node.outputs[0].default_value[2]]
+                                    data_scene["environment"]["backgroundIntensity"] = input_node.inputs[1].default_value
                                 elif(input_node.type == "TEX_ENVIRONMENT"):
                                     print("BG:", "ENVTEX")
                                     data_scene["environment"]["backgroundType"] = "texture"
                                     data_scene["environment"]["backgroundTexture"] = os.path.basename(input_node.image.filepath)
+                                    data_scene["environment"]["backgroundIntensity"] = input_node.inputs[1].default_value
                                     parallel_transfer_assets.append(input_node.image.filepath)
                                 elif(input_node.type == "TEX_SKY"):
                                     print("BG:", "TEXSKY")
@@ -348,6 +373,7 @@ def compile_project_data():
                                     data_scene["environment"]["elevation"] = 2
                                     data_scene["environment"]["azimuth"] = 180
                                     data_scene["environment"]["exposure"] = 0.5
+                                    data_scene["environment"]["backgroundIntensity"] = input_node.inputs[1].default_value
 
                                 # Add additional code here if you want to do something with the node
                                 break
