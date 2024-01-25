@@ -2,6 +2,8 @@ import bpy, os, json
 
 from .. operations import compile, clean
 
+#SCENE OPERATORS
+
 class NX_Start(bpy.types.Operator):
     bl_idname = "nx.compile_start"
     bl_label = "Start"
@@ -38,3 +40,47 @@ class NX_Clean(bpy.types.Operator):
         #print(compiled)
 
         return {"FINISHED"}
+    
+# OBJECT OPERATORS
+
+class NX_ModuleListNewItem(bpy.types.Operator):
+    # Add a new item to the list
+    bl_idname = "nx_modulelist.new_item"
+    bl_label = "Add a new module"
+    bl_description = "Add a new module"
+
+    def execute(self, context):
+        obj = context.object
+
+        obj.NX_UL_ModuleList.add()
+
+        obj.NX_UL_ModuleListItem = len(obj.NX_UL_ModuleList) - 1
+        obj.NX_UL_ModuleList[len(obj.NX_UL_ModuleList) - 1].name = "Module"
+
+        return{'FINISHED'}
+    
+class NX_ModuleListRemoveItem(bpy.types.Operator):
+    # Delete the selected item from the list
+    bl_idname = "nx_modulelist.delete_item"
+    bl_label = "Removes the module"
+    bl_description = "Delete a module"
+
+    @classmethod
+    def poll(self, context):
+        """ Enable if there's something in the list """
+        obj = context.obj
+        return len(obj.NX_UL_ModuleList) > 0
+
+    def execute(self, context):
+        obj = context.object
+        list = obj.NX_UL_ModuleList
+        index = obj.NX_UL_ModuleListItem
+
+        list.remove(index)
+
+        if index > 0:
+            index = index - 1
+
+        obj.NX_UL_ModuleListItem = index
+        
+        return{'FINISHED'}

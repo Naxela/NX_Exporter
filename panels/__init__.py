@@ -5,7 +5,8 @@ from . import scene, object
 classes = [
     scene.NX_PT_Panel,
     scene.NX_PT_Settings,
-    object.NX_PT_ObjectMenu
+    object.NX_PT_ObjectMenu,
+    object.NX_PT_Modules
 ]
 
 def register():
