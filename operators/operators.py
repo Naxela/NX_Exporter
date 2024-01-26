@@ -1,6 +1,8 @@
 import bpy, os, json
 
-from .. operations import compile, clean
+from .. operations import compile, clean, filemaker
+
+from .. utility import util
 
 #SCENE OPERATORS
 
@@ -85,22 +87,80 @@ class NX_ModuleListRemoveItem(bpy.types.Operator):
 
         return{'FINISHED'}
     
-class NX_CreateJavascriptFile(bpy.types.Operator):
-    bl_idname = "nx_modulelist.add_script"
-    bl_label = "Add script"
-
-    #filepath: bpy.props.StringProperty(subtype="FILE_PATH")
-
-    #my_float: bpy.props.FloatProperty(name="Float")
-    #my_bool: bpy.props.BoolProperty(name="Toggle Option")
-    #my_string: bpy.props.StringProperty(name="String Value")
+class NX_NewJavascriptFile(bpy.types.Operator):
+    bl_idname = "nx_modulelist.new_script"
+    bl_label = "New Script"
 
     filename: bpy.props.StringProperty(name="Filename (*.js)")
 
     def execute(self, context):
-        print("Creating javascript file at sources folder", self)
+
+        obj = context.object
+        list = obj.NX_UL_ModuleList
+        index = obj.NX_UL_ModuleListItem
+
+        print("Creating javascript file at sources folder", self.filename)
+
+        if(filemaker.create_javascript_file(self.filename)):
+
+            obj.NX_UL_ModuleList[index].nx_module_script = self.filename
+
+            print("Javascript file created")
+
+        else:
+            
+            print("TODO: ERROR")
+
         return {'FINISHED'}
 
     def invoke(self, context, event):
         wm = context.window_manager
         return wm.invoke_props_dialog(self)
+    
+class NX_EditJavascriptFile(bpy.types.Operator):
+    bl_idname = "nx_modulelist.edit_script"
+    bl_label = "Edit Script"
+
+    filename: bpy.props.StringProperty(name="Filename (*.js)")
+
+    def execute(self, context):
+
+        obj = context.object
+        list = obj.NX_UL_ModuleList
+        index = obj.NX_UL_ModuleListItem
+
+        print("Editing javascript file at sources folder", self.filename)
+
+        if(filemaker.edit_javascript_file(self.filename)):
+
+            obj.NX_UL_ModuleList[index].nx_module_script = self.filename
+
+            print("Javascript file edited")
+
+        else:
+            
+            print("TODO: ERROR")
+
+        return {'FINISHED'}
+    
+class NX_RefreshScripts(bpy.types.Operator):
+    bl_idname = "nx_modulelist.refresh_scripts"
+    bl_label = "Refresh scripts"
+
+    def execute(self, context):
+
+        
+
+        # wrd = bpy.data.worlds['Arm']
+        # wrd.arm_bundled_scripts_list.clear()
+
+        # with WorkingDir(get_sdk_path() + '/armory/Sources/armory/trait'):
+        #     for file in glob.glob('*.hx'):
+        #         wrd.arm_bundled_scripts_list.add().name = file.rsplit('.', 1)[0]
+
+        #Fetch bundled scripts
+        #Fetch bundled props
+        #Fetch script names
+        #Fetch script props
+
+        return {'FINISHED'}

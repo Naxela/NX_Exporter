@@ -47,9 +47,15 @@ class NX_UL_ModuleList(bpy.types.UIList):
         if self.layout_type in {'DEFAULT', 'COMPACT'}:
 
             row = layout.row()
-            row.label(text="A")
+            row.label(text=item.nx_module_type)
             col = row.column()
-            col.label(text="B")
+
+            if(item.nx_module_script != ""):
+                col.label(text=item.nx_module_script)
+            else:
+                col.label(text="Create script")
+
+            #print(item.nx_module_type)
 
         #     amount = 0
 
@@ -73,10 +79,13 @@ class NX_UL_ModuleList(bpy.types.UIList):
 
 class NX_UL_ModuleListItem(bpy.types.PropertyGroup):
     #obj: PointerProperty(type=bpy.types.Object, description="The object to bake")
-    
+
+    nx_module_script: StringProperty(name="Module", description="The module", default="", override={"LIBRARY_OVERRIDABLE"}) #TODO ON UPDATE => FIX PROPS
+
     nx_module_type : EnumProperty(
         items = [('Bundled', 'Bundled', 'Select a bundled module'),
                  ('JavaScript', 'JavaScript', 'Create a JavaScript module'),],
                 name = "Module Type", 
                 description="Select the module type",
                 default='Bundled')
+    

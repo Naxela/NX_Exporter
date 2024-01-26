@@ -45,8 +45,10 @@ class NX_PT_Modules(bpy.types.Panel):
         moduleListItem = obj.NX_UL_ModuleListItem
 
         row = layout.row()
-        #layout.label(text="LIST HERE ")
-        #row.prop(sceneProperties, "tlm_atlas_mode", expand=True)
+
+        row.label(text="TODO: CHECK SAVES")
+
+        row = layout.row()
 
         rows = 2
         if len(moduleList) > 1:
@@ -71,7 +73,7 @@ class NX_PT_Modules(bpy.types.Panel):
                 row = layout.row()
                 row.label(text="JavaScript Module")
                 row = layout.row()
-                row.operator("nx_modulelist.add_script")
+                row.operator("nx_modulelist.new_script")
 
 
         #if sceneProperties.tlm_atlas_mode == "Prepack":

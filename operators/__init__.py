@@ -8,7 +8,8 @@ classes = [
     operators.NX_Clean,
     operators.NX_ModuleListNewItem,
     operators.NX_ModuleListRemoveItem,
-    operators.NX_CreateJavascriptFile
+    operators.NX_NewJavascriptFile,
+    operators.NX_EditJavascriptFile
 ]
 
 def register():
