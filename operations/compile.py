@@ -32,6 +32,14 @@ def build_assets():
         for file in transfer_files:
             shutil.copy(bpy.path.abspath(file), project_folder) 
 
+        #Copy Sources folder (if it exists)
+        if os.path.exists(os.path.join(currentSaveDir, "Sources")):
+            shutil.copytree(os.path.join(currentSaveDir, "Sources"), os.path.join(project_folder, "Sources"))
+
+        #Copy Assets folder
+            
+        #Copy Shaders
+
         #Export GLB files
         export_scenes(project_folder)
 
@@ -80,6 +88,16 @@ def export_scenes(path):
             obj.hide_set(False)
 
     bpy.context.window.scene = initialScene
+
+def iterateObjectModules(obj):
+
+    modules = []
+
+    for module in obj.NX_UL_ModuleList:
+        print("Module: ", module.nx_module_script)
+        modules.append(module.nx_module_script)
+
+    return modules
 
 def compile_project_data():
     """
@@ -144,10 +162,11 @@ def compile_project_data():
             "scene_decals" : [],
             "scene_text" : [],
             "scene_curves" : [],
-            "scene_modules" : [],
+            "scene_modules" : [], #TODO - ITERATE SCENE/ROOT MODULES FIRST!
             "environment" : {
             }
         }
+
 
         #GLB GROUPS (1 per scene for now)
         glb_name = scene.name + ".glb"
@@ -170,7 +189,7 @@ def compile_project_data():
                     "identifier" : obj['nx_id'],
                     "matrix" : util.get_object_matrix_y_axis(obj),
                     "parent" : util.getObjectParent(obj),
-                    "modules" : []
+                    "modules" : iterateObjectModules(obj)
                 }
 
                 data_scene["scene_empty"].append(empty)
@@ -180,7 +199,7 @@ def compile_project_data():
                 mesh = {
                     "name" : obj.name,
                     "identifier" : obj['nx_id'],
-                    "modules" : [],
+                    "modules" : iterateObjectModules(obj),
                     "lightmaps" : [],
                     "cast_shadows" : obj.NX_ObjectProperties.nx_object_cast_shadows,
                     "receive_shadows" : obj.NX_ObjectProperties.nx_object_receive_shadows,
@@ -220,7 +239,7 @@ def compile_project_data():
                     "clip_near" : obj.data.clip_start,
                     "clip_far" : obj.data.clip_end,
                     "parent" : util.getObjectParent(obj),
-                    "modules" : []
+                    "modules" : iterateObjectModules(obj)
                 }
 
                 if obj.data.type == "PERSP":
@@ -252,7 +271,7 @@ def compile_project_data():
                     "shadowBias" : obj.data.shadow_buffer_bias,
                     "contactShadow" : obj.data.use_contact_shadow,
                     "parent" : util.getObjectParent(obj),
-                    "modules" : []
+                    "modules" : iterateObjectModules(obj)
                 }
 
                 if(obj.data.type == 'POINT'):
@@ -301,7 +320,7 @@ def compile_project_data():
                     "cone_inner" : obj.data.cone_angle_inner,
                     "cone_outer_volume": obj.data.cone_volume_outer,
                     "parent" : util.getObjectParent(obj),
-                    "modules" : [],
+                    "modules" : iterateObjectModules(obj),
                     "sound" : os.path.basename(obj.data.sound.filepath)
                 }
 

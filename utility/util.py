@@ -34,7 +34,7 @@ def is_generated_project_present():
     currentSavePath = bpy.data.filepath
     currentSaveDir = os.path.dirname(currentSavePath)
 
-    project_name = "nx-project"
+    project_name = "nx-build"
     directory = os.path.join(currentSaveDir, project_name)  # Set your desired path here
 
     package_json_path = os.path.join(directory, 'package.json')
@@ -65,42 +65,64 @@ def is_generated_project_present():
 
     return False
 
+def get_addon_path():
+
+    #Get the path of the blender addon
+    addon_path = os.path.dirname(os.path.realpath(__file__))
+    return addon_path
+
+def get_bundled_path():
+
+    #Get the path of the bundled folder within the addon folder
+
+    addon_path = bpy.path.abspath(get_addon_path())
+
+    bundled_path = os.path.join(addon_path, "bundled")
+
+    return bundled_path
+
 def get_project_path():
 
     currentSavePath = bpy.data.filepath
     currentSaveDir = os.path.dirname(currentSavePath)
 
-    project_name = "nx-project"
-    directory = os.path.join(currentSaveDir, project_name)  # Set your desired path here
+    #project_name = "nx-build"
+    #directory = os.path.join(currentSaveDir, project_name)  # Set your desired path here
 
-    return directory
+    #if(not os.path.exists(directory)):
+    #    os.mkdir(directory)
+
+    return currentSaveDir
 
 def get_assets_path():
 
-    currentSavePath = bpy.data.filepath
-    currentSaveDir = os.path.dirname(currentSavePath)
+    project_path = get_project_path()
 
-    project_name = "nx-project"
-    directory = os.path.join(currentSaveDir, project_name, "assets")  # Set your desired path here
+    directory = os.path.join(project_path, "Assets")  # Set your desired path here
+
+    if(not os.path.exists(directory)):
+        os.mkdir(directory)
 
     return directory
 
 def get_sources_path():
 
-    currentSavePath = bpy.data.filepath
-    currentSaveDir = os.path.dirname(currentSavePath)
+    project_path = get_project_path()
 
-    project_name = "nx-project"
-    directory = os.path.join(currentSaveDir, project_name, "sources")  # Set your desired path here
+    directory = os.path.join(project_path, "Sources")  # Set your desired path here
+
+    if(not os.path.exists(directory)):
+        os.mkdir(directory)
 
     return directory
 
 def get_shaders_path():
 
-    currentSavePath = bpy.data.filepath
-    currentSaveDir = os.path.dirname(currentSavePath)
+    project_path = get_project_path()
 
-    project_name = "nx-project"
-    directory = os.path.join(currentSaveDir, project_name, "shaders")  # Set your desired path here
+    directory = os.path.join(project_path, "Shaders")  # Set your desired path here
+
+    if(not os.path.exists(directory)):
+        os.mkdir(directory)
 
     return directory
