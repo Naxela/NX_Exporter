@@ -152,12 +152,12 @@ def compile_project_data():
         data_scene = {
             "name":scene.name,
             "glb_groups":[],
-            "scene_empty" : [],
+            "scene_empties" : [],
             "scene_meshes" : [],
             "scene_materials" : [],
-            "scene_camera" : [],
-            "scene_light" : [],
-            "scene_speaker" : [],
+            "scene_cameras" : [],
+            "scene_lights" : [],
+            "scene_speakers" : [],
             "scene_probes" : [],
             "scene_decals" : [],
             "scene_text" : [],
@@ -192,7 +192,7 @@ def compile_project_data():
                     "modules" : iterateObjectModules(obj)
                 }
 
-                data_scene["scene_empty"].append(empty)
+                data_scene["scene_empties"].append(empty)
 
             if obj.type == "MESH" and obj.NX_ObjectProperties.nx_object_export:
 
@@ -256,7 +256,7 @@ def compile_project_data():
                 else:
                     camera["active"] = False
 
-                data_scene["scene_camera"].append(camera)
+                data_scene["scene_cameras"].append(camera)
 
             if obj.type == "LIGHT":
 
@@ -299,34 +299,38 @@ def compile_project_data():
                     elif(obj.data.shape == 'ELLIPSE'):
                         light["areaSize"] = [obj.data.size, obj.data.size_y]
 
-                data_scene["scene_light"].append(light)
+                data_scene["scene_lights"].append(light)
 
             if obj.type == "SPEAKER":
 
                 #TODO - IMPLEMENT AUDIO AUTOPLAY, LOOP, etc.
 
-                speaker = {
-                    "name" : obj.name,
-                    "identifier" : obj['nx_id'],
-                    "matrix" : util.get_object_matrix_y_axis(obj),
-                    "volume" : obj.data.volume,
-                    "pitch" : obj.data.pitch,
-                    "distance_ref" : obj.data.distance_reference,
-                    "distance_max" : obj.data.distance_max,
-                    "volume_min" : obj.data.volume_min,
-                    "volume_max" : obj.data.volume_max,
-                    "attenuation" : obj.data.attenuation,
-                    "cone_outer" : obj.data.cone_angle_outer,
-                    "cone_inner" : obj.data.cone_angle_inner,
-                    "cone_outer_volume": obj.data.cone_volume_outer,
-                    "parent" : util.getObjectParent(obj),
-                    "modules" : iterateObjectModules(obj),
-                    "sound" : os.path.basename(obj.data.sound.filepath)
-                }
+                if(obj.data.sound):
 
-                parallel_transfer_assets.append(obj.data.sound.filepath)
+                    if(obj.data.sound.filepath != ""):
 
-                data_scene["scene_speaker"].append(speaker)
+                        speaker = {
+                            "name" : obj.name,
+                            "identifier" : obj['nx_id'],
+                            "matrix" : util.get_object_matrix_y_axis(obj),
+                            "volume" : obj.data.volume,
+                            "pitch" : obj.data.pitch,
+                            "distance_ref" : obj.data.distance_reference,
+                            "distance_max" : obj.data.distance_max,
+                            "volume_min" : obj.data.volume_min,
+                            "volume_max" : obj.data.volume_max,
+                            "attenuation" : obj.data.attenuation,
+                            "cone_outer" : obj.data.cone_angle_outer,
+                            "cone_inner" : obj.data.cone_angle_inner,
+                            "cone_outer_volume": obj.data.cone_volume_outer,
+                            "parent" : util.getObjectParent(obj),
+                            "modules" : iterateObjectModules(obj),
+                            "sound" : os.path.basename(obj.data.sound.filepath)
+                        }
+
+                        parallel_transfer_assets.append(obj.data.sound.filepath)
+
+                        data_scene["scene_speakers"].append(speaker)
 
         for mat in scene_materials:
 
