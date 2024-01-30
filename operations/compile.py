@@ -167,6 +167,7 @@ def compile_project_data():
             }
         }
 
+        #TODO! - MAKE A NEW COMBINED ID LIST   OR   EMBED THE DATA INSIDE THE GLB FILE
 
         #GLB GROUPS (1 per scene for now)
         glb_name = scene.name + ".glb"
@@ -174,6 +175,9 @@ def compile_project_data():
 
         #Start with 1, because 0 is the active scene
         id_iterator = 1
+        
+        #The materials doesn't need to start with 1
+        mat_iterator = 0
 
         scene_materials = set()
 
@@ -335,11 +339,17 @@ def compile_project_data():
 
         for mat in scene_materials:
 
+            obj['nx_id'] = id_iterator
+            id_iterator += 1
+
             #TODO - IMPLEMENT SOME KIND OF MOVIETEXTURE CONTROL
+            #TODO - IMPLEMENT SOME KIND OF ALPHA BLENDING
+            #TODO - IMPLEMENT SOME KIND OF TEXTURE FILTER CONTROL
             #TODO - IMPLEMENT SOME KIND OF ANIMATED UV CONTROL - EXPRESSION PERHAPS? X=DELTA*0.1; Y=DELTA*0.1 => Uses material.map.offset
 
             mat = {
-                "name" : mat
+                "name" : mat,
+                "identifier" : obj['nx_id'],
             }
 
             data_scene["scene_materials"].append(mat)
