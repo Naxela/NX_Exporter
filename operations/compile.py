@@ -172,6 +172,7 @@ def compile_project_data():
         glb_name = scene.name + ".glb"
         data_scene["glb_groups"].append(glb_name)
 
+        #Start with 1, because 0 is the active scene
         id_iterator = 1
 
         scene_materials = set()

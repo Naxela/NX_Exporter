@@ -89,3 +89,29 @@ class NX_PT_Settings(bpy.types.Panel):
         row.label(text="Environment:", icon="WORLD")
         row = layout.row(align=True)
         #row.operator("nx.compile")
+
+class NX_PT_Modules(bpy.types.Panel):
+    bl_label = "Modules"
+    bl_space_type = "PROPERTIES"
+    bl_region_type = "WINDOW"
+    bl_context = "render"
+    bl_options = {'DEFAULT_CLOSED'}
+    bl_parent_id = "NX_PT_Panel"
+
+    @classmethod
+    def poll(cls, context):
+        file_path = bpy.data.filepath
+
+        # Check if the file has been saved
+        return bool(file_path)
+
+    def draw(self, context):
+        layout = self.layout
+        scene = context.scene
+        layout.use_property_split = True
+        layout.use_property_decorate = False
+
+        row = layout.row(align=True)
+        row.label(text="Environment:", icon="WORLD")
+        row = layout.row(align=True)
+        #row.operator("nx.compile")

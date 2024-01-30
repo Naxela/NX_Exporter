@@ -9,7 +9,7 @@ def create_javascript_file(classname):
     filename = os.path.join(sources_path, classname) + ".js"
 
     template = '''
-class {class_name} extends NX_BaseModule {{
+export default class {class_name} {{
     constructor(object) {{
         this.object = object;
     }}
