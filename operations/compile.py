@@ -99,6 +99,15 @@ def iterateObjectModules(obj):
 
     return modules
 
+def getActiveAction(obj):
+
+    print("Getting active action for: ", obj.name)
+
+    if obj.animation_data:
+        return obj.animation_data.action.name
+    else:
+        return None
+
 def compile_project_data():
     """
     Compile project data and generate a project manifest based on the scenes, objects, and settings in the Blender project. 
@@ -185,6 +194,7 @@ def compile_project_data():
 
             #Before compile, we need to set a unique id for each object as a property
             obj['nx_id'] = id_iterator
+            print(obj.name, obj['nx_id'])
             id_iterator += 1
 
             if obj.type == "EMPTY":
@@ -194,7 +204,8 @@ def compile_project_data():
                     "identifier" : obj['nx_id'],
                     "matrix" : util.get_object_matrix_y_axis(obj),
                     "parent" : util.getObjectParent(obj),
-                    "modules" : iterateObjectModules(obj)
+                    "modules" : iterateObjectModules(obj),
+                    "active_action" : getActiveAction(obj),
                 }
 
                 data_scene["scene_empties"].append(empty)
@@ -209,7 +220,8 @@ def compile_project_data():
                     "cast_shadows" : obj.NX_ObjectProperties.nx_object_cast_shadows,
                     "receive_shadows" : obj.NX_ObjectProperties.nx_object_receive_shadows,
                     "spawn" : obj.NX_ObjectProperties.nx_object_spawn,
-                    "object_status" : obj.NX_ObjectProperties.nx_object_object_status
+                    "object_status" : obj.NX_ObjectProperties.nx_object_object_status,
+                    "active_action" : getActiveAction(obj),
                 }
 
                 data_scene["scene_meshes"].append(mesh)
@@ -220,7 +232,7 @@ def compile_project_data():
 
                         if slot.material:
 
-                            scene_materials.add(slot.material.name)
+                            scene_materials.add(slot.material)
 
                 # if len(obj.material_slots) > 0:
 
@@ -244,7 +256,8 @@ def compile_project_data():
                     "clip_near" : obj.data.clip_start,
                     "clip_far" : obj.data.clip_end,
                     "parent" : util.getObjectParent(obj),
-                    "modules" : iterateObjectModules(obj)
+                    "modules" : iterateObjectModules(obj),
+                    "active_action" : getActiveAction(obj),
                 }
 
                 if obj.data.type == "PERSP":
@@ -276,7 +289,8 @@ def compile_project_data():
                     "shadowBias" : obj.data.shadow_buffer_bias,
                     "contactShadow" : obj.data.use_contact_shadow,
                     "parent" : util.getObjectParent(obj),
-                    "modules" : iterateObjectModules(obj)
+                    "modules" : iterateObjectModules(obj),
+                    "active_action" : getActiveAction(obj),
                 }
 
                 if(obj.data.type == 'POINT'):
@@ -330,7 +344,8 @@ def compile_project_data():
                             "cone_outer_volume": obj.data.cone_volume_outer,
                             "parent" : util.getObjectParent(obj),
                             "modules" : iterateObjectModules(obj),
-                            "sound" : os.path.basename(obj.data.sound.filepath)
+                            "sound" : os.path.basename(obj.data.sound.filepath),
+                            "active_action" : getActiveAction(obj),
                         }
 
                         parallel_transfer_assets.append(obj.data.sound.filepath)
@@ -339,8 +354,10 @@ def compile_project_data():
 
         for mat in scene_materials:
 
-            obj['nx_id'] = id_iterator
+            mat['nx_id'] = id_iterator
             id_iterator += 1
+
+            #print(mat.name, mat['nx_id'])
 
             #TODO - IMPLEMENT SOME KIND OF MOVIETEXTURE CONTROL
             #TODO - IMPLEMENT SOME KIND OF ALPHA BLENDING
@@ -348,8 +365,8 @@ def compile_project_data():
             #TODO - IMPLEMENT SOME KIND OF ANIMATED UV CONTROL - EXPRESSION PERHAPS? X=DELTA*0.1; Y=DELTA*0.1 => Uses material.map.offset
 
             mat = {
-                "name" : mat,
-                "identifier" : obj['nx_id'],
+                "name" : mat.name,
+                "identifier" : mat['nx_id'],
             }
 
             data_scene["scene_materials"].append(mat)

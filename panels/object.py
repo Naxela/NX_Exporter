@@ -74,6 +74,8 @@ class NX_PT_Modules(bpy.types.Panel):
                 row.label(text="JavaScript Module")
                 row = layout.row()
                 row.operator("nx_modulelist.new_script")
+                row = layout.row()
+                row.operator("nx_modulelist.edit_script")
 
 
         #if sceneProperties.tlm_atlas_mode == "Prepack":
