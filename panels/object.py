@@ -29,7 +29,7 @@ class NX_PT_ObjectMenu(bpy.types.Panel):
             row.prop(obj.NX_ObjectProperties, "nx_object_receive_shadows")
 
 class NX_PT_Modules(bpy.types.Panel):
-    bl_label = "Modules"
+    bl_label = "Components"
     bl_space_type = "PROPERTIES"
     bl_region_type = "WINDOW"
     bl_context = "render"
@@ -71,44 +71,42 @@ class NX_PT_Modules(bpy.types.Panel):
             elif item.nx_module_type == "JavaScript":
 
                 row = layout.row()
-                row.label(text="JavaScript Module")
+                row.label(text="JavaScript Component")
                 row = layout.row()
-                row.operator("nx_modulelist.new_script")
-                row = layout.row()
+                col = row.column(align=True)
+                col.operator("nx_modulelist.new_script")
                 row.operator("nx_modulelist.edit_script")
+                row.operator("nx_modulelist.refresh_scripts")
+                row = layout.row()
+                row.prop_search(item, "nx_module_script", context.object, "NX_UL_ModuleList", text="Class Name")
 
+    #bpy.data.objects["Superconduction_Movement"].NX_UL_ModuleList[0].nx_module_script
 
-        #if sceneProperties.tlm_atlas_mode == "Prepack":
+    # if obj.arm_traitlist_index >= 0 and len(obj.arm_traitlist) > 0:
+    #     item = obj.arm_traitlist[obj.arm_traitlist_index]
 
+    #     row = layout.row(align=True)
+    #     row.alignment = 'EXPAND'
+    #     row.scale_y = 1.2
 
+    #     if item.type_prop == 'Haxe Script' or item.type_prop == 'Bundled Script':
+    #         if item.type_prop == 'Haxe Script':
+    #             row.operator("arm.new_script", icon="FILE_NEW").is_object = is_object
+    #             column = row.column(align=True)
+    #             column.enabled = item.class_name_prop != ''
+    #             column.operator("arm.edit_script", icon_value=ICON_HAXE).is_object = is_object
 
-            # rows = 2
-            # if len(atlasList) > 1:
-            #     rows = 4
-            # row = layout.row()
-            # row.template_list("TLM_UL_AtlasList", "Atlas List", scene, "TLM_AtlasList", scene, "TLM_AtlasListItem", rows=rows)
-            # col = row.column(align=True)
-            # col.operator("tlm_atlaslist.new_item", icon='ADD', text="")
-            # col.operator("tlm_atlaslist.delete_item", icon='REMOVE', text="")
-            # col.menu("TLM_MT_AtlasListSpecials", icon='DOWNARROW_HLT', text="")
+    #         # Bundled scripts
+    #         else:
+    #             row.enabled = item.class_name_prop != ''
+    #             row.operator("arm.edit_bundled_script", icon_value=ICON_HAXE).is_object = is_object
 
-            # if atlasListItem >= 0 and len(atlasList) > 0:
-            #     item = atlasList[atlasListItem]
-            #     layout.prop(item, "tlm_atlas_lightmap_unwrap_mode")
-            #     layout.prop(item, "tlm_atlas_lightmap_resolution")
-            #     layout.prop(item, "tlm_atlas_unwrap_margin")
+    #         refresh_op = "arm.refresh_object_scripts" if is_object else "arm.refresh_scripts"
+    #         row.operator(refresh_op, text="Refresh", icon="FILE_REFRESH")
 
-            #     amount = 0
-
-            #     for obj in bpy.context.scene.objects:
-            #         if obj.TLM_ObjectProperties.tlm_mesh_lightmap_use:
-            #             if obj.TLM_ObjectProperties.tlm_mesh_lightmap_unwrap_mode == "AtlasGroupA":
-            #                 if obj.TLM_ObjectProperties.tlm_atlas_pointer == item.name:
-            #                     amount = amount + 1
-
-            #     layout.label(text="Objects: " + str(amount))
-            #     layout.prop(item, "tlm_atlas_merge_samemat")
-
-                # layout.prop(item, "tlm_use_uv_packer")
-                # layout.prop(item, "tlm_uv_packer_padding")
-                # layout.prop(item, "tlm_uv_packer_packing_engine")
+    #         # Default props
+    #         row = layout.row()
+    #         if item.type_prop == 'Haxe Script':
+    #             row.prop_search(item, "class_name_prop", bpy.data.worlds['Arm'], "arm_scripts_list", text="Class")
+    #         else:
+    #             row.prop_search(item, "class_name_prop", bpy.data.worlds['Arm'], "arm_bundled_scripts_list", text="Class")

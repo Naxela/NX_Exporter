@@ -104,7 +104,10 @@ def getActiveAction(obj):
     print("Getting active action for: ", obj.name)
 
     if obj.animation_data:
-        return obj.animation_data.action.name
+        if(obj.animation_data.action):
+            return obj.animation_data.action.name
+        else:
+            return None
     else:
         return None
 

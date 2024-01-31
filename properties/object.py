@@ -55,30 +55,7 @@ class NX_UL_ModuleList(bpy.types.UIList):
             else:
                 col.label(text="Create script")
 
-            #print(item.nx_module_type)
-
-        #     amount = 0
-
-        #     for obj in bpy.context.scene.objects:
-        #         if obj.TLM_ObjectProperties.tlm_mesh_lightmap_use:
-        #             if obj.TLM_ObjectProperties.tlm_mesh_lightmap_unwrap_mode == "AtlasGroupA":
-        #                 if obj.TLM_ObjectProperties.tlm_atlas_pointer == item.name:
-        #                     amount = amount + 1
-
-        #     row = layout.row()
-        #     row.prop(item, "name", text="", emboss=False, icon=custom_icon)
-        #     col = row.column()
-        #     col.label(text=item.tlm_atlas_lightmap_resolution)
-        #     col = row.column()
-        #     col.alignment = 'RIGHT'
-        #     col.label(text=str(amount))
-
-        # elif self.layout_type in {'GRID'}:
-        #     layout.alignment = 'CENTER'
-        #     layout.label(text="", icon = custom_icon)
-
 class NX_UL_ModuleListItem(bpy.types.PropertyGroup):
-    #obj: PointerProperty(type=bpy.types.Object, description="The object to bake")
 
     nx_module_script: StringProperty(name="Module", description="The module", default="", override={"LIBRARY_OVERRIDABLE"}) #TODO ON UPDATE => FIX PROPS
 
