@@ -67,6 +67,12 @@ class NX_PT_Modules(bpy.types.Panel):
 
                 row = layout.row()
                 row.label(text="Bundled Module")
+                row = layout.row()
+                col = row.column(align=True)
+                row.operator("nx_modulelist.edit_script")
+                row.operator("nx_modulelist.refresh_scripts")
+                row = layout.row()
+                row.prop_search(item, "nx_module_script", bpy.data.worlds['NX'], "NX_bundled_list", text="Class")
 
             elif item.nx_module_type == "JavaScript":
 
@@ -78,7 +84,7 @@ class NX_PT_Modules(bpy.types.Panel):
                 row.operator("nx_modulelist.edit_script")
                 row.operator("nx_modulelist.refresh_scripts")
                 row = layout.row()
-                row.prop_search(item, "nx_module_script", context.object, "NX_UL_ModuleList", text="Class Name")
+                row.prop_search(item, "nx_module_script", bpy.data.worlds['NX'], "NX_scripts_list", text="Class")
 
     #bpy.data.objects["Superconduction_Movement"].NX_UL_ModuleList[0].nx_module_script
 

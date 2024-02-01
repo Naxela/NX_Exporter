@@ -59,6 +59,9 @@ class NX_ModuleListNewItem(bpy.types.Operator):
         obj.NX_UL_ModuleListItem = len(obj.NX_UL_ModuleList) - 1
         obj.NX_UL_ModuleList[len(obj.NX_UL_ModuleList) - 1].name = "Module"
 
+        util.getProjectJSScripts()
+        util.getBundledScripts()
+
         return{'FINISHED'}
     
 class NX_ModuleListRemoveItem(bpy.types.Operator):
@@ -84,6 +87,9 @@ class NX_ModuleListRemoveItem(bpy.types.Operator):
             index = index - 1
 
         obj.NX_UL_ModuleListItem = index
+
+        util.getProjectJSScripts()
+        util.getBundledScripts()
 
         return{'FINISHED'}
     
@@ -121,25 +127,21 @@ class NX_EditJavascriptFile(bpy.types.Operator):
     bl_idname = "nx_modulelist.edit_script"
     bl_label = "Edit Script"
 
-    filename: bpy.props.StringProperty(name="Filename (*.js)")
-
     def execute(self, context):
 
         obj = context.object
         list = obj.NX_UL_ModuleList
         index = obj.NX_UL_ModuleListItem
 
-        print("Editing javascript file at sources folder", self.filename)
+        file = os.path.join(util.get_sources_path(),list[index].nx_module_script +".js")
 
-        if(filemaker.edit_javascript_file(self.filename)):
+        print(file)
 
-            obj.NX_UL_ModuleList[index].nx_module_script = self.filename
+        os.system(file)
 
-            print("Javascript file edited")
+        print("Editing javascript file at sources folder: ", list[index].nx_module_script)
 
-        else:
-            
-            print("TODO: ERROR")
+
 
         return {'FINISHED'}
     
@@ -149,7 +151,8 @@ class NX_RefreshScripts(bpy.types.Operator):
 
     def execute(self, context):
 
-        
+        util.getProjectJSScripts()
+        util.getBundledScripts()
 
         # wrd = bpy.data.worlds['Arm']
         # wrd.arm_bundled_scripts_list.clear()

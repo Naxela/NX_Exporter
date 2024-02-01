@@ -1,4 +1,16 @@
-import bpy, math, mathutils, os, json
+import bpy, math, mathutils, os, json, glob, re
+
+class WorkingDir:
+    """Context manager for safely changing the current working directory."""
+    def __init__(self, cwd: str):
+        self.cwd = cwd
+        self.prev_cwd = os.getcwd()
+
+    def __enter__(self):
+        os.chdir(self.cwd)
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        os.chdir(self.prev_cwd)
 
 #MATH/VECTOR/MATRIX HELPERS
 def get_object_matrix_y_axis(obj):
@@ -68,8 +80,15 @@ def is_generated_project_present():
 def get_addon_path():
 
     #Get the path of the blender addon
-    addon_path = os.path.dirname(os.path.realpath(__file__))
-    return addon_path
+    current_file_path = os.path.realpath(__file__)
+    
+    # Get the directory containing the current file, which is the addon's directory.
+    addon_path = os.path.dirname(current_file_path)
+    
+    # Get the parent directory of the addon's directory.
+    parent_path = os.path.dirname(addon_path)
+
+    return parent_path
 
 def get_bundled_path():
 
@@ -126,3 +145,57 @@ def get_shaders_path():
         os.mkdir(directory)
 
     return directory
+
+def getBundledScripts():
+
+    world = bpy.data.worlds['NX']
+
+    scripts_list = world.NX_bundled_list
+
+    scripts_list.clear()
+
+    sources_path = get_bundled_path()
+
+    print(sources_path)
+
+    if os.path.isdir(sources_path):
+        with WorkingDir(sources_path):
+
+            print("Testing in: ", sources_path)
+
+            # Glob supports recursive search since python 3.5 so it should cover both blender 2.79 and 2.8 integrated python
+            for file in glob.glob('**/*.js', recursive=True):
+
+                mod = file.rsplit('.', 1)[0]
+                mod = mod.replace('\\', '/')
+                mod_parts = mod.rsplit('/')
+                if re.match('^[A-Z][A-Za-z0-9_]*$', mod_parts[-1]):
+                    scripts_list.add().name = mod.replace('/', '.')
+                #    fetch_script_props(file)
+                    
+    print(scripts_list)
+
+def getProjectJSScripts():
+
+    world = bpy.data.worlds['NX']
+
+    scripts_list = world.NX_scripts_list
+
+    scripts_list.clear()
+
+    sources_path = get_sources_path()
+
+    if os.path.isdir(sources_path):
+        with WorkingDir(sources_path):
+
+            # Glob supports recursive search since python 3.5 so it should cover both blender 2.79 and 2.8 integrated python
+            for file in glob.glob('**/*.js', recursive=True):
+
+                mod = file.rsplit('.', 1)[0]
+                mod = mod.replace('\\', '/')
+                mod_parts = mod.rsplit('/')
+                if re.match('^[A-Z][A-Za-z0-9_]*$', mod_parts[-1]):
+                    scripts_list.add().name = mod.replace('/', '.')
+                #    fetch_script_props(file)
+                    
+    print(scripts_list)

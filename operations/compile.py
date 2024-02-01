@@ -36,9 +36,13 @@ def build_assets():
         if os.path.exists(os.path.join(currentSaveDir, "Sources")):
             shutil.copytree(os.path.join(currentSaveDir, "Sources"), os.path.join(project_folder, "Sources"))
 
-        #Copy Assets folder
+        #Copy Bundled folder (if it exists)
+        if os.path.exists(os.path.join(currentSaveDir, "Bundled")):
+            shutil.copytree(os.path.join(currentSaveDir, "Bundled"), os.path.join(project_folder, "Bundled"))
             
-        #Copy Shaders
+        #Copy Shaders folder (if it exists)
+        if os.path.exists(os.path.join(currentSaveDir, "Shaders")):
+            shutil.copytree(os.path.join(currentSaveDir, "Shaders"), os.path.join(project_folder, "Shaders"))
 
         #Export GLB files
         export_scenes(project_folder)
@@ -366,10 +370,16 @@ def compile_project_data():
             #TODO - IMPLEMENT SOME KIND OF ALPHA BLENDING
             #TODO - IMPLEMENT SOME KIND OF TEXTURE FILTER CONTROL
             #TODO - IMPLEMENT SOME KIND OF ANIMATED UV CONTROL - EXPRESSION PERHAPS? X=DELTA*0.1; Y=DELTA*0.1 => Uses material.map.offset
+            #TODO - IMPLEMENT DIRECT TEXTURE ASSET MOVE
+            #TODO - Currently GLB files for each scene contain all materials, not just the ones in the active scene
+            #TODO - The above might also be a faster solution - keep some kind of change cache available? Also for future sockets
+
+            scene_textures = set()
 
             mat = {
                 "name" : mat.name,
-                "identifier" : mat['nx_id'],
+                "identifier" : mat['nx_id']#,
+                #"textures" : scene_textures,
             }
 
             data_scene["scene_materials"].append(mat)
