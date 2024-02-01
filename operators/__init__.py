@@ -6,6 +6,7 @@ from . import operators
 classes = [
     operators.NX_Start,
     operators.NX_Clean,
+    operators.NX_Explore,
     operators.NX_ModuleListNewItem,
     operators.NX_ModuleListRemoveItem,
     operators.NX_NewJavascriptFile,

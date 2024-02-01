@@ -43,6 +43,22 @@ class NX_Clean(bpy.types.Operator):
 
         return {"FINISHED"}
     
+class NX_Explore(bpy.types.Operator):
+    bl_idname = "nx.explore"
+    bl_label = "Explore"
+    bl_description = "Explore your project"
+    bl_options = {"REGISTER", "UNDO"}
+
+    def execute(self, context):
+
+        #Open the path in explorer
+
+        path = util.get_project_path()
+
+        os.startfile(path)
+
+        return {"FINISHED"}
+    
 # OBJECT OPERATORS
 
 class NX_ModuleListNewItem(bpy.types.Operator):

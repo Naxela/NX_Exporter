@@ -44,6 +44,7 @@ class NX_PT_Panel(bpy.types.Panel):
             row = layout.row(align=True)
             row.operator("nx.compile_start")
             row.operator("nx.clean")
+            row.operator("nx.explore")
 
             #Here we check if 
             # if util.is_generated_project_present():
