@@ -89,6 +89,7 @@ class NX_PT_Settings(bpy.types.Panel):
         row = layout.row(align=True)
         row.label(text="Environment:", icon="WORLD")
         row = layout.row(align=True)
+        row.prop(scene.NX_SceneProperties, "nx_xr_mode")
         #row.operator("nx.compile")
 
 class NX_PT_Modules(bpy.types.Panel):

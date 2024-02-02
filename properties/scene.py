@@ -9,15 +9,11 @@ class NX_SceneProperties(bpy.types.PropertyGroup):
                 description="The cleaning mode, either full or partial clean. Be careful that you don't delete lightmaps you don't intend to delete.", 
                 default='Clean')
     
-    nx_xr_mode : EnumProperty(
-        items = [('None', 'None', 'No XR'),
-                 ('XR', 'XR', 'Available for both VR/AR'),
-                 ('VR', 'VR', 'Virtual Reality'),
-                ('AR', 'AR', 'Augmented Reality')],
-                name = "XR mode",
-                description="The XR mode",
-                default='None'
-        )
+    nx_xr_mode : BoolProperty(
+        name="Enable XR",
+        description="Enable XR",
+        default=False
+    )
     
     nx_compilation_mode : EnumProperty(
         items = [('Combined', 'Combined', 'Everything is combined into one file per scene. Can be more RAM costly, but good for single-scene projects.'),

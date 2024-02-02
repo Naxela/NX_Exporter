@@ -98,8 +98,18 @@ def iterateObjectModules(obj):
     modules = []
 
     for module in obj.NX_UL_ModuleList:
-        print("Module: ", module.nx_module_script)
-        modules.append(module.nx_module_script)
+
+        if module.nx_module_enabled:
+            print("Module: ", module.nx_module_script)
+            modules.append(module.nx_module_script)
+
+        if module.nx_module_type == 'Bundled':
+            #We need to copy over the bundled module
+            addon_bundled_path = util.get_bundled_path()
+            module_path = os.path.join(addon_bundled_path, module.nx_module_script + ".js")
+            shutil.copy(module_path, bpy.path.abspath("//Sources"))
+
+            print("Copying from: " + module_path + " to " + bpy.path.abspath("//Sources"))
 
     return modules
 
@@ -138,6 +148,7 @@ def compile_project_data():
             ]
         },
         "options":{
+            "xr":bpy.data.scenes[0].NX_SceneProperties.nx_xr_mode,
             "graphics":{
                 "antialiasing":"true",
                 "bloom":"false",

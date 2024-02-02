@@ -47,15 +47,19 @@ class NX_UL_ModuleList(bpy.types.UIList):
         if self.layout_type in {'DEFAULT', 'COMPACT'}:
 
             row = layout.row()
-            row.label(text=item.nx_module_type)
+            row.separator(factor=0.1)
+            row.prop(item, "nx_module_enabled")
             col = row.column()
 
             if(item.nx_module_script != ""):
+                #row.label(text=item.name if item.name != "" else " ", icon=custom_icon, icon_value=custom_icon_value)
                 col.label(text=item.nx_module_script)
             else:
                 col.label(text="Create script")
 
 class NX_UL_ModuleListItem(bpy.types.PropertyGroup):
+
+    nx_module_enabled : BoolProperty(name="", description="Whether this trait is enabled", default=True, override={"LIBRARY_OVERRIDABLE"})
 
     nx_module_script: StringProperty(name="Module", description="The module", default="", override={"LIBRARY_OVERRIDABLE"}) #TODO ON UPDATE => FIX PROPS
 

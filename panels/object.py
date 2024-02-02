@@ -11,22 +11,56 @@ class NX_PT_ObjectMenu(bpy.types.Panel):
 
     def draw(self, context):
         layout = self.layout
-        scene = context.scene
         obj = bpy.context.object
         layout.use_property_split = True
         layout.use_property_decorate = False
 
+        row = layout.row(align=True)
+        row.label(text="Object settings")
+        row = layout.row(align=True)
+        row.prop(obj.NX_ObjectProperties, "nx_object_export")
+        row = layout.row(align=True)
+        row.prop(obj.NX_ObjectProperties, "nx_object_spawn")
+        row = layout.row(align=True)
+        row.prop(obj.NX_ObjectProperties, "nx_object_object_status")
+        row = layout.row(align=True)
+
         if obj.type == "MESH":
+
             row = layout.row(align=True)
-            row.prop(obj.NX_ObjectProperties, "nx_object_export")
-            row = layout.row(align=True)
-            row.prop(obj.NX_ObjectProperties, "nx_object_spawn")
-            row = layout.row(align=True)
-            row.prop(obj.NX_ObjectProperties, "nx_object_object_status")
+            row.label(text="Mesh type settings")
             row = layout.row(align=True)
             row.prop(obj.NX_ObjectProperties, "nx_object_cast_shadows")
             row = layout.row(align=True)
             row.prop(obj.NX_ObjectProperties, "nx_object_receive_shadows")
+
+        if obj.type == "LIGHT":
+
+            row.label(text="Light type settings")
+            row = layout.row(align=True)
+            row.label(text="Decay?")
+            row = layout.row(align=True)
+            row.label(text="Shadow Bias?")
+            row = layout.row(align=True)
+            row.label(text="VSM? Blur Samples")
+            row = layout.row(align=True)
+            row.label(text="Normal bias")
+            row = layout.row(align=True)
+            row.label(text="PCF!? Radius")
+            row = layout.row(align=True)
+            row.label(text="Spot light stuff")
+
+        if obj.type == "SPEAKER":
+
+            row.label(text="Speaker type settings")
+            row = layout.row(align=True)
+            row.label(text="Autoplay")
+            row = layout.row(align=True)
+            row.label(text="Loop")
+            row = layout.row(align=True)
+            row.label(text="Stream")
+
+
 
 class NX_PT_Modules(bpy.types.Panel):
     bl_label = "Components"

@@ -163,7 +163,6 @@ def getBundledScripts():
 
             print("Testing in: ", sources_path)
 
-            # Glob supports recursive search since python 3.5 so it should cover both blender 2.79 and 2.8 integrated python
             for file in glob.glob('**/*.js', recursive=True):
 
                 mod = file.rsplit('.', 1)[0]
