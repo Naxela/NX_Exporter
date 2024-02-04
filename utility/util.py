@@ -37,7 +37,7 @@ def ensureFilesave():
 
 def getObjectParent(obj):
     if(obj.parent):
-        return obj.parent.name
+        return obj.parent["nx_id"]
     else:
         return None
 

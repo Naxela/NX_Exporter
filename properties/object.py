@@ -40,6 +40,26 @@ class NX_ObjectProperties(bpy.types.PropertyGroup):
         default=True
     )
 
+    # Speaker settings
+
+    nx_speaker_autoplay : BoolProperty(
+        name="Autoplay",
+        description="Set whether the speaker should autoplay",
+        default=True
+    )
+
+    nx_speaker_loop : BoolProperty(
+        name="Loop",
+        description="Set whether the speaker should loop",
+        default=True
+    )
+
+    nx_speaker_stream : BoolProperty(
+        name="Stream",
+        description="Set whether the speaker should stream",
+        default=False
+    )
+
 class NX_UL_ModuleList(bpy.types.UIList):
     def draw_item(self, context, layout, data, item, icon, active_data, active_propname, index):
         custom_icon = 'OBJECT_DATAMODE'

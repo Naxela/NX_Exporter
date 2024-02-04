@@ -14,6 +14,18 @@ class NX_SceneProperties(bpy.types.PropertyGroup):
         description="Enable XR",
         default=False
     )
+
+    nx_debug_mode : BoolProperty(
+        name="Enable debug",
+        description="Enable debug",
+        default=False
+    )
+
+    nx_fullscreen : BoolProperty(
+        name="Fullscreen",
+        description="Fullscreen",
+        default=False
+    )
     
     nx_compilation_mode : EnumProperty(
         items = [('Combined', 'Combined', 'Everything is combined into one file per scene. Can be more RAM costly, but good for single-scene projects.'),

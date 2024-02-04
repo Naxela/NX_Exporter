@@ -163,9 +163,9 @@ def compile_project_data():
                 "ambient":1
             },
             "video":{
-                "size":"fullscreen",
-                "width":"1024",
-                "height":"768"
+                "fullscreen": bpy.data.scenes[0].NX_SceneProperties.nx_fullscreen,
+                "width": bpy.data.scenes[0].render.resolution_x * bpy.data.scenes[0].render.resolution_percentage / 100, 
+                "height": bpy.data.scenes["Scene"].render.resolution_y * bpy.data.scenes[0].render.resolution_percentage / 100
             }
         }
     }
@@ -364,6 +364,9 @@ def compile_project_data():
                             "modules" : iterateObjectModules(obj),
                             "sound" : os.path.basename(obj.data.sound.filepath),
                             "active_action" : getActiveAction(obj),
+                            "autoplay" : obj.NX_ObjectProperties.nx_speaker_autoplay,
+                            "loop" : obj.NX_ObjectProperties.nx_speaker_loop,
+                            "stream" : obj.NX_ObjectProperties.nx_speaker_stream
                         }
 
                         parallel_transfer_assets.append(obj.data.sound.filepath)

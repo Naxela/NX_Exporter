@@ -54,13 +54,11 @@ class NX_PT_ObjectMenu(bpy.types.Panel):
 
             row.label(text="Speaker type settings")
             row = layout.row(align=True)
-            row.label(text="Autoplay")
+            row.prop(obj.NX_ObjectProperties, "nx_speaker_autoplay")
             row = layout.row(align=True)
-            row.label(text="Loop")
+            row.prop(obj.NX_ObjectProperties, "nx_speaker_loop")
             row = layout.row(align=True)
-            row.label(text="Stream")
-
-
+            row.prop(obj.NX_ObjectProperties, "nx_speaker_stream")
 
 class NX_PT_Modules(bpy.types.Panel):
     bl_label = "Components"

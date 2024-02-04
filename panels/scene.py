@@ -90,6 +90,10 @@ class NX_PT_Settings(bpy.types.Panel):
         row.label(text="Environment:", icon="WORLD")
         row = layout.row(align=True)
         row.prop(scene.NX_SceneProperties, "nx_xr_mode")
+        row = layout.row(align=True)
+        row.prop(scene.NX_SceneProperties, "nx_debug_mode")
+        row = layout.row(align=True)
+        row.prop(scene.NX_SceneProperties, "nx_fullscreen")
         #row.operator("nx.compile")
 
 class NX_PT_Modules(bpy.types.Panel):
