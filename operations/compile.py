@@ -143,6 +143,7 @@ def compile_project_data():
         "version":"VER",
         "description":"DESC",
         "url":"URL",
+        "debug": bpy.data.scenes[0].NX_SceneProperties.nx_debug_mode,
         "manifest":{
             "scenes":[
             ]
@@ -440,7 +441,9 @@ def compile_project_data():
                                 elif(input_node.type == "TEX_ENVIRONMENT"):
                                     print("BG:", "ENVTEX")
                                     data_scene["environment"]["backgroundType"] = "texture"
-                                    data_scene["environment"]["backgroundTexture"] = os.path.basename(input_node.image.filepath)
+
+                                    backgroundTexPath = input_node.image.filepath
+                                    data_scene["environment"]["backgroundTexture"] = bpy.path.basename(bpy.path.abspath(backgroundTexPath))
                                     data_scene["environment"]["backgroundIntensity"] = node.inputs[1].default_value
                                     parallel_transfer_assets.append(input_node.image.filepath)
                                 elif(input_node.type == "TEX_SKY"):
