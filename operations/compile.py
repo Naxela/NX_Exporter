@@ -44,6 +44,10 @@ def build_assets():
         if os.path.exists(os.path.join(currentSaveDir, "Shaders")):
             shutil.copytree(os.path.join(currentSaveDir, "Shaders"), os.path.join(project_folder, "Shaders"))
 
+        #Copy Lightmaps folder (if it exists)
+        if os.path.exists(os.path.join(currentSaveDir, "Lightmaps")):
+            shutil.copytree(os.path.join(currentSaveDir, "Lightmaps"), os.path.join(project_folder, "Lightmaps"))
+
         #Export GLB files
         export_scenes(project_folder)
 
@@ -123,6 +127,16 @@ def getActiveAction(obj):
         else:
             return None
     else:
+        return None
+    
+def getLightmaps(obj):
+
+    try:
+        if obj["TLM-Lightmap"] is not None:
+            return obj["TLM-Lightmap"]
+        else:
+            return None
+    except:
         return None
 
 def compile_project_data():
@@ -235,7 +249,7 @@ def compile_project_data():
                     "name" : obj.name,
                     "identifier" : obj['nx_id'],
                     "modules" : iterateObjectModules(obj),
-                    "lightmaps" : [],
+                    "lightmaps" : getLightmaps(obj),
                     "cast_shadows" : obj.NX_ObjectProperties.nx_object_cast_shadows,
                     "receive_shadows" : obj.NX_ObjectProperties.nx_object_receive_shadows,
                     "spawn" : obj.NX_ObjectProperties.nx_object_spawn,
