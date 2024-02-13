@@ -96,6 +96,94 @@ class NX_PT_Settings(bpy.types.Panel):
         row.prop(scene.NX_SceneProperties, "nx_fullscreen")
         #row.operator("nx.compile")
 
+
+class NX_PT_Postprocessing(bpy.types.Panel):
+    bl_label = "Postprocessing"
+    bl_space_type = "PROPERTIES"
+    bl_region_type = "WINDOW"
+    bl_context = "render"
+    bl_options = {'DEFAULT_CLOSED'}
+    bl_parent_id = "NX_PT_Panel"
+
+    @classmethod
+    def poll(cls, context):
+        file_path = bpy.data.filepath
+
+        # Check if the file has been saved
+        return bool(file_path)
+
+    def draw(self, context):
+        layout = self.layout
+        scene = context.scene
+        layout.use_property_split = True
+        layout.use_property_decorate = False
+
+        sceneProperties = scene.NX_SceneProperties
+
+        moduleList = scene.NX_UL_PostprocessList
+        moduleListItem = scene.NX_UL_PostprocessListItem
+
+        row = layout.row()
+
+        row.label(text="TODO: CHECK SAVES")
+
+        row = layout.row()
+
+        rows = 2
+        if len(moduleList) > 1:
+            rows = 4
+        row.template_list("NX_UL_PostprocessList", "Postprocess List", scene, "NX_UL_PostprocessList", scene, "NX_UL_PostprocessListItem", rows=rows)
+        col = row.column(align=True)
+        col.operator("nx_postprocesslist.new_item", icon='ADD', text="")
+        col.operator("nx_postprocesslist.delete_item", icon='REMOVE', text="")
+
+        # objectProperties = obj.NX_ObjectProperties
+
+        # moduleList = obj.NX_UL_ModuleList
+        # moduleListItem = obj.NX_UL_ModuleListItem
+
+        # row = layout.row()
+
+        # row.label(text="TODO: CHECK SAVES")
+
+        # row = layout.row()
+
+        # rows = 2
+        # if len(moduleList) > 1:
+        #     rows = 4
+        # row.template_list("NX_UL_ModuleList", "Module List", obj, "NX_UL_ModuleList", obj, "NX_UL_ModuleListItem", rows=rows)
+        # col = row.column(align=True)
+        # col.operator("nx_modulelist.new_item", icon='ADD', text="")
+        # col.operator("nx_modulelist.delete_item", icon='REMOVE', text="")
+
+        if moduleListItem >= 0 and len(moduleList) > 0:
+            item = moduleList[moduleListItem]
+
+            layout.prop(item, "nx_postprocess_type")
+
+            if item.nx_module_type == "Bundled":
+
+                row = layout.row()
+                row.label(text="Bundled Module")
+        #         row = layout.row()
+        #         col = row.column(align=True)
+        #         row.operator("nx_modulelist.edit_script")
+        #         row.operator("nx_modulelist.refresh_scripts")
+        #         row = layout.row()
+        #         row.prop_search(item, "nx_module_script", bpy.data.worlds['NX'], "NX_bundled_list", text="Class")
+
+        #     elif item.nx_module_type == "JavaScript":
+
+        #         row = layout.row()
+        #         row.label(text="JavaScript Component")
+        #         row = layout.row()
+        #         col = row.column(align=True)
+        #         col.operator("nx_modulelist.new_script")
+        #         row.operator("nx_modulelist.edit_script")
+        #         row.operator("nx_modulelist.refresh_scripts")
+        #         row = layout.row()
+        #         row.prop_search(item, "nx_module_script", bpy.data.worlds['NX'], "NX_scripts_list", text="Class")
+
 class NX_PT_Modules(bpy.types.Panel):
     bl_label = "Modules"
     bl_space_type = "PROPERTIES"

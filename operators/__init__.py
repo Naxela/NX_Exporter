@@ -11,7 +11,9 @@ classes = [
     operators.NX_ModuleListRemoveItem,
     operators.NX_NewJavascriptFile,
     operators.NX_EditJavascriptFile,
-    operators.NX_RefreshScripts
+    operators.NX_RefreshScripts,
+    operators.NX_UL_PostprocessListNewItem,
+    operators.NX_UL_PostprocessListRemoveItem
 ]
 
 def register():

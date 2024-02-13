@@ -7,7 +7,8 @@ classes = [
     scene.NX_PT_Settings,
     scene.NX_PT_Modules,
     object.NX_PT_ObjectMenu,
-    object.NX_PT_Modules
+    object.NX_PT_Modules,
+    scene.NX_PT_Postprocessing
 ]
 
 def register():

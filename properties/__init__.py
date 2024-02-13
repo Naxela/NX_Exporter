@@ -14,7 +14,9 @@ classes = [
     scene.NX_SceneProperties,
     object.NX_ObjectProperties,
     object.NX_UL_ModuleListItem,
-    object.NX_UL_ModuleList
+    object.NX_UL_ModuleList,
+    scene.NX_UL_PostprocessListItem,
+    scene.NX_UL_PostprocessList
 ]
 
 def register():
@@ -23,6 +25,9 @@ def register():
 
     bpy.types.Scene.NX_SceneProperties = bpy.props.PointerProperty(type=scene.NX_SceneProperties)
     bpy.types.Object.NX_ObjectProperties = bpy.props.PointerProperty(type=object.NX_ObjectProperties)
+
+    bpy.types.Scene.NX_UL_PostprocessListItem = bpy.props.IntProperty(name="Index for postprocesslist", default=0)
+    bpy.types.Scene.NX_UL_PostprocessList = bpy.props.CollectionProperty(type=scene.NX_UL_PostprocessListItem)
 
     bpy.types.Object.NX_UL_ModuleListItem = bpy.props.IntProperty(name="Index for modulelist", default=0)
     bpy.types.Object.NX_UL_ModuleList = bpy.props.CollectionProperty(type=object.NX_UL_ModuleListItem) #MODULELIST => MODULELIST ITEM
