@@ -84,3 +84,105 @@ class NX_UL_PostprocessListItem(bpy.types.PropertyGroup):
                 description="Select the module type",
                 default='Bundled')
     
+    ############################################
+    # BLOOM PROPERTIES
+    nx_postprocess_bloom_threshold : FloatProperty(
+        name="Threshold",
+        description="Threshold",
+        default=0.9
+    )
+
+    nx_postprocess_bloom_radius : FloatProperty(
+        name="Radius",
+        description="Radius",
+        default=0.85
+    )
+
+    nx_postprocess_bloom_intensity : FloatProperty(
+        name="Intensity",
+        description="Intensity",
+        default=1.0
+    )
+
+    ############################################
+    # BOKEH PROPERTIES
+
+    nx_postprocess_bokeh_focus : FloatProperty(
+        name="Focus",
+        description="Focus",
+        default=0.5
+    )
+
+    nx_postprocess_bokeh_dof : FloatProperty(
+        name="Distance",
+        description="Distance",
+        default=1.0
+    )
+
+    nx_postprocess_bokeh_aperture : FloatProperty(
+        name="Aperture",
+        description="Aperture",
+        default=0.025
+    )
+
+    nx_postprocess_bokeh_maxBlur : FloatProperty(
+        name="Max Blur",
+        description="Max Blur",
+        default=1.0
+    )
+
+    ############################################
+    # CHROMATIC ABERRATION PROPERTIES
+
+    nx_postprocess_chromatic_aberration_offset : FloatProperty(
+        name="Offset",
+        description="Offset",
+        default=1.0
+    )
+
+    ############################################
+    # DEPTH OF FIELD PROPERTIES
+
+    nx_postprocess_dof_focus_distance : FloatProperty(
+        name="Focus Distance",
+        description="Focus Distance",
+        default=1.0
+    )
+
+    nx_postprocess_dof_focus_range : FloatProperty(
+        name="Focus Range",
+        description="Focus Range",
+        default=1.0
+    )
+
+    nx_postprocess_dof_focal_length : FloatProperty(
+        name="Focal Length",
+        description="Focal Length",
+        default=1.0
+    )
+
+    nx_postprocess_dof_bokeh_scale : FloatProperty(
+        name="Bokeh Scale",
+        description="Bokeh Scale",
+        default=1.0
+    )
+
+    nx_postprocess_dof_resolution_scale : FloatProperty(
+        name="Resolution Scale",
+        description="Resolution Scale",
+        default=1.0
+    )
+
+    ############################################
+    # FXAA PROPERTIES
+
+    ############################################
+    # GOD RAYS PROPERTIES
+
+    ############################################
+    # SMAA PROPERTIES
+
+    ############################################
+    # SSAO PROPERTIES
+
+    

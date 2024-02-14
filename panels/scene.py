@@ -120,8 +120,8 @@ class NX_PT_Postprocessing(bpy.types.Panel):
 
         sceneProperties = scene.NX_SceneProperties
 
-        moduleList = scene.NX_UL_PostprocessList
-        moduleListItem = scene.NX_UL_PostprocessListItem
+        postprocessList = scene.NX_UL_PostprocessList
+        postprocessListItem = scene.NX_UL_PostprocessListItem
 
         row = layout.row()
 
@@ -130,7 +130,7 @@ class NX_PT_Postprocessing(bpy.types.Panel):
         row = layout.row()
 
         rows = 2
-        if len(moduleList) > 1:
+        if len(postprocessList) > 1:
             rows = 4
         row.template_list("NX_UL_PostprocessList", "Postprocess List", scene, "NX_UL_PostprocessList", scene, "NX_UL_PostprocessListItem", rows=rows)
         col = row.column(align=True)
@@ -156,15 +156,74 @@ class NX_PT_Postprocessing(bpy.types.Panel):
         # col.operator("nx_modulelist.new_item", icon='ADD', text="")
         # col.operator("nx_modulelist.delete_item", icon='REMOVE', text="")
 
-        if moduleListItem >= 0 and len(moduleList) > 0:
-            item = moduleList[moduleListItem]
+        if postprocessListItem >= 0 and len(postprocessList) > 0:
+            item = postprocessList[postprocessListItem]
 
             layout.prop(item, "nx_postprocess_type")
 
-            if item.nx_module_type == "Bundled":
+            if item.nx_postprocess_type == "Bloom":
 
                 row = layout.row()
-                row.label(text="Bundled Module")
+                row.prop(item, "nx_postprocess_bloom_threshold")
+                row = layout.row()
+                row.prop(item, "nx_postprocess_bloom_radius")
+                row = layout.row()
+                row.prop(item, "nx_postprocess_bloom_intensity")
+
+            if item.nx_postprocess_type == "Bokeh":
+
+                row = layout.row()
+                row.prop(item, "nx_postprocess_bokeh_focus")
+                row = layout.row()
+                row.prop(item, "nx_postprocess_bokeh_dof")
+                row = layout.row()
+                row.prop(item, "nx_postprocess_bokeh_aperture")
+
+            if item.nx_postprocess_type == "ChromaticAberration":
+
+                row = layout.row()
+                row.label(text="Chromatic Aberration")
+
+            if item.nx_postprocess_type == "DepthOfField":
+
+                row = layout.row()
+                row.label(text="Depth of Field")
+
+            if item.nx_postprocess_type == "FXAA":
+
+                row = layout.row()
+                row.label(text="FXAA")
+
+            if item.nx_postprocess_type == "GodRays":
+
+                row = layout.row()
+                row.label(text="GodRays")
+
+            if item.nx_postprocess_type == "SMAA":
+
+                row = layout.row()
+                row.label(text="SMAA")
+
+            if item.nx_postprocess_type == "SSAO":
+
+                row = layout.row()
+                row.label(text="SSAO")
+
+            if item.nx_postprocess_type == "TiltShift":
+
+                row = layout.row()
+                row.label(text="TiltShift")
+
+            if item.nx_postprocess_type == "Tonemapping":
+
+                row = layout.row()
+                row.label(text="Tonemapping")
+
+            if item.nx_postprocess_type == "Vignette":
+
+                row = layout.row()
+                row.label(text="Vignette")
+
         #         row = layout.row()
         #         col = row.column(align=True)
         #         row.operator("nx_modulelist.edit_script")
