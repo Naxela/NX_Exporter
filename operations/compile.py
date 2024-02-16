@@ -510,6 +510,52 @@ def compile_project_data():
 
                         data_scene["scene_speakers"].append(speaker)
 
+            if obj.type == "CURVE":
+
+                curve = {
+                    "name" : obj.name,
+                    "identifier" : obj['nx_id'],
+                    "matrix" : util.get_object_matrix_y_axis(obj),
+                    "parent" : util.getObjectParent(obj),
+                    "modules" : iterateObjectModules(obj),
+                    "active_action" : getActiveAction(obj),
+                    "curve_type" : obj.data.splines[0].type,
+                    "spline_data" : []
+                }
+
+                #TODO - IMPLEMENT CURVE SPLINE CONTROL
+
+                for spline in obj.data.splines:
+                    
+                    spline_data = {
+                        'points': [],
+                        'type': spline.type
+                    }
+                    
+                    # Handle different spline types separately
+                    if spline.type == 'BEZIER':
+                        for point in spline.bezier_points:
+                            # For Bezier, export the handle and control point positions
+                            handle1 = point.handle_left[:]
+                            control = point.co[:]
+                            handle2 = point.handle_right[:]
+                            
+                            spline_data['points'].append({
+                                'handle_left': handle1,
+                                'co': control,
+                                'handle_right': handle2
+                            })
+                    elif spline.type == 'NURBS':
+                        for point in spline.points:
+                            # For NURBS, export the control points and weights
+                            spline_data['points'].append({
+                                'co': point.co[:],  # Note: Includes weight in co[3]
+                            })
+                    # Add the spline data to the export data
+                    curve['spline_data'].append(spline_data)
+
+                data_scene["scene_curves"].append(curve)
+
         for mat in scene_materials:
 
             mat['nx_id'] = id_iterator
