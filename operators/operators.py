@@ -225,3 +225,14 @@ class NX_RefreshScripts(bpy.types.Operator):
         #Fetch script props
 
         return {'FINISHED'}
+    
+class NX_OpenStore(bpy.types.Operator):
+    bl_idname = "nx.open_store"
+    bl_label = "Open Store"
+
+    def execute(self, context):
+
+        print("TODO: Open Store")
+        #store.start_store()
+
+        return {'FINISHED'}

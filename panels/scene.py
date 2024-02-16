@@ -94,6 +94,12 @@ class NX_PT_Settings(bpy.types.Panel):
         row.prop(scene.NX_SceneProperties, "nx_debug_mode")
         row = layout.row(align=True)
         row.prop(scene.NX_SceneProperties, "nx_fullscreen")
+        row = layout.row(align=True)
+        row.prop(scene.NX_SceneProperties, "nx_minify_json")
+        row = layout.row(align=True)
+        row.prop(scene.NX_SceneProperties, "nx_compilation_mode")
+        row = layout.row(align=True)
+        row.prop(scene.NX_SceneProperties, "nx_pipeline_mode")
         #row.operator("nx.compile")
 
 

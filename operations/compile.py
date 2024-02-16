@@ -26,7 +26,11 @@ def build_assets():
 
         #Write the project manifest to file
         with open(os.path.join(project_folder, "project.nx"), 'w') as file:
-            json.dump(compiled_data, file, indent=4)
+            if bpy.context.scene.NX_SceneProperties.nx_minify_json:
+                json.dump(compiled_data, file, separators=(',', ':'))
+            else:
+                json.dump(compiled_data, file, indent=4)
+
 
         #Transfer assets
         for file in transfer_files:
@@ -75,20 +79,43 @@ def export_scenes(path):
         output_file = os.path.join(path, scene.name + ".glb")
 
         # Export to GLB
-        bpy.ops.export_scene.gltf(
-            filepath=output_file, 
-            export_format='GLB', 
-            use_visible=True,
-            use_active_scene=True,
-            export_apply=True,
-            export_extras=True,
-            export_cameras=False,
-            export_lights=False,
-            export_attributes=True,
-            export_skins=True,
-            export_draco_mesh_compression_enable=True,
-            export_animations=True
-        )
+
+        if scene.NX_SceneProperties.nx_compilation_mode == 'Combined':
+
+            bpy.ops.export_scene.gltf(
+                filepath=output_file, 
+                export_format='GLB', 
+                use_visible=True,
+                use_active_scene=True,
+                export_apply=True,
+                export_extras=True,
+                export_cameras=False,
+                export_lights=False,
+                export_attributes=True,
+                export_skins=True,
+                export_draco_mesh_compression_enable=True,
+                export_animations=True,
+                export_image_format='WEBP',
+                export_image_quality=1
+            )
+
+        elif scene.NX_SceneProperties.nx_compilation_mode == 'Separate':
+
+            bpy.ops.export_scene.gltf(
+                filepath=output_file, 
+                export_format='GLTF_SEPARATE',
+                export_texture_dir=scene.name + "_assets",
+                use_visible=True,
+                use_active_scene=True,
+                export_apply=True,
+                export_extras=True,
+                export_cameras=False,
+                export_lights=False,
+                export_attributes=True,
+                export_skins=True,
+                export_draco_mesh_compression_enable=True,
+                export_animations=True
+            )
 
     #After export we want to unhide the objects not set to export
     for obj in bpy.data.objects:
@@ -138,6 +165,99 @@ def getLightmaps(obj):
             return None
     except:
         return None
+    
+def getPostprocessStack():
+
+    stack = []
+
+    scene = bpy.context.scene
+
+    for node in scene.NX_UL_PostprocessList:
+
+        if node.nx_postprocess_type == "Bloom":
+
+            effect = {
+                "type": "bloom",
+                "threshold": node.nx_postprocess_bloom_threshold,
+                "radius": node.nx_postprocess_bloom_radius,
+                "intensity": node.nx_postprocess_bloom_intensity
+            }
+            stack.append(effect)
+
+        if node.nx_postprocess_type == "Bokeh":
+
+            effect = {
+                "type": "bokeh",
+                "focus": node.nx_postprocess_bokeh_focus,
+                "distance": node.nx_postprocess_bokeh_dof,
+                "aperture": node.nx_postprocess_bokeh_aperture
+            }
+            stack.append(effect)
+
+        if node.nx_postprocess_type == "ChromaticAberration":
+
+            effect = {
+                "type": "chromatic_aberration"
+            }
+            stack.append(effect)
+
+        if node.nx_postprocess_type == "DepthOfField":
+
+            effect = {
+                "type": "depthoffield",
+            }
+            stack.append(effect)
+
+        if node.nx_postprocess_type == "FXAA":
+
+            effect = {
+                "type": "fxaa",
+            }
+            stack.append(effect)
+
+        if node.nx_postprocess_type == "GodRays":
+
+            effect = {
+                "type": "godray",
+            }
+            stack.append(effect)
+
+        if node.nx_postprocess_type == "SMAA":
+
+            effect = {
+                "type": "smaa",
+            }
+            stack.append(effect)
+
+        if node.nx_postprocess_type == "SSAO":
+
+            effect = {
+                "type": "ssao",
+            }
+            stack.append(effect)
+
+        if node.nx_postprocess_type == "TiltShift":
+
+            effect = {
+                "type": "tiltshift",
+            }
+            stack.append(effect)
+
+        if node.nx_postprocess_type == "Tonemapping":
+
+            effect = {
+                "type": "tonemapping",
+            }
+            stack.append(effect)
+
+        if node.nx_postprocess_type == "Vignette":
+
+            effect = {
+                "type": "vignette",
+            }
+            stack.append(effect)
+
+    return stack
 
 def compile_project_data():
     """
@@ -162,6 +282,7 @@ def compile_project_data():
             "scenes":[
             ]
         },
+        "gltf_mode": bpy.data.scenes[0].NX_SceneProperties.nx_compilation_mode,
         "options":{
             "xr":bpy.data.scenes[0].NX_SceneProperties.nx_xr_mode,
             "graphics":{
@@ -170,7 +291,8 @@ def compile_project_data():
                 "ssao":"false",
                 "ssr":"false",
                 "shadowType":"PCF",
-                "shadowResolution":"1024"
+                "shadowResolution":"1024",
+                "postprocessStack":getPostprocessStack()
             },
             "audio":{
                 "effects":1,

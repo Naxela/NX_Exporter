@@ -26,14 +26,47 @@ class NX_SceneProperties(bpy.types.PropertyGroup):
         description="Fullscreen",
         default=False
     )
+
+    nx_minify_json : BoolProperty(
+        name="Minify",
+        description="Minify",
+        default=False
+    )
     
     nx_compilation_mode : EnumProperty(
         items = [('Combined', 'Combined', 'Everything is combined into one file per scene. Can be more RAM costly, but good for single-scene projects.'),
                 ('Separate', 'Separate', 'All assets are separate files. Allows for streaming gradually, and more RAM conserving but larger disk size')],
-                name = "Combined",
+                name = "Compilation mode",
                 description="Compilation mode",
                 default='Combined'
         )
+    
+    # nx_environment_mode : EnumProperty(
+    #     items = [('', '', ''),
+    #             ('', '', '')],
+    #             name = "",
+    #             description="",
+    #             default=''
+    #     )
+    
+    nx_pipeline_mode : EnumProperty(
+        items = [('Standard', 'Standard', 'The default ThreeJS setup'),
+                 ('Performance', 'Performance', 'Pipeline optimized for optimal performance'),
+                ('Custom', 'Custom', 'Allows for a customizable pipeline. Opens up the postprocessing panel')],
+                name = "Pipeline",
+                description="Select which pipeline mode to use",
+                default='Standard'
+        )
+    
+    nx_export_texture_format_combined : EnumProperty(
+        items = [('JPEG/PNG', 'JPEG/PNG', 'Exported textures will be JPEG. Images needing alpha channel will be saved as png'),
+                 ('WebP', 'WebP', 'Exported textures will be JPEG')],
+                name = "Texture Format",
+                description="Select which texture format to use",
+                default='WebP'
+        )
+    
+
     
     
 class NX_UL_PostprocessList(bpy.types.UIList):
