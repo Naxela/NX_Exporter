@@ -401,7 +401,7 @@ def compile_project_data():
                 #                 "name" : mat.name
                 #             }
 
-            if obj.type == "CAMERA":
+            if obj.type == "CAMERA" and obj.NX_ObjectProperties.nx_object_export:
 
                 camera = {
                     "name" : obj.name,
@@ -431,7 +431,7 @@ def compile_project_data():
 
                 data_scene["scene_cameras"].append(camera)
 
-            if obj.type == "LIGHT":
+            if obj.type == "LIGHT" and obj.NX_ObjectProperties.nx_object_export:
 
                 light = {
                     "name" : obj.name,
@@ -475,7 +475,7 @@ def compile_project_data():
 
                 data_scene["scene_lights"].append(light)
 
-            if obj.type == "SPEAKER":
+            if obj.type == "SPEAKER" and obj.NX_ObjectProperties.nx_object_export:
 
                 #TODO - IMPLEMENT AUDIO AUTOPLAY, LOOP, etc.
 
@@ -510,7 +510,7 @@ def compile_project_data():
 
                         data_scene["scene_speakers"].append(speaker)
 
-            if obj.type == "CURVE":
+            if obj.type == "CURVE" and obj.NX_ObjectProperties.nx_object_export:
 
                 curve = {
                     "name" : obj.name,
