@@ -172,6 +172,7 @@ def getBundledScripts():
                     scripts_list.add().name = mod.replace('/', '.')
                 #    fetch_script_props(file)
                     
+    print("//Getting bundled scripts")
     print(scripts_list)
 
 def getProjectJSScripts():
@@ -196,5 +197,6 @@ def getProjectJSScripts():
                 if re.match('^[A-Z][A-Za-z0-9_]*$', mod_parts[-1]):
                     scripts_list.add().name = mod.replace('/', '.')
                 #    fetch_script_props(file)
-                    
+
+    print("//Getting project scripts")
     print(scripts_list)

@@ -175,6 +175,9 @@ class NX_NewJavascriptFile(bpy.types.Operator):
             
             print("TODO: ERROR")
 
+        util.getProjectJSScripts()
+        util.getBundledScripts()
+
         return {'FINISHED'}
 
     def invoke(self, context, event):
@@ -199,7 +202,8 @@ class NX_EditJavascriptFile(bpy.types.Operator):
 
         print("Editing javascript file at sources folder: ", list[index].nx_module_script)
 
-
+        util.getProjectJSScripts()
+        util.getBundledScripts()
 
         return {'FINISHED'}
     
