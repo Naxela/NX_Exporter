@@ -96,7 +96,7 @@ def export_scenes(path):
                 export_draco_mesh_compression_enable=True,
                 export_animations=True,
                 export_image_format='WEBP',
-                export_image_quality=1
+                export_image_quality=100
             )
 
         elif scene.NX_SceneProperties.nx_compilation_mode == 'Separate':
