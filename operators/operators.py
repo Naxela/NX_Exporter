@@ -38,7 +38,7 @@ class NX_Run(bpy.types.Operator):
         compile.build_assets()
 
         bin_path = os.path.join(util.get_addon_path(),"assets","nx.exe")
-        asset_path = util.get_assets_path()
+        asset_path = util.get_build_path()
 
         print(bin_path)
         print(asset_path)

@@ -113,6 +113,17 @@ def get_project_path():
 
     return currentSaveDir
 
+def get_build_path():
+
+    project_path = get_project_path()
+
+    directory = os.path.join(project_path, "nx-build")  # Set your desired path here
+
+    if(not os.path.exists(directory)):
+        os.mkdir(directory)
+
+    return directory
+
 def get_assets_path():
 
     project_path = get_project_path()
