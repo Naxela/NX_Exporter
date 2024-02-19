@@ -1,4 +1,4 @@
-import bpy, os, json
+import bpy, os, json, webbrowser, subprocess
 
 from .. operations import compile, clean, filemaker
 
@@ -23,6 +23,29 @@ class NX_Start(bpy.types.Operator):
 
         #compiled = json.dumps(compile_project_data())
         #print(compiled)
+
+        return {"FINISHED"}
+    
+
+class NX_Run(bpy.types.Operator):
+    bl_idname = "nx.compile_run"
+    bl_label = "Run"
+    bl_description = "Run"
+    bl_options = {"REGISTER", "UNDO"}
+
+    def execute(self, context):
+
+        compile.build_assets()
+
+        bin_path = os.path.join(util.get_addon_path(),"assets","nx.exe")
+        asset_path = util.get_build_path()
+
+        print(bin_path)
+        print(asset_path)
+
+        subprocess.Popen([bin_path, asset_path])
+        
+        webbrowser.open("http://localhost:3000/")
 
         return {"FINISHED"}
     
