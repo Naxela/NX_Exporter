@@ -4,6 +4,7 @@ from typing import Any, Type
 # We presume that the TCP is running on the same machine
 host = '127.0.0.1'
 port = 12345  # Ensure this matches the port your TCP server is listening on
+connection = None
 
 # Any object can act as a message bus owner
 msgbus_owner = object()
@@ -16,7 +17,13 @@ __running = False
 
 def start():
     """Start the live patch session."""
+    global connection
     print("Live patch session started")
+
+    # Initialize and connect the socket
+    connection = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    connection.connect((host, port))
+    connection.sendall(b'Hello from Blender!')
 
     listen(bpy.types.Object, "location", "obj_location")
     listen(bpy.types.Object, "rotation_euler", "obj_rotation")
@@ -27,10 +34,14 @@ def start():
 
 def stop():
     """Stop the live patch session."""
-    global __running, patch_id
+    global __running, patch_id, socket
     if __running:
         __running = False
         patch_id = 0
+
+        if connection:
+            connection.close()
+            connection = None  # Ensure the connection variable is cleared
 
         print("Live patch session stopped")
         bpy.msgbus.clear_by_owner(msgbus_owner)
@@ -50,18 +61,23 @@ def listen(rna_type: Type[bpy.types.bpy_struct], prop: str, event_id: str):
 
 def send_event(event_id: str, opt_data: Any = None):
     """Send the result of the given event to Krom."""
+    global connection
     if not __running:
         return
 
     if hasattr(bpy.context, 'object') and bpy.context.object is not None:
         obj = bpy.context.object.name
+        objID = bpy.context.object["nx_id"]
+
+        #TODO MAKE THIS INTO A MATRIX TRANSFER INSTEAD
 
         if bpy.context.object.mode == "OBJECT":
             if event_id == "obj_location":
                 vec = bpy.context.object.location
-                js = f'Linker.moveObject("{obj}", [{vec[0]}, {vec[1]}, {vec[2]}]);'
+                cmd = f'app.moveObject("{objID}", [{vec[0]}, {vec[2]}, {-vec[1]}]);'
                 
-                print("PATCH: " + js)
+                connection.sendall(cmd.encode('utf-8'))
+
                 #write_patch(js)
 
 # import socket
