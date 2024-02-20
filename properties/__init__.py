@@ -10,6 +10,8 @@ def ensure_nx_world_exists(scene):
         nx_world.name = "NX"
         nx_world.use_fake_user = True
 
+    bpy.data.worlds["NX"]["dev_server_process"] = None
+
 classes = [
     scene.NX_SceneProperties,
     object.NX_ObjectProperties,

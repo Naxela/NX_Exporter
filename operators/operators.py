@@ -4,7 +4,11 @@ from .. operations import compile, clean, filemaker
 
 from .. utility import util, projectMaker
 
+from .. import globals as gbl
+
 #SCENE OPERATORS
+
+
 
 class NX_Start(bpy.types.Operator):
     bl_idname = "nx.compile_start"
@@ -26,6 +30,26 @@ class NX_Start(bpy.types.Operator):
 
         return {"FINISHED"}
     
+def start_server(bin_path, out_path):  # Changed parameter to out_path for clarity
+    print("Starting server, current global_dev_server_process:", gbl.global_dev_server_process)
+    cmd_run_dev = [bin_path, "run", "dev"]  # Make sure this path is correctly pointing to pnpm
+    gbl.global_dev_server_process = subprocess.Popen(cmd_run_dev, cwd=out_path, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    
+    # It's not recommended to use communicate() here as it will block the execution waiting for the process to end
+    # Instead, consider logging stdout and stderr to files or asynchronously reading from them
+    print("Server starting...")
+
+def stop_server():
+    print("Stopping server, current global_dev_server_process:", gbl.global_dev_server_process)
+    if gbl.global_dev_server_process:
+        #IF WINDOWS:
+        subprocess.call(['taskkill', '/F', '/T', '/PID', str(gbl.global_dev_server_process.pid)])
+        gbl.global_dev_server_process = None
+        #FIND WAY TO DO IT ON *NIX TOO
+
+        print("Server stopped.")
+    else:
+        print("Server is not running.")
 
 class NX_Run(bpy.types.Operator):
     bl_idname = "nx.compile_run"
@@ -35,7 +59,10 @@ class NX_Run(bpy.types.Operator):
 
     def execute(self, context):
 
+        clean.clean_soft()
         compile.build_assets()
+
+        global global_dev_server_process
 
         # Your setup
         bin_path = os.path.join(util.get_addon_path(), "assets", "pnpm-win-x64.exe")
@@ -85,7 +112,9 @@ class NX_Run(bpy.types.Operator):
 
         # # Step 2: Only proceed to run the "dev" command if installation succeeded
         cmd_run_dev = [bin_path, "run", "dev"]
-        dev_process = subprocess.Popen(cmd_run_dev, cwd=out_path, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        start_server(bin_path, out_path)
+        #print(global_dev_server_process)
+        #dev_process = subprocess.Popen(cmd_run_dev, cwd=out_path, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
 
         # # Here, we're assuming you want to manually monitor or stop the dev process,
         # # so we won't use communicate() which waits for the process to complete.
@@ -93,6 +122,18 @@ class NX_Run(bpy.types.Operator):
 
         webbrowser.open("http://localhost:" + str(3001))
 
+
+        return {"FINISHED"}
+    
+class NX_Stop(bpy.types.Operator):
+    bl_idname = "nx.stop"
+    bl_label = "Stop"
+    bl_description = "Stop your project"
+    bl_options = {"REGISTER", "UNDO"}
+
+    def execute(self, context):
+
+        stop_server()
 
         return {"FINISHED"}
     
