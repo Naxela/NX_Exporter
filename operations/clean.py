@@ -10,5 +10,11 @@ def clean_soft():
     #Create a "nx-build" folder
     project_folder = "nx-build"
 
+    #Output folder
+    out_folder = "out"
+
     if(os.path.exists(project_folder)):
         shutil.rmtree(project_folder)
+
+    if(os.path.exists(out_folder)):
+        shutil.rmtree(out_folder)

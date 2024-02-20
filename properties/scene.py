@@ -41,6 +41,14 @@ class NX_SceneProperties(bpy.types.PropertyGroup):
                 default='Combined'
         )
     
+    nx_runtime : EnumProperty(
+        items = [('PNPM', 'PNPM', 'Use a bundled PNPM binary to setup and run your Vite and ThreejS'),
+                ('Electron', 'Electron', 'Use a bundled Electron binary to setup and run your Vite and ThreejS'),],
+                name = "Runtime",
+                description="Select which runtime to use",
+                default='PNPM'
+        )
+    
     # nx_environment_mode : EnumProperty(
     #     items = [('', '', ''),
     #             ('', '', '')],

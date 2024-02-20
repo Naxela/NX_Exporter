@@ -157,6 +157,21 @@ def get_shaders_path():
 
     return directory
 
+def get_file_name():
+
+    #Get the filename without extension and without path
+
+    currentSavePath = bpy.data.filepath
+
+    if currentSavePath:
+
+        file_name = os.path.basename(currentSavePath)
+        file_name = os.path.splitext(file_name)[0]
+
+        return file_name
+    
+    return None
+
 def getBundledScripts():
 
     world = bpy.data.worlds['NX']

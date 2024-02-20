@@ -1,8 +1,8 @@
-import bpy, os, json, webbrowser, subprocess
+import bpy, os, json, webbrowser, subprocess, shutil
 
 from .. operations import compile, clean, filemaker
 
-from .. utility import util
+from .. utility import util, projectMaker
 
 #SCENE OPERATORS
 
@@ -37,15 +37,62 @@ class NX_Run(bpy.types.Operator):
 
         compile.build_assets()
 
-        bin_path = os.path.join(util.get_addon_path(),"assets","nx.exe")
-        asset_path = util.get_build_path()
+        # Your setup
+        bin_path = os.path.join(util.get_addon_path(), "assets", "pnpm-win-x64.exe")
+        project_path = util.get_project_path()
+        out_dir = "out"
+        out_path = os.path.join(project_path, out_dir)
 
-        print(bin_path)
-        print(asset_path)
+        # Ensure the 'out' directory exists
+        #if not os.path.exists(out_path):
+        #    os.mkdir(out_path)
 
-        subprocess.Popen([bin_path, asset_path])
-        
-        webbrowser.open("http://localhost:3000/")
+        # Copy files in folder addon/assets/template to out folder
+        shutil.copytree(os.path.join(util.get_addon_path(), "assets", "template"), out_path)
+
+        package_json_path = os.path.join(out_path, "package.json")
+        package_json_content = projectMaker.createPackageJson(util.get_file_name(), "1.0.0")
+
+        # Write package.json to the project directory
+        with open(package_json_path, 'w') as package_file:
+            package_file.write(json.dumps(package_json_content, indent=4))
+
+        server_config_path = os.path.join(out_path, "server.js")
+        server_config_content = projectMaker.createExpressServer(util.get_build_path(), 3001)
+
+        # Write server.js to the project directory
+        with open(server_config_path, 'w') as server_file:
+            server_file.write(server_config_content)
+
+        # Step 1: Install dependencies with pnpm
+        cmd_install = [bin_path, "install"]
+        install_process = subprocess.Popen(cmd_install, cwd=out_path, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+
+        # Wait for the installation process to complete and capture output
+        stdout, stderr = install_process.communicate()
+
+        if install_process.returncode == 0:
+            print("Dependencies installed successfully. Proceeding to run the 'dev' command.")
+        else:
+            print(f"Error installing dependencies. Stderr: {stderr}")
+            # If there's an error message, print it, otherwise, print stdout
+            if stderr:
+                print(stderr)
+            else:
+                print(stdout)
+            # Exit or handle the error before proceeding
+            exit(1)  # Exit the script or handle the error appropriately
+
+        # # Step 2: Only proceed to run the "dev" command if installation succeeded
+        cmd_run_dev = [bin_path, "run", "dev"]
+        dev_process = subprocess.Popen(cmd_run_dev, cwd=out_path, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+
+        # # Here, we're assuming you want to manually monitor or stop the dev process,
+        # # so we won't use communicate() which waits for the process to complete.
+        print(f"Development server should now be running for {out_path}.")
+
+        webbrowser.open("http://localhost:" + str(3001))
+
 
         return {"FINISHED"}
     
