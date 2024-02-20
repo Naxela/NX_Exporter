@@ -1,6 +1,6 @@
 import bpy, os, json, webbrowser, subprocess, shutil
 
-from .. operations import compile, clean, filemaker
+from .. operations import compile, clean, filemaker, live_link
 
 from .. utility import util, projectMaker
 
@@ -34,7 +34,9 @@ def start_server(bin_path, out_path):  # Changed parameter to out_path for clari
     print("Starting server, current global_dev_server_process:", gbl.global_dev_server_process)
     cmd_run_dev = [bin_path, "run", "dev"]  # Make sure this path is correctly pointing to pnpm
     gbl.global_dev_server_process = subprocess.Popen(cmd_run_dev, cwd=out_path, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-    
+
+
+    live_link.start()
     # It's not recommended to use communicate() here as it will block the execution waiting for the process to end
     # Instead, consider logging stdout and stderr to files or asynchronously reading from them
     print("Server starting...")
@@ -146,6 +148,8 @@ class NX_Clean(bpy.types.Operator):
     def execute(self, context):
 
         print("Clean")
+
+        stop_server()
 
         clean.clean_soft()
 
@@ -273,6 +277,8 @@ class NX_NewJavascriptFile(bpy.types.Operator):
         obj = context.object
         list = obj.NX_UL_ModuleList
         index = obj.NX_UL_ModuleListItem
+
+        self.filename = self.filename.capitalize()
 
         print("Creating javascript file at sources folder", self.filename)
 

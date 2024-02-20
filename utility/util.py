@@ -217,6 +217,9 @@ def getProjectJSScripts():
             # Glob supports recursive search since python 3.5 so it should cover both blender 2.79 and 2.8 integrated python
             for file in glob.glob('**/*.js', recursive=True):
 
+                print("/////")
+                print(file)
+
                 mod = file.rsplit('.', 1)[0]
                 mod = mod.replace('\\', '/')
                 mod_parts = mod.rsplit('/')

@@ -1,4 +1,4 @@
-import bpy, os, shutil, json
+import bpy, os, shutil, json, math
 
 from .. utility import util
 
@@ -459,7 +459,19 @@ def compile_project_data():
                 elif(obj.data.type == 'SPOT'):
 
                     light["radius"] = obj.data.shadow_soft_size
-                    light["spotSize"] = obj.data.spot_size
+
+                    current_angle = obj.data.spot_size
+                    # Calculate the opposite angle
+                    if current_angle <= math.pi:
+                        opposite_angle = current_angle + math.pi
+                    else:
+                        opposite_angle = current_angle - math.pi
+
+                    # Set the new spot size
+                    light["spotSize"] = opposite_angle
+
+                    #light["spotSize"] = obj.data.spot_size
+
                     light["spotBlend"] = obj.data.spot_blend
 
                 elif(obj.data.type == 'AREA'):
