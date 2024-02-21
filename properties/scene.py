@@ -49,6 +49,12 @@ class NX_SceneProperties(bpy.types.PropertyGroup):
                 default='PNPM'
         )
     
+    nx_live_link : BoolProperty(
+        name="Live Link",
+        description="Enable live linking",
+        default=False
+    )
+    
     # nx_environment_mode : EnumProperty(
     #     items = [('', '', ''),
     #             ('', '', '')],

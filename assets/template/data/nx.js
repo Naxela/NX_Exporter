@@ -142,6 +142,27 @@ export class NXEngine {
             console.log(this.sceneManager.renderManager.renderer.xr.getCamera(0)); 
         });
 
+
+        const port = 3001;
+        const ws = new WebSocket('ws://localhost:'+port);
+
+        ws.onopen = () => {
+            console.log('WebSocket connection established');
+            ws.send('Hello from client');
+        };
+
+        ws.onmessage = (event) => {
+
+            if(event.data.startsWith('app')) {
+                console.log('Command:', event.data);
+                eval(event.data);
+
+            } else {
+                console.log('Message from server:', event.data);
+            }
+
+        };
+
     }
 
 
@@ -221,5 +242,17 @@ export class NXEngine {
             });
         }
     };
+
+    moveObject = (objID, location) => {
+        Utility.findObjectById(app.sceneManager.scene3D, objID).position.set(location[0], location[1], location[2]);
+    };
+
+    rotateObject = (objName, rotation) => {
+        Utility.findObjectById(app.sceneManager.scene3D, objID).rotation.set(rotation[0], rotation[1], rotation[2]);
+    }
+
+    scaleObject = (objName, scale) => {
+        Utility.findObjectById(app.sceneManager.scene3D, objID).scale.set(scale[0], scale[1], scale[2]);
+    }
 
 }

@@ -107,6 +107,8 @@ class NX_PT_Settings(bpy.types.Panel):
         row.prop(scene.NX_SceneProperties, "nx_compilation_mode")
         row = layout.row(align=True)
         row.prop(scene.NX_SceneProperties, "nx_pipeline_mode")
+        row = layout.row(align=True)
+        row.prop(scene.NX_SceneProperties, "nx_live_link")
         #row.operator("nx.compile")
 
 

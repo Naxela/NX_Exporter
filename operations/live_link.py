@@ -3,7 +3,7 @@ from typing import Any, Type
 
 # We presume that the TCP is running on the same machine
 host = '127.0.0.1'
-port = 12345  # Ensure this matches the port your TCP server is listening on
+port = 3003  # Ensure this matches the port your TCP server is listening on
 connection = None
 
 # Any object can act as a message bus owner

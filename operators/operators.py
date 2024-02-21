@@ -30,24 +30,26 @@ class NX_Start(bpy.types.Operator):
 
         return {"FINISHED"}
     
-def start_server(bin_path, out_path):  # Changed parameter to out_path for clarity
+def start_server(bin_path, out_path, livelink):  # Changed parameter to out_path for clarity
     print("Starting server, current global_dev_server_process:", gbl.global_dev_server_process)
     cmd_run_dev = [bin_path, "run", "dev"]  # Make sure this path is correctly pointing to pnpm
     gbl.global_dev_server_process = subprocess.Popen(cmd_run_dev, cwd=out_path, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
 
+    if livelink:
+        live_link.start()
 
-    live_link.start()
-    # It's not recommended to use communicate() here as it will block the execution waiting for the process to end
-    # Instead, consider logging stdout and stderr to files or asynchronously reading from them
     print("Server starting...")
 
-def stop_server():
+def stop_server(livelink):
     print("Stopping server, current global_dev_server_process:", gbl.global_dev_server_process)
     if gbl.global_dev_server_process:
         #IF WINDOWS:
         subprocess.call(['taskkill', '/F', '/T', '/PID', str(gbl.global_dev_server_process.pid)])
         gbl.global_dev_server_process = None
         #FIND WAY TO DO IT ON *NIX TOO
+
+        if live_link:
+            live_link.stop()
 
         print("Server stopped.")
     else:
@@ -114,7 +116,7 @@ class NX_Run(bpy.types.Operator):
 
         # # Step 2: Only proceed to run the "dev" command if installation succeeded
         cmd_run_dev = [bin_path, "run", "dev"]
-        start_server(bin_path, out_path)
+        start_server(bin_path, out_path, bpy.context.scene.NX_SceneProperties.nx_live_link) 
         #print(global_dev_server_process)
         #dev_process = subprocess.Popen(cmd_run_dev, cwd=out_path, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
 
@@ -135,7 +137,7 @@ class NX_Stop(bpy.types.Operator):
 
     def execute(self, context):
 
-        stop_server()
+        stop_server(bpy.context.scene.NX_SceneProperties.nx_live_link)
 
         return {"FINISHED"}
     
@@ -149,7 +151,7 @@ class NX_Clean(bpy.types.Operator):
 
         print("Clean")
 
-        stop_server()
+        stop_server(bpy.context.scene.NX_SceneProperties.nx_live_link)
 
         clean.clean_soft()
 
