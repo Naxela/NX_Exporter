@@ -109,6 +109,12 @@ class NX_PT_Settings(bpy.types.Panel):
         row.prop(scene.NX_SceneProperties, "nx_pipeline_mode")
         row = layout.row(align=True)
         row.prop(scene.NX_SceneProperties, "nx_live_link")
+        row = layout.row(align=True)
+        row.prop(scene.NX_SceneProperties, "nx_http_port")
+        row = layout.row(align=True)
+        row.prop(scene.NX_SceneProperties, "nx_tcp_port")
+        row = layout.row(align=True)
+        row.prop(scene.NX_SceneProperties, "nx_texture_quality", slider=True)
         #row.operator("nx.compile")
 
 

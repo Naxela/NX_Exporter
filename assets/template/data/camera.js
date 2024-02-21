@@ -110,7 +110,7 @@ export default class CameraManager {
 
         if(camData.type == "Perspective") {
 
-            let camera = new THREE.PerspectiveCamera(camData.fov * (180 / Math.PI), window.innerWidth / window.innerHeight, camData.clip_near, camData.clip_far);
+            let camera = new THREE.PerspectiveCamera(camData.fov, window.innerWidth / window.innerHeight, camData.clip_near, camData.clip_far);
             this.applyCamera(camera, camData);
 
         } else if (camData.type == "Orthographic") {

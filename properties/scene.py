@@ -54,6 +54,31 @@ class NX_SceneProperties(bpy.types.PropertyGroup):
         description="Enable live linking",
         default=False
     )
+
+    nx_http_port : IntProperty(
+        name="HTTP Port",
+        description="HTTP Port for localhost server",
+        default=3000
+    )
+
+    nx_tcp_port : IntProperty(
+        name="TCP Port",
+        description="TCP Port used for live link",
+        default=3001
+    )
+
+    nx_texture_quality : IntProperty(
+        name="Texture Quality",
+        description="Texture Quality",
+        default=100,
+        min=0,
+        max=100
+    )
+
+    #Option for the background to be:
+    #- Just visible
+    #- Only reflection
+    #- Both irradiance and reflection
     
     # nx_environment_mode : EnumProperty(
     #     items = [('', '', ''),

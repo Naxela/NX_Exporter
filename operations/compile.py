@@ -96,7 +96,7 @@ def export_scenes(path):
                 export_draco_mesh_compression_enable=True,
                 export_animations=True,
                 export_image_format='WEBP',
-                export_image_quality=100
+                export_image_quality=scene.NX_SceneProperties.nx_texture_quality
             )
 
         elif scene.NX_SceneProperties.nx_compilation_mode == 'Separate':
@@ -259,6 +259,25 @@ def getPostprocessStack():
 
     return stack
 
+def horizontalToVerticalAngle(width, height, angle):
+    # Example values for camera's render width and height
+
+    # Calculate the aspect ratio
+    aspect_ratio = width / height
+
+    # Blender's horizontal FOV in radians
+    horizontal_fov = angle
+
+    # Convert horizontal FOV to vertical FOV
+    vertical_fov = 2 * math.atan(math.tan(horizontal_fov / 2) / aspect_ratio)
+
+    # Convert vertical FOV from radians to degrees for Three.js
+    vertical_fov_degrees = math.degrees(vertical_fov)
+
+    print(width, height, angle, horizontal_fov, vertical_fov)
+
+    return vertical_fov_degrees
+
 def compile_project_data():
     """
     Compile project data and generate a project manifest based on the scenes, objects, and settings in the Blender project. 
@@ -407,7 +426,7 @@ def compile_project_data():
                     "name" : obj.name,
                     "identifier" : obj['nx_id'],
                     "matrix" : util.get_object_matrix_y_axis(obj),
-                    "fov" : obj.data.angle,
+                    "fov" : horizontalToVerticalAngle((bpy.data.scenes[0].render.resolution_x * bpy.data.scenes[0].render.resolution_percentage / 100), (bpy.data.scenes["Scene"].render.resolution_y * bpy.data.scenes[0].render.resolution_percentage / 100), obj.data.angle), #ThreeJS uses vertical FOV, Blender uses horizontal
                     "clip_near" : obj.data.clip_start,
                     "clip_far" : obj.data.clip_end,
                     "parent" : util.getObjectParent(obj),
