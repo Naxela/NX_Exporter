@@ -282,4 +282,12 @@ export class NXEngine {
         object.quaternion.multiply(adjustmentQuat);
     };
 
+    setLightColor = (lightID, color) => {
+        Utility.findObjectById(app.sceneManager.scene3D, lightID).color.set(color[0], color[1], color[2]);
+    }
+
+    setLightStrength = (lightID, strength) => {
+        Utility.findObjectById(app.sceneManager.scene3D, lightID).intensity = strength;
+    }
+
 }
