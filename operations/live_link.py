@@ -1,9 +1,11 @@
 import bpy, os, shutil, socket
 from typing import Any, Type
 
+from ..utility import util
+
 # We presume that the TCP is running on the same machine
 host = '127.0.0.1'
-port = 3003  # Ensure this matches the port your TCP server is listening on
+port = 3002  # Ensure this matches the port your TCP server is listening on
 connection = None
 
 # Any object can act as a message bus owner
@@ -15,36 +17,51 @@ patch_id = 0
 __running = False
 """Whether live patch is currently active"""
 
+def connect_to_server():
+    """Attempt to connect to the server."""
+    global connection
+    try:
+        connection = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        connection.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
+        connection.connect((host, port))
+        connection.sendall(b'Init from Blender!')
+        print("Connected to server")
+    except Exception as e:
+        print(f"Failed to connect to server: {e}")
+
 def start():
     """Start the live patch session."""
-    global connection
     print("Live patch session started")
-
+    global __running
     # Initialize and connect the socket
-    connection = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    connection.connect((host, port))
-    connection.sendall(b'Hello from Blender!')
+    connect_to_server()
 
     listen(bpy.types.Object, "location", "obj_location")
     listen(bpy.types.Object, "rotation_euler", "obj_rotation")
     listen(bpy.types.Object, "scale", "obj_scale")
 
-    global __running
+    if depsgraph_update_handler not in bpy.app.handlers.depsgraph_update_post:
+        bpy.app.handlers.depsgraph_update_post.append(depsgraph_update_handler)
+    
     __running = True
 
 def stop():
     """Stop the live patch session."""
-    global __running, patch_id, socket
+    global __running, connection
     if __running:
         __running = False
-        patch_id = 0
-
         if connection:
-            connection.close()
-            connection = None  # Ensure the connection variable is cleared
-
+            try:
+                connection.close()
+            except Exception as e:
+                print(f"Error closing connection: {e}")
+            finally:
+                connection = None
         print("Live patch session stopped")
         bpy.msgbus.clear_by_owner(msgbus_owner)
+
+    if depsgraph_update_handler in bpy.app.handlers.depsgraph_update_post:
+        bpy.app.handlers.depsgraph_update_post.remove(depsgraph_update_handler)
 
 def listen(rna_type: Type[bpy.types.bpy_struct], prop: str, event_id: str):
     """Subscribe to '<rna_type>.<prop>'. The event_id can be choosen
@@ -59,39 +76,70 @@ def listen(rna_type: Type[bpy.types.bpy_struct], prop: str, event_id: str):
         #options={"PERSISTENT"}
     )
 
+def depsgraph_update_handler(scene, depsgraph):
+    # This iterates over all the updates in the depsgraph
+    for update in depsgraph.updates:
+        # Check if the update is for an object
+        if isinstance(update.id, bpy.types.Object):
+            objID = update.id["nx_id"]
+
+            #We don't know whether it was moved, rotated or scaled, so we copy the matrix
+            matrix = util.get_object_matrix_y_axis(update.id)
+            cmd = f'app.applyMatrix("{objID}", {matrix});'
+
+            try:
+                connection.sendall(cmd.encode('utf-8'))
+            except (BrokenPipeError, ConnectionResetError) as e:
+                print(f"Connection error: {e}, attempting to reconnect...")
+                connect_to_server()  # Attempt to reconnect
+            except Exception as e:
+                print(f"Unexpected error: {e}")
+            #matrix = f'app.applyMatrix("{objID}", [{vec[0]}, {vec[2]}, {-vec[1]}]);'
+
+            print(cmd)
+
 def send_event(event_id: str, opt_data: Any = None):
     """Send the result of the given event to Krom."""
-    global connection
-    if not __running:
+    global connection, __running
+    if not __running or connection is None:
         return
-
+    
     if hasattr(bpy.context, 'object') and bpy.context.object is not None:
         obj = bpy.context.object.name
         objID = bpy.context.object["nx_id"]
-
-        #TODO MAKE THIS INTO A MATRIX TRANSFER INSTEAD
-
         if bpy.context.object.mode == "OBJECT":
             if event_id == "obj_location":
                 vec = bpy.context.object.location
                 cmd = f'app.moveObject("{objID}", [{vec[0]}, {vec[2]}, {-vec[1]}]);'
-                
-                connection.sendall(cmd.encode('utf-8'))
 
-                #write_patch(js)
+                try:
+                    connection.sendall(cmd.encode('utf-8'))
+                except (BrokenPipeError, ConnectionResetError) as e:
+                    print(f"Connection error: {e}, attempting to reconnect...")
+                    connect_to_server()  # Attempt to reconnect
+                except Exception as e:
+                    print(f"Unexpected error: {e}")
 
-# import socket
+            if event_id == "obj_rotation":
+                vec = bpy.context.object.rotation_euler
+                cmd = f'app.rotateObject("{objID}", [{vec[0]}, {vec[2]}, {-vec[1]}]);'
 
-# def send_tcp_message():
-#     host = '127.0.0.1'
-#     port = 12345  # Ensure this matches the port your TCP server is listening on
+                try:
+                    connection.sendall(cmd.encode('utf-8'))
+                except (BrokenPipeError, ConnectionResetError) as e:
+                    print(f"Connection error: {e}, attempting to reconnect...")
+                    connect_to_server()  # Attempt to reconnect
+                except Exception as e:
+                    print(f"Unexpected error: {e}")
 
-#     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-#         s.connect((host, port))
-#         s.sendall(b'Hello from Blender!')
-#         # Optionally wait for a response, though this example TCP server doesn't send one back
-#         # data = s.recv(1024)
+            if event_id == "obj_scale":
+                vec = bpy.context.object.scale
+                cmd = f'app.scaleObject("{objID}", [{vec[0]}, {vec[2]}, {vec[1]}]);'
 
-#     # print('Received', repr(data))
-
-# send_tcp_message()
+                try:
+                    connection.sendall(cmd.encode('utf-8'))
+                except (BrokenPipeError, ConnectionResetError) as e:
+                    print(f"Connection error: {e}, attempting to reconnect...")
+                    connect_to_server()  # Attempt to reconnect
+                except Exception as e:
+                    print(f"Unexpected error: {e}")

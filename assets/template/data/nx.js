@@ -247,12 +247,39 @@ export class NXEngine {
         Utility.findObjectById(app.sceneManager.scene3D, objID).position.set(location[0], location[1], location[2]);
     };
 
-    rotateObject = (objName, rotation) => {
+    rotateObject = (objID, rotation) => {
         Utility.findObjectById(app.sceneManager.scene3D, objID).rotation.set(rotation[0], rotation[1], rotation[2]);
     }
 
-    scaleObject = (objName, scale) => {
+    scaleObject = (objID, scale) => {
         Utility.findObjectById(app.sceneManager.scene3D, objID).scale.set(scale[0], scale[1], scale[2]);
     }
+
+    applyMatrix = (objID, matrixValues) => {
+        // Create a new THREE.Matrix4 object
+        const matrix = new THREE.Matrix4();
+        // Set the matrix using the provided array values
+        matrix.set(
+            matrixValues[0], matrixValues[1], matrixValues[2], matrixValues[3],
+            matrixValues[4], matrixValues[5], matrixValues[6], matrixValues[7],
+            matrixValues[8], matrixValues[9], matrixValues[10], matrixValues[11],
+            matrixValues[12], matrixValues[13], matrixValues[14], matrixValues[15]
+        );
+    
+        // Decompose the matrix into position, quaternion, and scale
+        const position = new THREE.Vector3();
+        const quaternion = new THREE.Quaternion();
+        const scale = new THREE.Vector3();
+        matrix.decompose(position, quaternion, scale);
+    
+        // Apply the decomposed values to the object
+        const object = Utility.findObjectById(app.sceneManager.scene3D, objID);
+        object.position.copy(position);
+        object.quaternion.copy(quaternion);
+        object.scale.copy(scale);
+        
+        const adjustmentQuat = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1, 0, 0), Math.PI / 2);
+        object.quaternion.multiply(adjustmentQuat);
+    };
 
 }

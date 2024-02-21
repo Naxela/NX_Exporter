@@ -33,7 +33,9 @@ class NX_Start(bpy.types.Operator):
 def start_server(bin_path, out_path, livelink):  # Changed parameter to out_path for clarity
     print("Starting server, current global_dev_server_process:", gbl.global_dev_server_process)
     cmd_run_dev = [bin_path, "run", "dev"]  # Make sure this path is correctly pointing to pnpm
-    gbl.global_dev_server_process = subprocess.Popen(cmd_run_dev, cwd=out_path, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    with open('server_output.log', 'w') as f:
+        gbl.global_dev_server_process = subprocess.Popen(cmd_run_dev, cwd=out_path)
+        #gbl.global_dev_server_process = subprocess.Popen(cmd_run_dev, cwd=out_path, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     if livelink:
         live_link.start()
@@ -89,7 +91,7 @@ class NX_Run(bpy.types.Operator):
             package_file.write(json.dumps(package_json_content, indent=4))
 
         server_config_path = os.path.join(out_path, "server.js")
-        server_config_content = projectMaker.createExpressServer(util.get_build_path(), 3001)
+        server_config_content = projectMaker.createExpressServer(util.get_build_path(), 3001, 3002)
 
         # Write server.js to the project directory
         with open(server_config_path, 'w') as server_file:
