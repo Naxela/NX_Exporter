@@ -144,125 +144,145 @@ class NX_PT_Postprocessing(bpy.types.Panel):
         postprocessList = scene.NX_UL_PostprocessList
         postprocessListItem = scene.NX_UL_PostprocessListItem
 
-        row = layout.row()
+        if sceneProperties.nx_pipeline_mode == "Standard":
 
-        row.label(text="TODO: CHECK SAVES")
+            row = layout.row()
+            row.label(text="Standard Pipeline")
+            row = layout.row()
+            row.label(text="Tonemapper")
+            row = layout.row()
+            row.label(text="Ambient Occlusion")
+            row = layout.row()
+            row.label(text="Bloom")
+            row = layout.row()
+            row.label(text="Antialiasing")
+            row = layout.row()
+            row.label(text="Pixelization")
 
-        row = layout.row()
+        if sceneProperties.nx_pipeline_mode == "Performance":
 
-        rows = 2
-        if len(postprocessList) > 1:
-            rows = 4
-        row.template_list("NX_UL_PostprocessList", "Postprocess List", scene, "NX_UL_PostprocessList", scene, "NX_UL_PostprocessListItem", rows=rows)
-        col = row.column(align=True)
-        col.operator("nx_postprocesslist.new_item", icon='ADD', text="")
-        col.operator("nx_postprocesslist.delete_item", icon='REMOVE', text="")
+            row = layout.row()
+            row.label(text="Performance Pipeline currently has no options.")
 
-        # objectProperties = obj.NX_ObjectProperties
+        if sceneProperties.nx_pipeline_mode == "Custom":
+            row = layout.row()
+            row.label(text="Custom Pipeline")
 
-        # moduleList = obj.NX_UL_ModuleList
-        # moduleListItem = obj.NX_UL_ModuleListItem
+            row = layout.row()
 
-        # row = layout.row()
+            rows = 2
+            if len(postprocessList) > 1:
+                rows = 4
+            row.template_list("NX_UL_PostprocessList", "Postprocess List", scene, "NX_UL_PostprocessList", scene, "NX_UL_PostprocessListItem", rows=rows)
+            col = row.column(align=True)
+            col.operator("nx_postprocesslist.new_item", icon='ADD', text="")
+            col.operator("nx_postprocesslist.delete_item", icon='REMOVE', text="")
 
-        # row.label(text="TODO: CHECK SAVES")
+            # objectProperties = obj.NX_ObjectProperties
 
-        # row = layout.row()
+            # moduleList = obj.NX_UL_ModuleList
+            # moduleListItem = obj.NX_UL_ModuleListItem
 
-        # rows = 2
-        # if len(moduleList) > 1:
-        #     rows = 4
-        # row.template_list("NX_UL_ModuleList", "Module List", obj, "NX_UL_ModuleList", obj, "NX_UL_ModuleListItem", rows=rows)
-        # col = row.column(align=True)
-        # col.operator("nx_modulelist.new_item", icon='ADD', text="")
-        # col.operator("nx_modulelist.delete_item", icon='REMOVE', text="")
+            # row = layout.row()
 
-        if postprocessListItem >= 0 and len(postprocessList) > 0:
-            item = postprocessList[postprocessListItem]
+            # row.label(text="TODO: CHECK SAVES")
 
-            layout.prop(item, "nx_postprocess_type")
+            # row = layout.row()
 
-            if item.nx_postprocess_type == "Bloom":
+            # rows = 2
+            # if len(moduleList) > 1:
+            #     rows = 4
+            # row.template_list("NX_UL_ModuleList", "Module List", obj, "NX_UL_ModuleList", obj, "NX_UL_ModuleListItem", rows=rows)
+            # col = row.column(align=True)
+            # col.operator("nx_modulelist.new_item", icon='ADD', text="")
+            # col.operator("nx_modulelist.delete_item", icon='REMOVE', text="")
 
-                row = layout.row()
-                row.prop(item, "nx_postprocess_bloom_threshold")
-                row = layout.row()
-                row.prop(item, "nx_postprocess_bloom_radius")
-                row = layout.row()
-                row.prop(item, "nx_postprocess_bloom_intensity")
+            if postprocessListItem >= 0 and len(postprocessList) > 0:
+                item = postprocessList[postprocessListItem]
 
-            if item.nx_postprocess_type == "Bokeh":
+                layout.prop(item, "nx_postprocess_type")
 
-                row = layout.row()
-                row.prop(item, "nx_postprocess_bokeh_focus")
-                row = layout.row()
-                row.prop(item, "nx_postprocess_bokeh_dof")
-                row = layout.row()
-                row.prop(item, "nx_postprocess_bokeh_aperture")
+                if item.nx_postprocess_type == "Bloom":
 
-            if item.nx_postprocess_type == "ChromaticAberration":
+                    row = layout.row()
+                    row.prop(item, "nx_postprocess_bloom_threshold")
+                    row = layout.row()
+                    row.prop(item, "nx_postprocess_bloom_radius")
+                    row = layout.row()
+                    row.prop(item, "nx_postprocess_bloom_intensity")
 
-                row = layout.row()
-                row.label(text="Chromatic Aberration")
+                if item.nx_postprocess_type == "Bokeh":
 
-            if item.nx_postprocess_type == "DepthOfField":
+                    row = layout.row()
+                    row.prop(item, "nx_postprocess_bokeh_focus")
+                    row = layout.row()
+                    row.prop(item, "nx_postprocess_bokeh_dof")
+                    row = layout.row()
+                    row.prop(item, "nx_postprocess_bokeh_aperture")
 
-                row = layout.row()
-                row.label(text="Depth of Field")
+                if item.nx_postprocess_type == "ChromaticAberration":
 
-            if item.nx_postprocess_type == "FXAA":
+                    row = layout.row()
+                    row.label(text="Chromatic Aberration")
 
-                row = layout.row()
-                row.label(text="FXAA")
+                if item.nx_postprocess_type == "DepthOfField":
 
-            if item.nx_postprocess_type == "GodRays":
+                    row = layout.row()
+                    row.label(text="Depth of Field")
 
-                row = layout.row()
-                row.label(text="GodRays")
+                if item.nx_postprocess_type == "FXAA":
 
-            if item.nx_postprocess_type == "SMAA":
+                    row = layout.row()
+                    row.label(text="FXAA")
 
-                row = layout.row()
-                row.label(text="SMAA")
+                if item.nx_postprocess_type == "GodRays":
 
-            if item.nx_postprocess_type == "SSAO":
+                    row = layout.row()
+                    row.label(text="GodRays")
 
-                row = layout.row()
-                row.label(text="SSAO")
+                if item.nx_postprocess_type == "SMAA":
 
-            if item.nx_postprocess_type == "TiltShift":
+                    row = layout.row()
+                    row.label(text="SMAA")
 
-                row = layout.row()
-                row.label(text="TiltShift")
+                if item.nx_postprocess_type == "SSAO":
 
-            if item.nx_postprocess_type == "Tonemapping":
+                    row = layout.row()
+                    row.label(text="SSAO")
 
-                row = layout.row()
-                row.label(text="Tonemapping")
+                if item.nx_postprocess_type == "TiltShift":
 
-            if item.nx_postprocess_type == "Vignette":
+                    row = layout.row()
+                    row.label(text="TiltShift")
 
-                row = layout.row()
-                row.label(text="Vignette")
+                if item.nx_postprocess_type == "Tonemapping":
 
-        #         row = layout.row()
-        #         col = row.column(align=True)
-        #         row.operator("nx_modulelist.edit_script")
-        #         row.operator("nx_modulelist.refresh_scripts")
-        #         row = layout.row()
-        #         row.prop_search(item, "nx_module_script", bpy.data.worlds['NX'], "NX_bundled_list", text="Class")
+                    row = layout.row()
+                    row.label(text="Tonemapping")
 
-        #     elif item.nx_module_type == "JavaScript":
+                if item.nx_postprocess_type == "Vignette":
 
-        #         row = layout.row()
-        #         row.label(text="JavaScript Component")
-        #         row = layout.row()
-        #         col = row.column(align=True)
-        #         col.operator("nx_modulelist.new_script")
-        #         row.operator("nx_modulelist.edit_script")
-        #         row.operator("nx_modulelist.refresh_scripts")
-        #         row = layout.row()
-        #         row.prop_search(item, "nx_module_script", bpy.data.worlds['NX'], "NX_scripts_list", text="Class")
+                    row = layout.row()
+                    row.label(text="Vignette")
+
+            #         row = layout.row()
+            #         col = row.column(align=True)
+            #         row.operator("nx_modulelist.edit_script")
+            #         row.operator("nx_modulelist.refresh_scripts")
+            #         row = layout.row()
+            #         row.prop_search(item, "nx_module_script", bpy.data.worlds['NX'], "NX_bundled_list", text="Class")
+
+            #     elif item.nx_module_type == "JavaScript":
+
+            #         row = layout.row()
+            #         row.label(text="JavaScript Component")
+            #         row = layout.row()
+            #         col = row.column(align=True)
+            #         col.operator("nx_modulelist.new_script")
+            #         row.operator("nx_modulelist.edit_script")
+            #         row.operator("nx_modulelist.refresh_scripts")
+            #         row = layout.row()
+            #         row.prop_search(item, "nx_module_script", bpy.data.worlds['NX'], "NX_scripts_list", text="Class")
 
 class NX_PT_Modules(bpy.types.Panel):
     bl_label = "Modules"

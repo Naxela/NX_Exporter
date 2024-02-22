@@ -85,11 +85,20 @@ def depsgraph_update_handler(scene, depsgraph):
     for update in depsgraph.updates:
         # Check if the update is for an object
         if isinstance(update.id, bpy.types.Object):
+
+            loc = update.id.location
+            rot = update.id.rotation_euler
+            scale = update.id.scale
+
             objID = update.id["nx_id"]
 
+            cmd = f'app.moveObject("{objID}", [{loc[0]}, {loc[2]}, {-loc[1]}]); app.rotateObject("{objID}", [{rot[0]}, {rot[2]}, {-rot[1]}]); app.scaleObject("{objID}", [{scale[0]}, {scale[2]}, {scale[1]}]);'
+
             #We don't know whether it was moved, rotated or scaled, so we copy the matrix
-            matrix = util.get_object_matrix_y_axis(update.id)
-            cmd = f'app.applyMatrix("{objID}", {matrix});'
+            #matrix = util.get_object_matrix_y_axis(update.id)
+            #cmd = f'app.applyMatrix("{objID}", {matrix});'
+
+            #cmd = 
 
             try:
                 connection.sendall(cmd.encode('utf-8'))
