@@ -10,6 +10,7 @@ import CameraManager from './camera';
 import LightManager from './light';
 import SpeakerManager from './speaker';
 import MaterialManager from './materials';
+import CurveManager from './curves';
 
 //TODO - MAKE CONDITIONAL
 import { Sky } from 'three/addons/objects/Sky.js';
@@ -30,6 +31,7 @@ export default class SceneManager {
         this.lightManager = null;
         this.speakerManager = null;
         this.materialManager = null;
+        this.curveManager = null;
         this.mixer = null;
         this.listener = null;
         this.animations = [];
@@ -488,6 +490,9 @@ export default class SceneManager {
         this.materialManager = new MaterialManager();
         this.materialManager.init();
         this.materialManager.storeSceneMaterials(this.scene3D);
+
+        //this.curveManager = new CurveManager(this.engine, this.scene3D, sceneData.scene_curves);
+        //this.curveManager.setupCurves(this.scene3D);
 
         //if(this.sceneData) {
         //    this.renderManager.createComposer();
