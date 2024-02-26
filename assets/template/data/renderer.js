@@ -198,6 +198,9 @@ export default class RenderManager {
     }
 
     createDefaultRenderer(options) {
+
+        console.log("///////// OPTIONS!");
+        console.log(options);
         
         let renderer = new THREE.WebGLRenderer({ antialias: options.graphics.antialiasing });
 
@@ -209,11 +212,24 @@ export default class RenderManager {
             renderer.setPixelRatio(1.0);
         }
 
+        if(options.graphics.tonemapping_type == "AgX"){
+            
+            renderer.toneMapping = THREE.AgXToneMapping;
+
+        } else if(options.graphics.tonemapping_type == "Filmic"){
+            
+            renderer.toneMapping = THREE.ACESFilmicToneMapping;
+
+        } else if(options.graphics.tonemapping_type == "Standard"){
+            
+            renderer.toneMapping = THREE.LinearToneMapping;
+
+        }
+
         renderer.physicallyCorrectLights = true;
         renderer.shadowMap.enabled = true;
-        renderer.toneMapping = THREE.ACESFilmicToneMapping;
         renderer.shadowMap.type = THREE.PCFSoftShadowMap; // default THREE.PCFShadowMap
-        renderer.toneMappingExposure = 1.0;
+        renderer.toneMappingExposure = options.graphics.tonemapping_exposure;
 
         return renderer;
 

@@ -297,6 +297,11 @@ def compile_project_data():
         "description":"DESC",
         "url":"URL",
         "debug": bpy.data.scenes[0].NX_SceneProperties.nx_debug_mode,
+        "splash" : {
+            "type" : "gif", #Can be Lottie, GIF, PNG/JPG or Video
+            "duration" : "0",
+            "src" : "" #If empty, it will use the default NX Engine splash
+        },
         "manifest":{
             "scenes":[
             ]
@@ -311,7 +316,10 @@ def compile_project_data():
                 "ssr":"false",
                 "shadowType":"PCF",
                 "shadowResolution":"1024",
-                "postprocessStack":getPostprocessStack()
+                "postprocessStack":getPostprocessStack(),
+                "tonemapping_type" : bpy.data.scenes[0].view_settings.view_transform,
+                "tonemapping_exposure" : bpy.data.scenes[0].view_settings.exposure + 1,
+                "tonemapping_gamma" : bpy.data.scenes[0].view_settings.gamma
             },
             "audio":{
                 "effects":1,

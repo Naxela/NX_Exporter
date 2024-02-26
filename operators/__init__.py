@@ -2,6 +2,7 @@ import bpy
 from bpy.utils import register_class, unregister_class
 
 from . import operators
+from .. operations import clean
 
 classes = [
     operators.NX_Start,
@@ -25,3 +26,6 @@ def register():
 def unregister():
     for cls in classes:
         unregister_class(cls)
+
+    operators.stop_server(bpy.context.scene.NX_SceneProperties.nx_live_link)
+    clean.clean_soft()

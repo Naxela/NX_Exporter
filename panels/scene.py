@@ -117,7 +117,6 @@ class NX_PT_Settings(bpy.types.Panel):
         row.prop(scene.NX_SceneProperties, "nx_texture_quality", slider=True)
         #row.operator("nx.compile")
 
-
 class NX_PT_Postprocessing(bpy.types.Panel):
     bl_label = "Postprocessing"
     bl_space_type = "PROPERTIES"
