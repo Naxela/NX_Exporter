@@ -359,9 +359,11 @@ def compile_project_data():
         }
 
         #TODO! - MAKE A NEW COMBINED ID LIST   OR   EMBED THE DATA INSIDE THE GLB FILE
-
-        #GLB GROUPS (1 per scene for now)
-        glb_name = scene.name + ".glb"
+        if bpy.data.scenes["Scene"].NX_SceneProperties.nx_compilation_mode == 'Combined':
+            #GLB GROUPS (1 per scene for now)
+            glb_name = scene.name + ".glb"
+        else:
+            glb_name = scene.name + ".gltf"
         data_scene["glb_groups"].append(glb_name)
 
         #Start with 1, because 0 is the active scene
