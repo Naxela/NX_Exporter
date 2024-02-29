@@ -390,6 +390,7 @@ def compile_project_data():
                     "parent" : util.getObjectParent(obj),
                     "modules" : iterateObjectModules(obj),
                     "active_action" : getActiveAction(obj),
+                    "spawn" : obj.NX_ObjectProperties.nx_object_spawn
                 }
 
                 data_scene["scene_empties"].append(empty)
@@ -442,6 +443,7 @@ def compile_project_data():
                     "parent" : util.getObjectParent(obj),
                     "modules" : iterateObjectModules(obj),
                     "active_action" : getActiveAction(obj),
+                    "spawn" : obj.NX_ObjectProperties.nx_object_spawn
                 }
 
                 if obj.data.type == "PERSP":
@@ -475,6 +477,7 @@ def compile_project_data():
                     "parent" : util.getObjectParent(obj),
                     "modules" : iterateObjectModules(obj),
                     "active_action" : getActiveAction(obj),
+                    "spawn" : obj.NX_ObjectProperties.nx_object_spawn
                 }
 
                 if(obj.data.type == 'POINT'):
@@ -544,7 +547,8 @@ def compile_project_data():
                             "active_action" : getActiveAction(obj),
                             "autoplay" : obj.NX_ObjectProperties.nx_speaker_autoplay,
                             "loop" : obj.NX_ObjectProperties.nx_speaker_loop,
-                            "stream" : obj.NX_ObjectProperties.nx_speaker_stream
+                            "stream" : obj.NX_ObjectProperties.nx_speaker_stream,
+                            "spawn" : obj.NX_ObjectProperties.nx_object_spawn
                         }
 
                         parallel_transfer_assets.append(obj.data.sound.filepath)
@@ -561,7 +565,8 @@ def compile_project_data():
                     "modules" : iterateObjectModules(obj),
                     "active_action" : getActiveAction(obj),
                     "curve_type" : obj.data.splines[0].type,
-                    "spline_data" : []
+                    "spline_data" : [],
+                    "spawn" : obj.NX_ObjectProperties.nx_object_spawn
                 }
 
                 #TODO - IMPLEMENT CURVE SPLINE CONTROL

@@ -40,6 +40,12 @@ class NX_ObjectProperties(bpy.types.PropertyGroup):
         default=True
     )
 
+    nx_object_tags = StringProperty(
+        name="Tags",
+        description="Tags for the object, comma separated",
+        default=""
+    )
+
     # Speaker settings
 
     nx_speaker_autoplay : BoolProperty(

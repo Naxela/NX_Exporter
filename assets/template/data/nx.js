@@ -24,6 +24,7 @@ export class NXEngine {
 
         //Engine properties
         this.three = THREE;
+        this.utility = Utility;
         this.renderManager = null;
         this.engineTime = null;
         this.sceneManager = null;

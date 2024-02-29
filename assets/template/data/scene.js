@@ -404,6 +404,11 @@ export default class SceneManager {
 
                 }
 
+                console.log(emptyData);
+                if(!emptyData.spawn) {
+                    child.visible = false;
+                }
+
                 if(emptyData.modules.length > 0) {
 
                     emptyData.modules.forEach((module) => {
