@@ -1,6 +1,7 @@
 import bpy, os, shutil, json, math
 
 from .. utility import util
+from .. utility import projectMaker
 
 def build_assets():
 
@@ -116,6 +117,8 @@ def export_scenes(path):
                 export_draco_mesh_compression_enable=True,
                 export_animations=True
             )
+
+    projectMaker.createImporterMapfile(path)
 
     #After export we want to unhide the objects not set to export
     for obj in bpy.data.objects:
@@ -297,6 +300,7 @@ def compile_project_data():
         "description":"DESC",
         "url":"URL",
         "debug": bpy.data.scenes[0].NX_SceneProperties.nx_debug_mode,
+        "livelink": bpy.data.scenes[0].NX_SceneProperties.nx_live_link,
         "splash" : {
             "type" : "gif", #Can be Lottie, GIF, PNG/JPG or Video
             "duration" : "0",

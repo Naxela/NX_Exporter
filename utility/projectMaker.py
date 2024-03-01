@@ -1,4 +1,4 @@
-import os
+import bpy, os
 from ..utility import util
 
 def createPackageJson(name, version):
@@ -25,6 +25,24 @@ def createPackageJson(name, version):
     }
 
     return package_json_content
+
+def createImporterMapfile(assetsPath):
+   
+  map = []
+  
+
+  for obj in bpy.data.objects:
+    for module in obj.NX_UL_ModuleList:
+         
+        name = module.nx_module_script
+        map.append(name)
+
+  print("MODULE MAP!")
+  print(map)
+
+  for file in map:
+     
+    print("import " + file + " from '/assets/Sources/" + file + ".js';")
 
 def createExpressServer(assetsPath, port=3002, tcpport=3003):
 
