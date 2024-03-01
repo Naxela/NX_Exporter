@@ -96,3 +96,9 @@ class NX_UL_ModuleListItem(bpy.types.PropertyGroup):
                 description="Select the module type",
                 default='Bundled')
     
+    nx_module_script_format = EnumProperty(
+        items = [('TypeScript', 'TypeScript', 'TypeScript format'),
+                 ('JavaScript', 'JavaScript', 'JavaScript format'),],
+                name = "Script format", 
+                description="Select the script format",
+                default='JavaScript')

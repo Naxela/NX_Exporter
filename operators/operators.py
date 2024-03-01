@@ -274,7 +274,13 @@ class NX_NewJavascriptFile(bpy.types.Operator):
     bl_idname = "nx_modulelist.new_script"
     bl_label = "New Script"
 
-    filename: bpy.props.StringProperty(name="Filename (*.js)")
+    filename: bpy.props.StringProperty(name="Filename (*.js/*.ts)")
+    fileformat: bpy.props.EnumProperty(
+        items = [('TypeScript', 'TypeScript', 'TypeScript format'),
+                 ('JavaScript', 'JavaScript', 'JavaScript format'),],
+                name = "Script format", 
+                description="Select the script format",
+                default='JavaScript')
 
     def execute(self, context):
 
@@ -289,6 +295,7 @@ class NX_NewJavascriptFile(bpy.types.Operator):
         if(filemaker.create_javascript_file(self.filename)):
 
             obj.NX_UL_ModuleList[index].nx_module_script = self.filename
+            obj.NX_UL_ModuleList[index].nx_module_script_format = self.fileformat
 
             print("Javascript file created")
 
