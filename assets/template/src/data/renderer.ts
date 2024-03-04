@@ -33,9 +33,6 @@ export default class RenderManager {
             this.renderer = this.createDefaultRenderer(options);
         }
 
-        //this.renderer = this.createFlexibleRenderer(options);
-        //this.renderer = this.createDefaultRenderer(options);
-        //this.renderer = this.createPerformanceRenderer(options);
         this.composer = null;
 
         document.body.appendChild(this.renderer.domElement);
@@ -108,7 +105,6 @@ export default class RenderManager {
             fade: 1.03,
             thickness: 3.5,
             ior: 1.75,
-            fade: 0,
             steps: 5,
             refineSteps: 6,
             maxDepthDifference: 50,
@@ -207,6 +203,7 @@ export default class RenderManager {
         if(options.video.fullscreen){
             renderer.setPixelRatio(window.devicePixelRatio * 1.0);
             renderer.setSize(window.innerWidth, window.innerHeight);
+            //renderer.setPixelRatio(Math.min(Math.max(1, window.devicePixelRatio), 2))
         } else {
             renderer.setSize(options.video.width, options.video.height);
             renderer.setPixelRatio(1.0);
@@ -226,6 +223,7 @@ export default class RenderManager {
 
         }
 
+        renderer.outputEncoding = THREE.sRGBEncoding
         renderer.physicallyCorrectLights = true;
         renderer.shadowMap.enabled = true;
         renderer.shadowMap.type = THREE.PCFSoftShadowMap; // default THREE.PCFShadowMap

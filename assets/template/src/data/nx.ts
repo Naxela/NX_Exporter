@@ -7,20 +7,37 @@ import ComponentManager from './components';
 import Logger from './logger';
 import Stats from 'stats.js';
 
-/*
-################
-NX Exporter => Blender
-NX Runtime => Runtime/JS
-################
-*/
+/* THIS PART IS DYNAMICALLY GENERATED */
+
+//import { OrbitControls } from 'three/examples/jsm/Addons.js';
+
+/* DYNAMICALLY GENERATED END */
+
 
 export class NXEngine {
+    projectFile: string;
+    engineTime: THREE.Clock;
+    projectData: null|JSON;
+    debugMode: boolean;
+    modules: object;
+    three: object;
+    utility: Utility;
 
-    constructor(projectFile) {
+
+    constructor(projectFile: string) {
         //Project properties
         this.projectFile = projectFile;
         this.projectData = null;
-        this.debugMode = null;
+        this.debugMode = false;
+
+
+        //TODO - FIND SOME WAY TO DYNAMICALLY GENERATE THIS
+        //this.modules = {
+        //    "OrbitControls": OrbitControls
+        //};
+
+        //TODO - TEST THIS FOR SOURCE FILES
+        //const modules = import.meta.glob('./dir/*.js')
 
         //Engine properties
         this.three = THREE;
@@ -45,7 +62,7 @@ export class NXEngine {
         this.controllers = null;
     }
 
-    init = async (app) => {
+    init = async (app: object) => {
 
         // Make app globally available
         Utility.setGlobal('app', app);
@@ -113,7 +130,7 @@ export class NXEngine {
 
         Logger.log(this.componentManager.components);
 
-        this.componentManager.components.forEach(component => {
+        this.componentManager.components.forEach((component: { NotifyOnInit: () => void; }) => {
             if (component.NotifyOnInit) {
                 component.NotifyOnInit();
             }
@@ -143,26 +160,27 @@ export class NXEngine {
             console.log(this.sceneManager.renderManager.renderer.xr.getCamera(0)); 
         });
 
-
-        const port = 3001;
-        const ws = new WebSocket('ws://localhost:'+port);
-
-        ws.onopen = () => {
-            console.log('WebSocket connection established');
-            ws.send('Hello from client');
-        };
-
-        ws.onmessage = (event) => {
-
-            if(event.data.startsWith('app')) {
-                console.log('Command:', event.data);
-                eval(event.data);
-
-            } else {
-                console.log('Message from server:', event.data);
-            }
-
-        };
+        if(this.projectData.livelink) {
+            const port = 3001;
+            const ws = new WebSocket('ws://localhost:'+port);
+    
+            ws.onopen = () => {
+                console.log('WebSocket connection established');
+                ws.send('Hello from client');
+            };
+    
+            ws.onmessage = (event) => {
+    
+                if(event.data.startsWith('app')) {
+                    console.log('Command:', event.data);
+                    eval(event.data);
+    
+                } else {
+                    console.log('Message from server:', event.data);
+                }
+    
+            };
+        }
 
     }
 
@@ -186,7 +204,7 @@ export class NXEngine {
     
             requestAnimationFrame(this.animate);
     
-            this.componentManager.components.forEach(component => {
+            this.componentManager.components.forEach((component: { NotifyOnUpdate: () => void; }) => {
                 if (component.NotifyOnUpdate) {
                     component.NotifyOnUpdate();
                 }
@@ -216,7 +234,7 @@ export class NXEngine {
                         this.stats["mem"].begin();
                     }
 
-                    this.componentManager.components.forEach(component => {
+                    this.componentManager.components.forEach((component: { NotifyOnUpdate: () => void; }) => {
                         if (component.NotifyOnUpdate) {
                             component.NotifyOnUpdate();
                         }
@@ -244,19 +262,19 @@ export class NXEngine {
         }
     };
 
-    moveObject = (objID, location) => {
+    moveObject = (objID: any, location: any[]) => {
         Utility.findObjectById(app.sceneManager.scene3D, objID).position.set(location[0], location[1], location[2]);
     };
 
-    rotateObject = (objID, rotation) => {
+    rotateObject = (objID: any, rotation: any[]) => {
         Utility.findObjectById(app.sceneManager.scene3D, objID).rotation.set(rotation[0], rotation[1], rotation[2]);
     }
 
-    scaleObject = (objID, scale) => {
+    scaleObject = (objID: any, scale: any[]) => {
         Utility.findObjectById(app.sceneManager.scene3D, objID).scale.set(scale[0], scale[1], scale[2]);
     }
 
-    applyMatrix = (objID, matrixValues) => {
+    applyMatrix = (objID: any, matrixValues: number[]) => {
         // Create a new THREE.Matrix4 object
         const matrix = new THREE.Matrix4();
         // Set the matrix using the provided array values
@@ -283,11 +301,11 @@ export class NXEngine {
         object.quaternion.multiply(adjustmentQuat);
     };
 
-    setLightColor = (lightID, color) => {
+    setLightColor = (lightID: any, color: any[]) => {
         Utility.findObjectById(app.sceneManager.scene3D, lightID).color.set(color[0], color[1], color[2]);
     }
 
-    setLightStrength = (lightID, strength) => {
+    setLightStrength = (lightID: any, strength: any) => {
         Utility.findObjectById(app.sceneManager.scene3D, lightID).intensity = strength;
     }
 

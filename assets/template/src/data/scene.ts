@@ -60,7 +60,7 @@ export default class SceneManager {
         let envLoader = new RGBELoader();
         let meshloader = new GLTFLoader();
         const draco = new DRACOLoader()
-        draco.setDecoderPath('data/libs/js/draco/')
+        draco.setDecoderPath('https://www.gstatic.com/draco/v1/decoders/')
         meshloader.setDRACOLoader(draco)
 
         engine.loaders["RGBE"] = envLoader;
@@ -233,11 +233,19 @@ export default class SceneManager {
                         console.log(child.material);
 
                         let lightmapTex = new RGBELoader();
-                        lightmapTex.load("assets/Lightmaps/" + meshData.lightmaps + ".hdr", (texture) => {
-                            texture.channel = 1;
-                            child.material.lightMap = texture;
-                            child.material.lightMap.flipY = false;
-                        });
+
+                        try {
+                            console.log("Lightmaps disabled");
+                            //lightmapTex.load("assets/Lightmaps/" + meshData.lightmaps + ".hdr", (texture) => {
+                            //    texture.channel = 1;
+                            //    child.material.lightMap = texture;
+                            //    child.material.lightMap.flipY = false;
+                            //});
+                        } catch(e) {
+                            console.log("Couldn't load lightmap: " + meshData.lightmaps + " - Check if there's a lightmap folder?");
+                        }
+
+
 
                     }
 

@@ -128,7 +128,7 @@ def get_assets_path():
 
     project_path = get_project_path()
 
-    directory = os.path.join(project_path, "Assets")  # Set your desired path here
+    directory = os.path.join(project_path, "assets")  # Set your desired path here
 
     if(not os.path.exists(directory)):
         os.mkdir(directory)

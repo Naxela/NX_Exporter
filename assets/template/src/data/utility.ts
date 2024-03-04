@@ -43,7 +43,8 @@ export default class Utility {
 
         } catch (e) {
 
-            ErrorManager.catchError(e);
+            ErrorManager.catchError("ERROR: CAN'T FIND ASSET FOLDER");
+            //ErrorManager.catchError(e);
 
             return null;
 

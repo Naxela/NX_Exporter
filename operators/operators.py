@@ -9,30 +9,16 @@ from .. import globals as gbl
 #SCENE OPERATORS
 
 
-
-class NX_Start(bpy.types.Operator):
-    bl_idname = "nx.compile_start"
-    bl_label = "Start"
-    bl_description = "Compile and start your project"
-    bl_options = {"REGISTER", "UNDO"}
-
-    def execute(self, context):
-
-        #TODO: MAKE START/STOP BASED ON A POPEN PROCESS
-        #https://github.com/armory3d/armory/blob/main/blender/arm/make.py
-
-        print("Start")
-
-        compile.build_assets()
-
-        #compiled = json.dumps(compile_project_data())
-        #print(compiled)
-
-        return {"FINISHED"}
-    
-def start_server(bin_path, out_path, livelink):  # Changed parameter to out_path for clarity
+def start_server(bin_path, out_path, livelink, production):  # Changed parameter to out_path for clarity
     print("Starting server, current global_dev_server_process:", gbl.global_dev_server_process)
-    cmd_run_dev = [bin_path, "run", "dev"]  # Make sure this path is correctly pointing to pnpm
+
+    if not production:
+        print("Production!")
+        cmd_run_dev = [bin_path, "run", "preview"]  # Make sure this path is correctly pointing to pnpm
+    else:
+        print("Development!")
+        cmd_run_dev = [bin_path, "run", "dev"]
+
     with open('server_output.log', 'w') as f:
         gbl.global_dev_server_process = subprocess.Popen(cmd_run_dev, cwd=out_path)
         #gbl.global_dev_server_process = subprocess.Popen(cmd_run_dev, cwd=out_path, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -57,10 +43,10 @@ def stop_server(livelink):
     else:
         print("Server is not running.")
 
-class NX_Run(bpy.types.Operator):
-    bl_idname = "nx.compile_run"
-    bl_label = "Run"
-    bl_description = "Run"
+class NX_Start(bpy.types.Operator):
+    bl_idname = "nx.compile_start"
+    bl_label = "Export"
+    bl_description = "Compile and start your project"
     bl_options = {"REGISTER", "UNDO"}
 
     def execute(self, context):
@@ -82,6 +68,9 @@ class NX_Run(bpy.types.Operator):
 
         # Copy files in folder addon/assets/template to out folder
         shutil.copytree(os.path.join(util.get_addon_path(), "assets", "template"), out_path)
+
+        # Copy assets folder to out folder (nx-build/assets) to out/assets
+        shutil.copytree(os.path.join(util.get_build_path()), os.path.join(out_path, "assets"))
 
         package_json_path = os.path.join(out_path, "package.json")
         package_json_content = projectMaker.createPackageJson(util.get_file_name(), "1.0.0")
@@ -117,8 +106,78 @@ class NX_Run(bpy.types.Operator):
             exit(1)  # Exit the script or handle the error appropriately
 
         # # Step 2: Only proceed to run the "dev" command if installation succeeded
-        cmd_run_dev = [bin_path, "run", "dev"]
-        start_server(bin_path, out_path, bpy.context.scene.NX_SceneProperties.nx_live_link) 
+        start_server(bin_path, out_path, bpy.context.scene.NX_SceneProperties.nx_live_link, False)
+
+        print(f"Production server should now be running for {out_path}.")
+
+        webbrowser.open("http://localhost:" + str(4173))
+
+        return {"FINISHED"}
+
+class NX_Run(bpy.types.Operator):
+    bl_idname = "nx.compile_run"
+    bl_label = "Start"
+    bl_description = "Run"
+    bl_options = {"REGISTER", "UNDO"}
+
+    def execute(self, context):
+
+        clean.clean_soft()
+        compile.build_assets()
+
+        global global_dev_server_process
+
+        # Your setup
+        bin_path = os.path.join(util.get_addon_path(), "assets", "pnpm-win-x64.exe")
+        project_path = util.get_project_path()
+        out_dir = "out"
+        out_path = os.path.join(project_path, out_dir)
+
+        # Ensure the 'out' directory exists
+        #if not os.path.exists(out_path):
+        #    os.mkdir(out_path)
+
+        # Copy files in folder addon/assets/template to out folder
+        shutil.copytree(os.path.join(util.get_addon_path(), "assets", "template"), out_path)
+
+        # Copy assets folder to out folder (nx-build/assets) to out/assets
+        shutil.copytree(os.path.join(util.get_build_path()), os.path.join(out_path, "assets"))
+
+        package_json_path = os.path.join(out_path, "package.json")
+        package_json_content = projectMaker.createPackageJson(util.get_file_name(), "1.0.0")
+
+        # Write package.json to the project directory
+        with open(package_json_path, 'w') as package_file:
+            package_file.write(json.dumps(package_json_content, indent=4))
+
+        server_config_path = os.path.join(out_path, "server.js")
+        server_config_content = projectMaker.createExpressServer(util.get_build_path(), 3001, 3002)
+
+        # Write server.js to the project directory
+        with open(server_config_path, 'w') as server_file:
+            server_file.write(server_config_content)
+
+        # Step 1: Install dependencies with pnpm
+        cmd_install = [bin_path, "install"]
+        install_process = subprocess.Popen(cmd_install, cwd=out_path, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+
+        # Wait for the installation process to complete and capture output
+        stdout, stderr = install_process.communicate()
+
+        if install_process.returncode == 0:
+            print("Dependencies installed successfully. Proceeding to run the 'dev' command.")
+        else:
+            print(f"Error installing dependencies. Stderr: {stderr}")
+            # If there's an error message, print it, otherwise, print stdout
+            if stderr:
+                print(stderr)
+            else:
+                print(stdout)
+            # Exit or handle the error before proceeding
+            exit(1)  # Exit the script or handle the error appropriately
+
+        # # Step 2: Only proceed to run the "dev" command if installation succeeded
+        start_server(bin_path, out_path, bpy.context.scene.NX_SceneProperties.nx_live_link, True) 
         #print(global_dev_server_process)
         #dev_process = subprocess.Popen(cmd_run_dev, cwd=out_path, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
 
@@ -126,7 +185,7 @@ class NX_Run(bpy.types.Operator):
         # # so we won't use communicate() which waits for the process to complete.
         print(f"Development server should now be running for {out_path}.")
 
-        webbrowser.open("http://localhost:" + str(3001))
+        webbrowser.open("http://localhost:" + str(5173))
 
 
         return {"FINISHED"}

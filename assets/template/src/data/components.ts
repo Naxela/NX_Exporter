@@ -8,7 +8,14 @@ export default class ComponentManager {
         this.engine = engine;
         this.components = [];
         this.componentPairs = [];
-        
+        this.loadedModules = {};
+        this.exposedModules = {};
+
+
+        this.modulemap = {
+            "OrbitControls": "three/examples/jsm/controls/OrbitControls.js"
+        }
+
     }
 
     attach = (obj_id, component) => {
@@ -19,13 +26,39 @@ export default class ComponentManager {
 
         Logger.log("Attached component: " + component);
 
+    };
+
+    /*
+    preloadModules = async () => {
+        
+        Logger.log("Preloading components...");
+
+        //Preload/import each of the exposed modules
+        //I want to iterate this.modulemap instead of manually having this here
+        const modulesToLoad = {
+            "OrbitControls": () => import('three/examples/jsm/controls/OrbitControls.js')
+        };
+
+        // Preload/import each of the exposed modules
+        for (const [key, loader] of Object.entries(modulesToLoad)) {
+            try {
+              this.exposedModules[key] = (await loader()).OrbitControls;
+              Logger.log(`Preloaded module: ${key}`);
+            } catch (error) {
+              Logger.log(`Failed to preload module: ${key}`, error);
+            }
+          }
+
     }
+    */
 
     setupComponents = async () => {
 
         Logger.log("Setting up components...");
 
         Logger.log(this.componentPairs);
+
+        //await this.preloadModules();
 
         for (const pair of this.componentPairs) {
             let obj_id = Object.keys(pair)[0];
@@ -48,6 +81,7 @@ export default class ComponentManager {
 
             }
         }
+
     }
 
     async loadComponent (object, componentName) {
@@ -55,27 +89,22 @@ export default class ComponentManager {
 
             Logger.log("Loading component: " + componentName);
 
-            // Using Webpack magic comments to provide more context about dynamic imports
             const ModuleClass = await import(
-              /* @vite-ignore */
-              `/assets/Sources/${componentName}.js`
+              `../../assets/Sources/${componentName}.js`
             );
 
             //console.log("Loaded module");
     
             // Dynamically set the prototype of the loaded class to BaseComponent
             Object.setPrototypeOf(ModuleClass.default.prototype, BaseComponent.prototype);
-    
             // Create an instance of the dynamically loaded component
             const componentInstance = new ModuleClass.default(object);
-
-            //console.log(componentInstance.NotifyOnInit());
-            //let componentInstance = new ModuleClass();
 
             return componentInstance;
             
         } catch (error) {
-            console.error("Failed to load component:", error);
+            
+            console.error("Failed to load component:", error, ' | componentName:', componentName, "from:", `assets/Sources/${componentName}.js`);
         }
     }
     

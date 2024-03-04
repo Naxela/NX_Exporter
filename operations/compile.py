@@ -56,6 +56,10 @@ def build_assets():
         #Export GLB files
         export_scenes(project_folder)
 
+        #Copy all assets folder (if it exists)
+        #if os.path.exists(os.path.join(currentSaveDir, "nx-build")):
+        #    shutil.copytree(os.path.join(currentSaveDir, "nx-build"), os.path.join(out_folder, "Lightmaps"))
+
         print("Project built successfully")
 
     else:
@@ -117,8 +121,6 @@ def export_scenes(path):
                 export_draco_mesh_compression_enable=True,
                 export_animations=True
             )
-
-    projectMaker.createImporterMapfile(path)
 
     #After export we want to unhide the objects not set to export
     for obj in bpy.data.objects:

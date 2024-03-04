@@ -7,42 +7,30 @@ def createPackageJson(name, version):
         "version": "1.0.0",
         "type": "module",
         "scripts": {
-            "dev": "node server.js",
-            "build": "vite build",
+          "dev": "vite",
+          "build": "tsc && vite build",
+          "build2": "vite build",
+          "preview": "vite build && node copy_assets.js && vite preview"
         },
         "devDependencies": {
-            "typescript": "^5.2.2",
-            "vite": "^5.1.0"
+          "@types/stats.js": "^0.17.3",
+          "@types/three": "^0.162.0",
+          "typescript": "^5.2.2",
+          "vite": "^5.1.4"
         },
         "dependencies": {
-            "express": "^4.18.2",
-            "postprocessing": "^6.34.3",
-            "realism-effects": "^1.1.2",
-            "stats.js": "^0.17.0",
-            "three": "^0.161.0",
-            "ws": "^8.16.0"
+          "express": "^4.18.2",
+          "fs-extra": "^11.2.0",
+          "postprocessing": "^6.34.3",
+          "realism-effects": "^1.1.2",
+          "stats.js": "^0.17.0",
+          "three": "^0.161.0",
+          "ws": "^8.16.0"
         }
     }
 
     return package_json_content
 
-def createImporterMapfile(assetsPath):
-   
-  map = []
-  
-
-  for obj in bpy.data.objects:
-    for module in obj.NX_UL_ModuleList:
-         
-        name = module.nx_module_script
-        map.append(name)
-
-  print("MODULE MAP!")
-  print(map)
-
-  for file in map:
-     
-    print("import " + file + " from '/assets/Sources/" + file + ".js';")
 
 def createExpressServer(assetsPath, port=3002, tcpport=3003):
 
