@@ -75,6 +75,12 @@ class NX_SceneProperties(bpy.types.PropertyGroup):
         max=100
     )
 
+    nx_initial_scene : PointerProperty(
+        name="Scene", 
+        description="Scene to launch",
+        type=bpy.types.Scene
+    )
+
     #Option for the background to be:
     #- Just visible
     #- Only reflection

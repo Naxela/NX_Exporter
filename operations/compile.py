@@ -3,6 +3,9 @@ import bpy, os, shutil, json, math
 from .. utility import util
 from .. utility import projectMaker
 
+def get_scene():
+    pass
+
 def build_assets():
 
     print("Building Assets")
@@ -40,6 +43,8 @@ def build_assets():
         #Copy Sources folder (if it exists)
         if os.path.exists(os.path.join(currentSaveDir, "Sources")):
             shutil.copytree(os.path.join(currentSaveDir, "Sources"), os.path.join(project_folder, "Sources"))
+        else:
+            os.mkdir(os.path.join(project_folder, "Sources"))
 
         #Copy Bundled folder (if it exists)
         if os.path.exists(os.path.join(currentSaveDir, "Bundled")):
@@ -67,9 +72,11 @@ def build_assets():
         print("File has not been saved")
         return
 
+
 def export_scenes(path):
 
-    initialScene = bpy.context.scene
+    NX_sceneProperties = bpy.context.scene.NX_SceneProperties
+    initialScene = NX_sceneProperties.nx_initial_scene
 
     #Hide objects not set to export
     for obj in bpy.data.objects:
@@ -79,9 +86,15 @@ def export_scenes(path):
     for scene in bpy.data.scenes:
         # Set the current scene
         bpy.context.window.scene = scene
+        print("Exporting scene: " + scene.name)
 
         # Set the output file path
         output_file = os.path.join(path, scene.name + ".glb")
+
+        print("Exporting scene: " + scene.name)
+        print(output_file)
+        bpy.ops.wm.redraw_timer(type='DRAW_WIN_SWAP', iterations=1)
+        #print(x)
 
         # Export to GLB
 
@@ -309,6 +322,7 @@ def compile_project_data():
             "src" : "" #If empty, it will use the default NX Engine splash
         },
         "manifest":{
+            "initial": str(bpy.data.scenes[0].NX_SceneProperties.nx_initial_scene.name),
             "scenes":[
             ]
         },
@@ -335,7 +349,7 @@ def compile_project_data():
             "video":{
                 "fullscreen": bpy.data.scenes[0].NX_SceneProperties.nx_fullscreen,
                 "width": bpy.data.scenes[0].render.resolution_x * bpy.data.scenes[0].render.resolution_percentage / 100, 
-                "height": bpy.data.scenes["Scene"].render.resolution_y * bpy.data.scenes[0].render.resolution_percentage / 100
+                "height": bpy.data.scenes[0].render.resolution_y * bpy.data.scenes[0].render.resolution_percentage / 100
             }
         }
     }
@@ -365,7 +379,7 @@ def compile_project_data():
         }
 
         #TODO! - MAKE A NEW COMBINED ID LIST   OR   EMBED THE DATA INSIDE THE GLB FILE
-        if bpy.data.scenes["Scene"].NX_SceneProperties.nx_compilation_mode == 'Combined':
+        if bpy.data.scenes[0].NX_SceneProperties.nx_compilation_mode == 'Combined':
             #GLB GROUPS (1 per scene for now)
             glb_name = scene.name + ".glb"
         else:
@@ -443,7 +457,7 @@ def compile_project_data():
                     "name" : obj.name,
                     "identifier" : obj['nx_id'],
                     "matrix" : util.get_object_matrix_y_axis(obj),
-                    "fov" : horizontalToVerticalAngle((bpy.data.scenes[0].render.resolution_x * bpy.data.scenes[0].render.resolution_percentage / 100), (bpy.data.scenes["Scene"].render.resolution_y * bpy.data.scenes[0].render.resolution_percentage / 100), obj.data.angle), #ThreeJS uses vertical FOV, Blender uses horizontal
+                    "fov" : horizontalToVerticalAngle((bpy.data.scenes[0].render.resolution_x * bpy.data.scenes[0].render.resolution_percentage / 100), (bpy.data.scenes[0].render.resolution_y * bpy.data.scenes[0].render.resolution_percentage / 100), obj.data.angle), #ThreeJS uses vertical FOV, Blender uses horizontal
                     "clip_near" : obj.data.clip_start,
                     "clip_far" : obj.data.clip_end,
                     "parent" : util.getObjectParent(obj),
@@ -461,7 +475,8 @@ def compile_project_data():
 
                 camera["type"] = camType
 
-                if(obj == bpy.context.scene.camera):
+                #Get the camera for the scene
+                if(obj == scene.camera):
                     camera["active"] = True
                 else:
                     camera["active"] = False
@@ -637,7 +652,7 @@ def compile_project_data():
 
         project["manifest"]["scenes"].append(data_scene)
 
-        #Get the active environment
+        #Get the active environment - TODO: IF NO WORLD PRESENT
         active_world = scene.world
 
         if active_world.use_nodes:

@@ -166,6 +166,8 @@ export default class SceneManager {
         //Set the mixer for the scene
         this.mixer = new THREE.AnimationMixer(model);
 
+        Logger.log("gltf: ");
+        Logger.log(gltf);
 
         Logger.log("Animation List:");
         Logger.log(gltf.animations);
@@ -449,6 +451,7 @@ export default class SceneManager {
     loadSceneModel = (sceneData) => {
         return new Promise((resolve, reject) => {
             Logger.log("Loading scene model...");
+            Logger.log(sceneData);
     
             let glb_assembly = "assets/" + sceneData.glb_groups[0];
 
@@ -475,6 +478,7 @@ export default class SceneManager {
 
     loadScene = async (sceneData) => {
 
+        Logger.log("Loading scene...");
         Logger.log(sceneData);
 
         this.cleanSceneData();

@@ -86,6 +86,7 @@ export default class CameraManager {
     
             // Parent the light
             parent.add(camera);
+            console.log("Parented to: " + parent.name);
     
             // Convert the stored global position to the new local position
             let localPosition = parent.worldToLocal(globalPosition.clone());
@@ -93,11 +94,16 @@ export default class CameraManager {
 
         } else {
             this.scene.add(camera);
+            //this.camera = camera;
+            //console.log("Camera added to scene");
         }
 
         if(camData.active){
             this.camera = camera;
+
             //new OrbitControls( camera, this.renderer.domElement );
+        } else {
+
         }
 
     }

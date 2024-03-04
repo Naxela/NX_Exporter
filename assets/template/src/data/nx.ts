@@ -109,7 +109,19 @@ export class NXEngine {
         this.componentManager = new ComponentManager(app);
 
         // Load root scene
+        let initScene = this.projectData.manifest["initial"];
         let rootScene = this.projectData.manifest.scenes[0];
+
+        //Find the scene number first
+        this.projectData.manifest.scenes.forEach((scene, index) => {
+            if(scene.name == initScene){
+                rootScene = this.projectData.manifest.scenes[index];
+                Logger.log("Found root scene: " + rootScene.name);
+            }
+        });
+
+        //let rootScene = this.projectData.manifest.scenes[0];
+
         this.sceneManager = new SceneManager(app, this.projectData.options);
 
         this.renderManager = await this.sceneManager.loadScene(rootScene);
