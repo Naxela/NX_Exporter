@@ -237,12 +237,12 @@ export default class SceneManager {
                         let lightmapTex = new RGBELoader();
 
                         try {
-                            console.log("Lightmaps disabled");
-                            //lightmapTex.load("assets/Lightmaps/" + meshData.lightmaps + ".hdr", (texture) => {
-                            //    texture.channel = 1;
-                            //    child.material.lightMap = texture;
-                            //    child.material.lightMap.flipY = false;
-                            //});
+                            //console.log("Lightmaps disabled");
+                            lightmapTex.load("assets/Lightmaps/" + meshData.lightmaps + ".hdr", (texture) => {
+                               texture.channel = 1;
+                               child.material.lightMap = texture;
+                               child.material.lightMap.flipY = false;
+                            });
                         } catch(e) {
                             console.log("Couldn't load lightmap: " + meshData.lightmaps + " - Check if there's a lightmap folder?");
                         }
