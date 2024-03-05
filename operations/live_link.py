@@ -5,7 +5,7 @@ from ..utility import util
 
 # We presume that the TCP is running on the same machine
 host = '127.0.0.1'
-port = 3002  # Ensure this matches the port your TCP server is listening on
+port = 3003  # Ensure this matches the port your TCP server is listening on
 connection = None
 
 # Any object can act as a message bus owner
@@ -71,7 +71,7 @@ def listen(rna_type: Type[bpy.types.bpy_struct], prop: str, event_id: str):
     """Subscribe to '<rna_type>.<prop>'. The event_id can be choosen
     freely but must match with the id used in send_event().
     """
-    print("LISTENING!")
+    #print("LISTENING!")
     bpy.msgbus.subscribe_rna(
         key=(rna_type, prop),
         owner=msgbus_owner,
@@ -109,7 +109,7 @@ def depsgraph_update_handler(scene, depsgraph):
                 print(f"Unexpected error: {e}")
             #matrix = f'app.applyMatrix("{objID}", [{vec[0]}, {vec[2]}, {-vec[1]}]);'
 
-            print(cmd)
+            #print(cmd)
 
 def send_event(event_id: str, opt_data: Any = None):
     """Send the result of the given event to Krom."""

@@ -173,7 +173,7 @@ export class NXEngine {
         });
 
         if(this.projectData.livelink) {
-            const port = 3001;
+            const port = 3004;
             const ws = new WebSocket('ws://localhost:'+port);
     
             ws.onopen = () => {
@@ -193,6 +193,7 @@ export class NXEngine {
     
             };
         }
+        
 
     }
 
@@ -222,7 +223,9 @@ export class NXEngine {
                 }
             });
     
-            this.sceneManager.mixer.update(this.engineTime.getDelta());
+            if(this.sceneManager.mixer != null){
+                this.sceneManager.mixer.update(this.engineTime.getDelta());
+            }
     
             // Use the composer to render the scene instead of the direct render call
             if (this.renderManager.composer) {
@@ -252,12 +255,21 @@ export class NXEngine {
                         }
                     });
 
-                    this.sceneManager.mixer.update(this.engineTime.getDelta());
+                    if(this.sceneManager.mixer != null){
+                        this.sceneManager.mixer.update(this.engineTime.getDelta());
+                    }
+                    
 
                     if (this.renderManager.composer) {
                         this.renderManager.composer.render();
                     } else {
-                        this.renderManager.renderer.render(this.sceneManager.scene3D, this.sceneManager.cameraManager.camera);
+                        // Fallback to normal rendering if composer is not set up
+                        if(this.renderManager.renderer){
+                            this.renderManager.renderer.render(this.sceneManager.scene3D, this.sceneManager.cameraManager.camera);
+                        } else {
+                            Logger.log("Renderer is null");
+                        }
+                        
                     }
 
                     if(this.debugMode){

@@ -14,7 +14,6 @@ import CurveManager from './curves';
 
 //TODO - MAKE CONDITIONAL
 import { Sky } from 'three/addons/objects/Sky.js';
-import RendererManager from './renderer';
 
 export default class SceneManager {
 
@@ -43,13 +42,6 @@ export default class SceneManager {
             "sounds" : 0, //Sounds
             "finalization" : 0 //Lights, camera, etc.
         }
-
-    }
-
-    //Clean scene
-    cleanSceneData = () => {
-
-        Logger.log("Cleaning scene...");
 
     }
 
@@ -528,6 +520,42 @@ export default class SceneManager {
         this.removeLoadingScreen();
 
         return this.renderManager;
+
+    }
+
+    cleanSceneData = () => {
+
+        if(this.scene3D != null) {
+            this.scene3D.remove.apply(this.scene3D, this.scene3D.children);
+        }
+        if(this.renderManager != null)
+        {
+            if(this.renderManager.renderer != null){
+                document.body.removeChild(this.renderManager.renderer.domElement);
+            }
+            
+            this.renderManager.renderer = null;
+        }
+        
+
+        this.sceneData = null;
+        this.scene3D = null; //ThreeJS Scene
+        this.renderer = null; //ThreeJS Renderer
+        this.cameraManager = null;
+        this.lightManager = null;
+        this.speakerManager = null;
+        this.materialManager = null;
+        this.curveManager = null;
+        this.mixer = null;
+        this.listener = null;
+        this.animations = [];
+        this.sceneIDTable = {}; //Every object in scene needs one unique ID
+        this.loadProgress = {
+            "predefinition": 0, //Loaders, background
+            "meshes" : 0, //Meshes
+            "sounds" : 0, //Sounds
+            "finalization" : 0 //Lights, camera, etc.
+        }
 
     }
 
