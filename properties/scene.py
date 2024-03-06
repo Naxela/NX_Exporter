@@ -81,6 +81,10 @@ class NX_SceneProperties(bpy.types.PropertyGroup):
         type=bpy.types.Scene
     )
 
+
+
+
+
     #Option for the background to be:
     #- Just visible
     #- Only reflection
@@ -110,6 +114,48 @@ class NX_SceneProperties(bpy.types.PropertyGroup):
                 description="Select which texture format to use",
                 default='WebP'
         )
+    
+    #STANDARD PIPELINE PROPERTIES
+
+    nx_postprocess_standard_tonemapper : EnumProperty(
+        items = [('None', 'None', 'No tonemapping'),
+                 ('Linear', 'Linear', 'Linear tonemapping'),
+                 ('Reinhard', 'Reinhard', 'Reinhard tonemapping'),
+                 ('Cineon', 'Cineon', 'Cineon tonemapping'),
+                 ('Filmic', 'Filmic', 'Filmic tonemapping'),
+                 ('AgX', 'AgX', 'AgX tonemapping'),
+                 ('Neutral', 'Neutral', 'Neutral tonemapping')],
+                name = "Tonemapping",
+                description="Select the tonemapping",
+                default='None'
+        )
+    
+    nx_postprocess_standard_ssao : BoolProperty(
+        name="SSAO",
+        description="SSAO",
+        default=False
+    )
+
+    nx_postprocess_standard_bloom : BoolProperty(
+        name="Bloom",
+        description="Bloom",
+        default=False
+    )
+
+    nx_postprocess_standard_antialiasing : EnumProperty(
+        items = [('None', 'None', 'No tonemapping'),
+                ('Linear', 'Linear', 'Linear tonemapping'),
+                ('Reinhard', 'Reinhard', 'Reinhard tonemapping'),
+                ('Cineon', 'Cineon', 'Cineon tonemapping'),
+                ('Filmic', 'Filmic', 'Filmic tonemapping'),
+                ('AgX', 'AgX', 'AgX tonemapping'),
+                ('Neutral', 'Neutral', 'Neutral tonemapping')],
+                name = "Antialiasing",
+                description="Select the antialiasing",
+                default='None'
+        )
+
+
     
 
     
@@ -262,39 +308,3 @@ class NX_UL_PostprocessListItem(bpy.types.PropertyGroup):
 
     ############################################
     # SSAO PROPERTIES
-
-    #STANDARD PIPELINE PROPERTIES
-
-    nx_postprocess_standard_tonemapper = EnumProperty(
-        items = [('None', 'None', 'No tonemapping'),
-                 ('Linear', 'Linear', 'Linear tonemapping'),
-                 ('Reinhard', 'Reinhard', 'Reinhard tonemapping'),
-                 ('Cineon', 'Cineon', 'Cineon tonemapping'),
-                 ('Filmic', 'Filmic', 'Filmic tonemapping'),
-                 ('AgX', 'AgX', 'AgX tonemapping'),
-                 ('Neutral', 'Neutral', 'Neutral tonemapping')],
-                name = "Tonemapping", 
-                description="Select the tonemapping",
-                default='None')
-    
-    nx_postprocess_standard_ssao = BoolProperty(
-        name="SSAO",
-        description="SSAO",
-        default=False
-    )
-
-    nx_postprocess_standard_bloom = BoolProperty(
-        name="Bloom",
-        description="Bloom",
-        default=False
-    )
-
-    nx_postprocess_standard_antialiasing = EnumProperty(
-        items = [('None', 'None', 'No tonemapping'),
-                 ('SSAA', 'SSAA', 'Supersampling 2x'),
-                 ('FXAA', 'FXAA', 'Fast Approximate Anti-Aliasing'),
-                 ('MSAA', 'MSAA', 'Multi-Sample Anti-Aliasing'),
-                 ('SMAA', 'SMAA', 'Subpixel Morphological Anti-Aliasing')],
-                name = "Antialiasing", 
-                description="Select the antialiasing",
-                default='None')

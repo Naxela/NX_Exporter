@@ -76,7 +76,15 @@ def build_assets():
 def export_scenes(path):
 
     NX_sceneProperties = bpy.context.scene.NX_SceneProperties
-    initialScene = NX_sceneProperties.nx_initial_scene
+
+
+    if NX_sceneProperties.nx_initial_scene:
+        
+        initialScene = NX_sceneProperties.nx_initial_scene
+    
+    else:
+
+        initialScene = bpy.data.scenes[0]
 
     #Hide objects not set to export
     for obj in bpy.data.objects:
@@ -306,6 +314,14 @@ def compile_project_data():
 
     parallel_transfer_assets = []
 
+    initScene = None
+    if not bpy.data.scenes[0].NX_SceneProperties.nx_initial_scene:
+        print("No initial scene set. Using first scene: " + bpy.data.scenes[0].name)
+        initScene = bpy.data.scenes[0].name
+    else:
+        initScene = bpy.data.scenes[0].NX_SceneProperties.nx_initial_scene.name
+
+
     project = {
         "name":"NAME",
         "developer":"DEV",
@@ -322,22 +338,23 @@ def compile_project_data():
             "src" : "" #If empty, it will use the default NX Engine splash
         },
         "manifest":{
-            "initial": str(bpy.data.scenes[0].NX_SceneProperties.nx_initial_scene.name),
+            "initial": initScene,
             "scenes":[
             ]
         },
         "gltf_mode": bpy.data.scenes[0].NX_SceneProperties.nx_compilation_mode,
         "options":{
             "xr":bpy.data.scenes[0].NX_SceneProperties.nx_xr_mode,
+            "pipeline":bpy.data.scenes[0].NX_SceneProperties.nx_pipeline_mode,
             "graphics":{
                 "antialiasing":"true",
-                "bloom":"false",
-                "ssao":"false",
+                "bloom":bpy.data.scenes[0].NX_SceneProperties.nx_postprocess_standard_bloom,
+                "ssao":bpy.data.scenes[0].NX_SceneProperties.nx_postprocess_standard_ssao,
                 "ssr":"false",
                 "shadowType":"PCF",
                 "shadowResolution":"1024",
                 "postprocessStack":getPostprocessStack(),
-                "tonemapping_type" : bpy.data.scenes[0].view_settings.view_transform,
+                "tonemapping_type" : bpy.data.scenes[0].NX_SceneProperties.nx_postprocess_standard_tonemapper,
                 "tonemapping_exposure" : bpy.data.scenes[0].view_settings.exposure + 1,
                 "tonemapping_gamma" : bpy.data.scenes[0].view_settings.gamma
             },

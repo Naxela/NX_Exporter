@@ -142,6 +142,7 @@ class NX_PT_Postprocessing(bpy.types.Panel):
         layout.use_property_decorate = False
 
         sceneProperties = scene.NX_SceneProperties
+        
 
         postprocessList = scene.NX_UL_PostprocessList
         postprocessListItem = scene.NX_UL_PostprocessListItem
@@ -151,15 +152,13 @@ class NX_PT_Postprocessing(bpy.types.Panel):
             row = layout.row()
             row.label(text="Standard Pipeline")
             row = layout.row()
-            row.prop(sceneProperties, "nx_postprocess_standard_tonemapper")
+            row.prop(scene.NX_SceneProperties, "nx_postprocess_standard_tonemapper")
             row = layout.row()
-            row.prop(sceneProperties, "nx_postprocess_standard_ssao")
+            row.prop(scene.NX_SceneProperties, "nx_postprocess_standard_ssao")
             row = layout.row()
-            row.prop(sceneProperties, "nx_postprocess_standard_bloom")
+            row.prop(scene.NX_SceneProperties, "nx_postprocess_standard_bloom")
             row = layout.row()
             row.prop(sceneProperties, "nx_postprocess_standard_antialiasing")
-            #row = layout.row()
-            #row.prop(scene.NX_SceneProperties, "nx_pipeline_standard")
 
         if sceneProperties.nx_pipeline_mode == "Performance":
 
