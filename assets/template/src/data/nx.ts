@@ -261,6 +261,8 @@ export class NXEngine {
                     
 
                     if (this.renderManager.composer) {
+                        // Use the composer to render the scene instead of the direct render call
+                        Logger.log("Using composer");
                         this.renderManager.composer.render();
                     } else {
                         // Fallback to normal rendering if composer is not set up

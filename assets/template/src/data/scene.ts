@@ -516,6 +516,7 @@ export default class SceneManager {
         if(this.renderManager.composerFlag){
             this.renderManager.createComposer();
         }
+        this.renderManager.createStandardComposer();
 
         this.removeLoadingScreen();
 

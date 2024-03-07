@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import Utility from './utility';
+/*
 import { 
     BloomEffect,
     EffectComposer,
@@ -9,8 +10,13 @@ import {
     SMAAEffect,
     KawaseBlurPass,
     BlurPass,
-    ToneMappingEffect } from "postprocessing";
+    ToneMappingEffect } from "postprocessing"; */
 import { HalfFloatType } from "three";
+
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { SSAOPass } from 'three/addons/postprocessing/SSAOPass.js';
+import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 
 import * as POSTPROCESSING from "postprocessing"
 //import { SSREffect, defaultSSROptions, SSGIEffect, HBAOEffect, TRAAEffect, MotionBlurEffect, VelocityDepthNormalPass } from "realism-effects"
@@ -20,9 +26,11 @@ export default class RenderManager {
 
     constructor(scene, options, xr) {
 
+        this.renderer = null;
         this.scene = scene;
         this.camera = null;
         this.composerFlag = false;
+        this.composer = null;
 
         //Temporary check if device is mobile
         if(Utility.isMobileDevice()){
@@ -217,11 +225,14 @@ export default class RenderManager {
             
             renderer.toneMapping = THREE.ACESFilmicToneMapping;
 
-        } else if(options.graphics.tonemapping_type == "Standard"){
+        } else if(options.graphics.tonemapping_type == "Linear"){
             
             renderer.toneMapping = THREE.LinearToneMapping;
-
+        } else {
+            renderer.toneMapping = 0;
         }
+
+
 
         renderer.outputEncoding = THREE.sRGBEncoding
         renderer.physicallyCorrectLights = true;
@@ -233,6 +244,28 @@ export default class RenderManager {
 
     }
 
+    createStandardComposer() {
 
+        console.log("Creating new standard composer...");
+
+        
+        this.composer = new EffectComposer( this.renderer );
+
+        this.camera = app.sceneManager.cameraManager.camera;
+
+        const renderPass = new RenderPass( this.scene, this.camera );
+        this.composer.addPass( renderPass );
+
+        const ssaoPass = new SSAOPass( this.scene, this.camera, window.innerWidth, window.innerHeight);
+        
+
+        ssaoPass.output = SSAOPass.OUTPUT.SSAO;
+        this.composer.addPass( ssaoPass );
+
+        const outputPass = new OutputPass();
+        this.composer.addPass( outputPass );
+
+        
+    }
 
 }
