@@ -106,11 +106,13 @@ class NX_Start(bpy.types.Operator):
             exit(1)  # Exit the script or handle the error appropriately
 
         # # Step 2: Only proceed to run the "dev" command if installation succeeded
-        start_server(bin_path, out_path, bpy.context.scene.NX_SceneProperties.nx_live_link, False)
+        #start_server(bin_path, out_path, bpy.context.scene.NX_SceneProperties.nx_live_link, False)
 
-        print(f"Production server should now be running for {out_path}.")
+        #stop_server(bpy.context.scene.NX_SceneProperties.nx_live_link)
 
-        webbrowser.open("http://localhost:" + str(4173))
+        #print(f"Production server should now be running for {out_path}.")
+
+        #webbrowser.open("http://localhost:" + str(4173))
 
         return {"FINISHED"}
 

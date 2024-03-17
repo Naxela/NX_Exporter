@@ -249,7 +249,7 @@ export default class RenderManager {
         console.log("Creating new standard composer...");
 
         
-        this.composer = new EffectComposer( this.renderer );
+/*         this.composer = new EffectComposer( this.renderer );
 
         this.camera = app.sceneManager.cameraManager.camera;
 
@@ -263,7 +263,7 @@ export default class RenderManager {
         this.composer.addPass( ssaoPass );
 
         const outputPass = new OutputPass();
-        this.composer.addPass( outputPass );
+        this.composer.addPass( outputPass ); */
 
         
     }
