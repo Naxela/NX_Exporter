@@ -2,11 +2,14 @@ import bpy, os
 
 from .. utility import util
 
-def create_javascript_file(classname):
+def create_javascript_file(classname, fileformat):
 
     sources_path = util.get_sources_path()
 
-    filename = os.path.join(sources_path, classname) + ".js"
+    if(fileformat == 'TypeScript'):
+        filename = os.path.join(sources_path, classname) + ".tsx"
+    else:
+        filename = os.path.join(sources_path, classname) + ".jsx"
 
     template = '''
 export default class {class_name} {{

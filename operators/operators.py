@@ -338,7 +338,7 @@ class NX_NewJavascriptFile(bpy.types.Operator):
     bl_idname = "nx_modulelist.new_script"
     bl_label = "New Script"
 
-    filename: bpy.props.StringProperty(name="Filename (*.js/*.ts)")
+    filename: bpy.props.StringProperty(name="Filename (*.jsx/*.tsx)")
     fileformat: bpy.props.EnumProperty(
         items = [('TypeScript', 'TypeScript', 'TypeScript format'),
                  ('JavaScript', 'JavaScript', 'JavaScript format'),],
@@ -356,7 +356,7 @@ class NX_NewJavascriptFile(bpy.types.Operator):
 
         print("Creating javascript file at sources folder", self.filename)
 
-        if(filemaker.create_javascript_file(self.filename)):
+        if(filemaker.create_javascript_file(self.filename, self.fileformat)):
 
             obj.NX_UL_ModuleList[index].nx_module_script = self.filename
             obj.NX_UL_ModuleList[index].nx_module_script_format = self.fileformat
@@ -386,9 +386,11 @@ class NX_EditJavascriptFile(bpy.types.Operator):
         list = obj.NX_UL_ModuleList
         index = obj.NX_UL_ModuleListItem
 
-        file = os.path.join(util.get_sources_path(),list[index].nx_module_script +".js")
-
-        print(file)
+        #If file exists
+        if os.path.exists(os.path.join(util.get_sources_path(), list[index].nx_module_script + ".jsx")):
+            file = os.path.join(util.get_sources_path(), list[index].nx_module_script + ".jsx")
+        else:
+            file = os.path.join(util.get_sources_path(), list[index].nx_module_script + ".tsx")
 
         os.system(file)
 

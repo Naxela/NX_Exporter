@@ -215,7 +215,7 @@ def getProjectJSScripts():
         with WorkingDir(sources_path):
 
             # Glob supports recursive search since python 3.5 so it should cover both blender 2.79 and 2.8 integrated python
-            for file in glob.glob('**/*.js', recursive=True):
+            for file in glob.glob('**/*.jsx', recursive=True):
 
                 print("/////")
                 print(file)
@@ -225,7 +225,17 @@ def getProjectJSScripts():
                 mod_parts = mod.rsplit('/')
                 if re.match('^[A-Z][A-Za-z0-9_]*$', mod_parts[-1]):
                     scripts_list.add().name = mod.replace('/', '.')
-                #    fetch_script_props(file)
+
+            for file in glob.glob('**/*.tsx', recursive=True):
+
+                print("/////")
+                print(file)
+
+                mod = file.rsplit('.', 1)[0]
+                mod = mod.replace('\\', '/')
+                mod_parts = mod.rsplit('/')
+                if re.match('^[A-Z][A-Za-z0-9_]*$', mod_parts[-1]):
+                    scripts_list.add().name = mod.replace('/', '.')
 
     print("//Getting project scripts")
     print(scripts_list)
