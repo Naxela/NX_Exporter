@@ -138,10 +138,13 @@ class NX_Run(bpy.types.Operator):
         #    os.mkdir(out_path)
 
         # Copy files in folder addon/assets/template to out folder
-        shutil.copytree(os.path.join(util.get_addon_path(), "assets", "template"), out_path)
+        shutil.copytree(os.path.join(util.get_addon_path(), "assets", "template"), out_path, dirs_exist_ok=True)
 
-        # Copy assets folder to out folder (nx-build/assets) to out/assets
-        shutil.copytree(os.path.join(util.get_build_path()), os.path.join(out_path, "assets"))
+        # Copy assets folder to out folder (nx-build/assets) to public
+        shutil.copytree(os.path.join(util.get_build_path()), os.path.join(out_path, "public"), dirs_exist_ok=True)
+
+        # Copy Sources from public folder to src folder (for typescript to read it)
+        shutil.copytree(os.path.join(out_path, "public","Sources"), os.path.join(out_path, "src","Sources"), dirs_exist_ok=True)
 
         package_json_path = os.path.join(out_path, "package.json")
         package_json_content = projectMaker.createPackageJson(util.get_file_name(), "1.0.0")

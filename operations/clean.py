@@ -14,7 +14,7 @@ def clean_soft():
     out_folder = "out"
 
     if(os.path.exists(project_folder)):
-        shutil.rmtree(project_folder)
+        shutil.rmtree(project_folder, ignore_errors=True)
 
     if(os.path.exists(out_folder)):
-        shutil.rmtree(out_folder)
+        shutil.rmtree(out_folder, ignore_errors=True)
