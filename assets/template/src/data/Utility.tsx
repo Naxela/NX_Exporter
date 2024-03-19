@@ -1,7 +1,5 @@
 export default class Utility {
 
-
-
     static getGlobal = (property) => {
 
         if (typeof window !== 'undefined') {
@@ -41,7 +39,7 @@ export default class Utility {
 
         } catch (e) {
 
-            ErrorManager.catchError("ERROR: CAN'T FIND ASSET FOLDER");
+            //ErrorManager.catchError("ERROR: CAN'T FIND ASSET FOLDER");
             //ErrorManager.catchError(e);
 
             return null;
@@ -83,7 +81,7 @@ export default class Utility {
     }
 
     static findAnimationByName(scene, name) {
-        // Assuming 'scene.animations' holds your array of AnimationClips
+
         let animations = scene.animations;
     
         for (let i = 0; i < animations.length; i++) {

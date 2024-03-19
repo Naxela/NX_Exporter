@@ -8,11 +8,13 @@ import * as THREE from 'three';
 
 import RenderController from './RenderController'
 import EnvironmentSetup from './Environment';
+import Bridge from './Bridge'
 import Models from './Models';
 import Lights from './Light';
 import Cameras from './Camera';
 import Speakers from './Speaker';
 import { ScriptManagerProvider } from './Scripts'
+import Postprocessing from './Postprocess'
 
 function Loader() {
     const { progress } = useProgress()
@@ -24,7 +26,9 @@ export default function SceneManager({ projectData }) {
     let [currentScene, setCurrentScene] = useState(0);
     let [sceneData, setSceneData] = useState(null);
 
-    window.ChangeScene = function(scene) {
+    window.NAX.ChangeScene = function(scene) {
+
+        //TODO! - Unload existing scene?
 
         if(typeof scene == "number") {
             setCurrentScene(scene);
@@ -62,8 +66,8 @@ export default function SceneManager({ projectData }) {
     // Render scene using sceneData
     return (
         <ScriptManagerProvider>
-            <Canvas shadows>
-
+            <Canvas shadows flat>
+                <Bridge />
                 <Suspense fallback={<Loader />}>
                     <EnvironmentSetup key={currentScene} environmentData={sceneData.environment} />
                     <RenderController data={projectData.options} />
@@ -72,11 +76,18 @@ export default function SceneManager({ projectData }) {
                     <Speakers />
                     <OrbitControls />
                     <Models data={{modelPath: sceneData.glb_groups[0], sceneManifest: sceneData }} />
+                    <Postprocessing PostprocessData={projectData.options} />
+
+                    {/* NAX-POST-EFFECT START */}
+
+                    {/* NAX-POST-EFFECT END */}
+
+
                 </Suspense>
 
-                {/* Render other components as needed, passing them appropriate data */}
             </Canvas>
         </ScriptManagerProvider>
+        
     );
 
 
