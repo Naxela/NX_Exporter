@@ -142,18 +142,11 @@ class NX_SceneProperties(bpy.types.PropertyGroup):
         default=False
     )
 
-    nx_postprocess_standard_antialiasing : EnumProperty(
-        items = [('None', 'None', 'No tonemapping'),
-                ('Linear', 'Linear', 'Linear tonemapping'),
-                ('Reinhard', 'Reinhard', 'Reinhard tonemapping'),
-                ('Cineon', 'Cineon', 'Cineon tonemapping'),
-                ('Filmic', 'Filmic', 'Filmic tonemapping'),
-                ('AgX', 'AgX', 'AgX tonemapping'),
-                ('Neutral', 'Neutral', 'Neutral tonemapping')],
-                name = "Antialiasing",
-                description="Select the antialiasing",
-                default='None'
-        )
+    nx_postprocess_standard_antialiasing : BoolProperty(
+        name="Antialiasing",
+        description="Enable antialiasing",
+        default=False
+    )
 
 
     

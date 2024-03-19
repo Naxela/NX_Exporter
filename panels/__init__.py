@@ -8,6 +8,7 @@ classes = [
     scene.NX_PT_Modules,
     object.NX_PT_ObjectMenu,
     object.NX_PT_Modules,
+    scene.NX_PT_Shadows,
     scene.NX_PT_Postprocessing
 ]
 
