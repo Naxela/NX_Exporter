@@ -81,6 +81,34 @@ class NX_SceneProperties(bpy.types.PropertyGroup):
         type=bpy.types.Scene
     )
 
+    nx_enable_shadows : BoolProperty(
+        name="Enable shadows",
+        description="Enable live linking",
+        default=False
+    )
+
+    nx_shadows_mode : EnumProperty(
+        items = [('Basic', 'Basic', 'Basic gives unfiltered shadow maps - fastest, but lowest quality'),
+                 ('PCF', 'PCF', 'PCF filters shadow maps using the Percentage-Closer Filtering (PCF) algorithm (default).'),
+                 ('PCFS', 'PCFS', 'PCFfilters shadow maps using the Percentage-Closer Filtering (PCF) algorithm with better soft shadows especially when using low-resolution shadow maps.'),
+                ('VSM', 'VSM', 'VSM filters shadow maps using the Variance Shadow Map (VSM) algorithm. When using VSM all shadow receivers will also cast shadows.')],
+                name = "Shadow Type",
+                description="Select which shadow types to use",
+                default='PCF'
+        )
+    
+    nx_shadows_resolution : EnumProperty(
+        items = [('256', '256', '256 pixel shadow resolution'),
+                 ('512', '512', '512 pixel shadow resolution'),
+                 ('1024', '1024', '1024 pixel shadow resolution'),
+                 ('2048', '2048', '2048 pixel shadow resolution'),
+                 ('4096', '4096', '4096 pixel shadow resolution'),
+                ('8192', '8192', '8192 pixel shadow resolution')],
+                name = "Shadow map resolution",
+                description="Select the resolution to use",
+                default='256'
+        )
+
 
 
 
