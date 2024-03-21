@@ -40,9 +40,15 @@ class NX_ObjectProperties(bpy.types.PropertyGroup):
         default=True
     )
 
-    nx_object_tags = StringProperty(
+    nx_object_tags : StringProperty(
         name="Tags",
         description="Tags for the object, comma separated",
+        default=""
+    )
+
+    nx_object_injection : StringProperty(
+        name="Injection",
+        description="React Injection component - For instance '<OrbitControls />'",
         default=""
     )
 

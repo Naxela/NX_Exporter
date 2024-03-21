@@ -2,7 +2,7 @@ import bpy, os, json, webbrowser, subprocess, shutil
 
 from .. operations import compile, clean, filemaker, live_link
 
-from .. utility import util, projectMaker
+from .. utility import util, projectMaker, componentInjection
 
 from .. import globals as gbl
 
@@ -17,7 +17,10 @@ def start_server(bin_path, out_path, livelink, production):  # Changed parameter
         cmd_run_dev = [bin_path, "run", "preview"]  # Make sure this path is correctly pointing to pnpm
     else:
         print("Development!")
-        cmd_run_dev = [bin_path, "run", "dev"]
+        if bpy.data.scenes["Scene"].NX_SceneProperties.nx_optimize:
+            cmd_run_dev = [bin_path, "run", "dev3"]
+        else:
+            cmd_run_dev = [bin_path, "run", "dev2"]
 
     with open('server_output.log', 'w') as f:
         gbl.global_dev_server_process = subprocess.Popen(cmd_run_dev, cwd=out_path)
@@ -125,7 +128,7 @@ class NX_Run(bpy.types.Operator):
     def execute(self, context):
 
         clean.clean_soft()
-        compile.build_assets()
+        injection_data = compile.build_assets()
 
         global global_dev_server_process
 
@@ -141,6 +144,13 @@ class NX_Run(bpy.types.Operator):
 
         # Copy files in folder addon/assets/template to out folder
         shutil.copytree(os.path.join(util.get_addon_path(), "assets", "template"), out_path, dirs_exist_ok=True)
+
+        # Insert injection component data into the ComponentInjection file
+        componentInjection.insertInjectionData(os.path.join(out_path,"src","ComponentInjection.tsx"), injection_data, 8)
+
+        # Insert injection component headers into the ComponentInjection file
+        injection_header = componentInjection.fetchInjectionHeader()
+        componentInjection.insertInjectionData(os.path.join(out_path,"src","ComponentInjection.tsx"), injection_header, 0)
 
         # Copy assets folder to out folder (nx-build/assets) to public
         shutil.copytree(os.path.join(util.get_build_path()), os.path.join(out_path, "public"), dirs_exist_ok=True)
@@ -190,7 +200,7 @@ class NX_Run(bpy.types.Operator):
         # # so we won't use communicate() which waits for the process to complete.
         print(f"Development server should now be running for {out_path}.")
 
-        webbrowser.open("http://localhost:" + str(5173))
+        webbrowser.open("http://localhost:" + str(3001))
 
 
         return {"FINISHED"}
@@ -434,3 +444,25 @@ class NX_OpenStore(bpy.types.Operator):
         #store.start_store()
 
         return {'FINISHED'}
+
+class OBJECT_OT_injection_component(bpy.types.Operator):
+    bl_idname = "object.injection_component"
+    bl_label = "Injection Component"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self, context):
+
+        bpy.ops.object.empty_add(type='SINGLE_ARROW')  # This adds an empty object to the scene
+        component = bpy.context.object
+        component.name = "InjectionComponent"
+        component["NX_InjectionComponent"] = True
+
+        return {'FINISHED'}
+    
+class VIEW3D_MT_nax_menu(bpy.types.Menu):
+    bl_label = "NAX Engine"
+    bl_idname = "VIEW3D_MT_nax_menu"
+
+    def draw(self, context):
+        layout = self.layout
+        layout.operator(OBJECT_OT_injection_component.bl_idname, icon='NODE')

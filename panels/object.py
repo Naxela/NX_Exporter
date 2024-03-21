@@ -20,10 +20,15 @@ class NX_PT_ObjectMenu(bpy.types.Panel):
         row = layout.row(align=True)
         row.prop(obj.NX_ObjectProperties, "nx_object_export")
         row = layout.row(align=True)
-        row.prop(obj.NX_ObjectProperties, "nx_object_spawn")
-        row = layout.row(align=True)
-        row.prop(obj.NX_ObjectProperties, "nx_object_object_status")
-        row = layout.row(align=True)
+        
+        if "NX_InjectionComponent" in obj:
+            row.prop(obj.NX_ObjectProperties, "nx_object_injection")
+            row = layout.row(align=True)
+        else:
+            row.prop(obj.NX_ObjectProperties, "nx_object_spawn")
+            row = layout.row(align=True)
+            row.prop(obj.NX_ObjectProperties, "nx_object_object_status")
+            row = layout.row(align=True)
 
         if obj.type == "MESH":
 
@@ -33,6 +38,8 @@ class NX_PT_ObjectMenu(bpy.types.Panel):
             row.prop(obj.NX_ObjectProperties, "nx_object_cast_shadows")
             row = layout.row(align=True)
             row.prop(obj.NX_ObjectProperties, "nx_object_receive_shadows")
+            row = layout.row(align=True)
+            row.prop(obj.NX_ObjectProperties, "nx_object_tags")
 
         if obj.type == "LIGHT":
 

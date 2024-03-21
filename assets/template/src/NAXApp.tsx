@@ -2,6 +2,35 @@ import React, { useState, useEffect } from 'react';
 import SceneManager from './data/SceneManager';
 import './NAXApp.css';
 
+function SocketManager(){
+
+  const port = 3001;
+  const ws = new WebSocket('ws://localhost:'+port);
+
+  ws.onopen = () => {
+      console.log('WebSocket connection established');
+      ws.send('Hello from client');
+  };
+
+  ws.onmessage = (event) => {
+
+      if(event.data.startsWith('NAX')) {
+
+          console.log('Command:', event.data);
+          eval(event.data);
+
+      } else {
+          console.log('Message from server:', event.data);
+      }
+
+  };
+
+  return(
+      <>
+      </>
+  )
+}
+
 async function loadProject(projectURL) {
   try {
       const response = await fetch(projectURL);
@@ -20,6 +49,8 @@ export default function NAXApp() {
   const [projectManifest, setProjectManifest] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  window.NAX = window.NAX || {};
 
   useEffect(() => {
     async function fetchAndSetProjectData() {
@@ -41,6 +72,9 @@ export default function NAXApp() {
   if (error) return <div>Error loading project - Is the path to the project file correct?</div>;
 
   return (
+    <>
+    <SocketManager />
     <SceneManager projectData={projectManifest} />
+    </>
   );
 }

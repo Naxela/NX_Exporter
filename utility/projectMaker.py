@@ -3,39 +3,44 @@ from ..utility import util
 
 def createPackageJson(name, version):
     package_json_content = {
-      "name": "nx-runtime-react",
-      "version": "0.0.0",
-      "type": "module",
-      "scripts": {
-        "dev": "vite",
-        "build": "tsc && vite build",
-        "build-free": "vite build",
-        "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-        "preview": "vite preview"
-      },
-      "dependencies": {
-        "@gltf-transform/cli": "^3.10.0",
-        "@react-three/drei": "^9.101.0",
-        "@react-three/fiber": "^8.15.19",
-        "@react-three/postprocessing": "^2.16.2",
-        "postprocessing": "^6.35.2",
-        "react": "^18.2.0",
-        "react-dom": "^18.2.0",
-        "three": "^0.162.0"
-      },
-      "devDependencies": {
-        "@types/react": "^18.2.56",
-        "@types/react-dom": "^18.2.19",
-        "@typescript-eslint/eslint-plugin": "^7.0.2",
-        "@typescript-eslint/parser": "^7.0.2",
-        "@vitejs/plugin-react": "^4.2.1",
-        "eslint": "^8.56.0",
-        "eslint-plugin-react-hooks": "^4.6.0",
-        "eslint-plugin-react-refresh": "^0.4.5",
-        "typescript": "^5.2.2",
-        "vite": "^5.1.4"
-      }
+    "name": "nx-runtime-react",
+    "private": True,
+    "version": "0.0.0",
+    "type": "module",
+    "scripts": {
+      "dev": "vite",
+      "dev2": "node server.js",
+      "dev3": "gltf-transform optimize public/Scene.glb public/Scene.glb --texture-compress webp && node server.js",
+      "build": "tsc && vite build",
+      "build-free": "vite build",
+      "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+      "preview": "vite preview"
+    },
+    "dependencies": {
+      "@gltf-transform/cli": "^3.10.0",
+      "@react-three/drei": "^9.101.0",
+      "@react-three/fiber": "^8.15.19",
+      "@react-three/postprocessing": "^2.16.2",
+      "express": "^4.18.3",
+      "postprocessing": "^6.35.2",
+      "react": "^18.2.0",
+      "react-dom": "^18.2.0",
+      "three": "^0.162.0",
+      "ws": "^8.16.0"
+    },
+    "devDependencies": {
+      "@types/react": "^18.2.56",
+      "@types/react-dom": "^18.2.19",
+      "@typescript-eslint/eslint-plugin": "^7.0.2",
+      "@typescript-eslint/parser": "^7.0.2",
+      "@vitejs/plugin-react": "^4.2.1",
+      "eslint": "^8.56.0",
+      "eslint-plugin-react-hooks": "^4.6.0",
+      "eslint-plugin-react-refresh": "^0.4.5",
+      "typescript": "^5.2.2",
+      "vite": "^5.1.4"
     }
+  }
 
     return package_json_content
 

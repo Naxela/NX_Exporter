@@ -26,7 +26,7 @@ def build_assets():
             shutil.rmtree(project_folder)
         os.mkdir(project_folder)
 
-        compiled_data, transfer_files = compile_project_data()
+        compiled_data, transfer_files, injection_data = compile_project_data()
 
         #Write the project manifest to file
         with open(os.path.join(project_folder, "project.nx"), 'w') as file:
@@ -67,9 +67,12 @@ def build_assets():
 
         print("Project built successfully")
 
+        return injection_data
+
     else:
 
         print("File has not been saved")
+
         return
 
 
@@ -314,6 +317,8 @@ def compile_project_data():
 
     parallel_transfer_assets = []
 
+    injection_components = []
+
     initScene = None
     if not bpy.data.scenes[0].NX_SceneProperties.nx_initial_scene:
         print("No initial scene set. Using first scene: " + bpy.data.scenes[0].name)
@@ -347,7 +352,7 @@ def compile_project_data():
             "xr":bpy.data.scenes[0].NX_SceneProperties.nx_xr_mode,
             "pipeline":bpy.data.scenes[0].NX_SceneProperties.nx_pipeline_mode,
             "graphics":{
-                "antialiasing":"true",
+                "antialiasing":bpy.data.scenes[0].NX_SceneProperties.nx_postprocess_standard_antialiasing,
                 "bloom":bpy.data.scenes[0].NX_SceneProperties.nx_postprocess_standard_bloom,
                 "ssao":bpy.data.scenes[0].NX_SceneProperties.nx_postprocess_standard_ssao,
                 "ssr":"false",
@@ -421,17 +426,26 @@ def compile_project_data():
 
             if obj.type == "EMPTY":
 
-                empty = {
-                    "name" : obj.name,
-                    "identifier" : obj['nx_id'],
-                    "matrix" : util.get_object_matrix_y_axis(obj),
-                    "parent" : util.getObjectParent(obj),
-                    "modules" : iterateObjectModules(obj),
-                    "active_action" : getActiveAction(obj),
-                    "spawn" : obj.NX_ObjectProperties.nx_object_spawn
-                }
+                if "NX_InjectionComponent" in obj and obj.NX_ObjectProperties.nx_object_export:
+                    
+                    if obj["NX_InjectionComponent"]:
 
-                data_scene["scene_empties"].append(empty)
+                        injection_components.append(obj.NX_ObjectProperties.nx_object_injection)
+
+                else:
+
+                    empty = {
+                        "name" : obj.name,
+                        "identifier" : obj['nx_id'],
+                        "matrix" : util.get_object_matrix_y_axis(obj),
+                        "parent" : util.getObjectParent(obj),
+                        "modules" : iterateObjectModules(obj),
+                        "active_action" : getActiveAction(obj),
+                        "spawn" : obj.NX_ObjectProperties.nx_object_spawn,
+                        "tags" : obj.NX_ObjectProperties.nx_object_tags
+                    }
+
+                    data_scene["scene_empties"].append(empty)
 
             if obj.type == "MESH" and obj.NX_ObjectProperties.nx_object_export:
 
@@ -445,6 +459,8 @@ def compile_project_data():
                     "spawn" : obj.NX_ObjectProperties.nx_object_spawn,
                     "object_status" : obj.NX_ObjectProperties.nx_object_object_status,
                     "active_action" : getActiveAction(obj),
+                    "tags" : obj.NX_ObjectProperties.nx_object_tags
+                    
                 }
 
                 data_scene["scene_meshes"].append(mesh)
@@ -481,7 +497,8 @@ def compile_project_data():
                     "parent" : util.getObjectParent(obj),
                     "modules" : iterateObjectModules(obj),
                     "active_action" : getActiveAction(obj),
-                    "spawn" : obj.NX_ObjectProperties.nx_object_spawn
+                    "spawn" : obj.NX_ObjectProperties.nx_object_spawn,
+                    "tags" : obj.NX_ObjectProperties.nx_object_tags
                 }
 
                 if obj.data.type == "PERSP":
@@ -516,7 +533,8 @@ def compile_project_data():
                     "parent" : util.getObjectParent(obj),
                     "modules" : iterateObjectModules(obj),
                     "active_action" : getActiveAction(obj),
-                    "spawn" : obj.NX_ObjectProperties.nx_object_spawn
+                    "spawn" : obj.NX_ObjectProperties.nx_object_spawn,
+                    "tags" : obj.NX_ObjectProperties.nx_object_tags
                 }
 
                 if(obj.data.type == 'POINT'):
@@ -587,7 +605,8 @@ def compile_project_data():
                             "autoplay" : obj.NX_ObjectProperties.nx_speaker_autoplay,
                             "loop" : obj.NX_ObjectProperties.nx_speaker_loop,
                             "stream" : obj.NX_ObjectProperties.nx_speaker_stream,
-                            "spawn" : obj.NX_ObjectProperties.nx_object_spawn
+                            "spawn" : obj.NX_ObjectProperties.nx_object_spawn,
+                            "tags" : obj.NX_ObjectProperties.nx_object_tags
                         }
 
                         parallel_transfer_assets.append(obj.data.sound.filepath)
@@ -605,7 +624,8 @@ def compile_project_data():
                     "active_action" : getActiveAction(obj),
                     "curve_type" : obj.data.splines[0].type,
                     "spline_data" : [],
-                    "spawn" : obj.NX_ObjectProperties.nx_object_spawn
+                    "spawn" : obj.NX_ObjectProperties.nx_object_spawn,
+                    "tags" : obj.NX_ObjectProperties.nx_object_tags
                 }
 
                 #TODO - IMPLEMENT CURVE SPLINE CONTROL
@@ -728,4 +748,7 @@ def compile_project_data():
                                 # Add additional code here if you want to do something with the node
                                 break
     
-    return project, parallel_transfer_assets
+    
+    print(injection_components)
+    
+    return project, parallel_transfer_assets, injection_components

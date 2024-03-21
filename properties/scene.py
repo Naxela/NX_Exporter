@@ -87,6 +87,12 @@ class NX_SceneProperties(bpy.types.PropertyGroup):
         default=False
     )
 
+    nx_optimize : BoolProperty(
+        name="Optimize and compress",
+        description="Optimize and compress during export",
+        default=False
+    )
+
     nx_shadows_mode : EnumProperty(
         items = [('Basic', 'Basic', 'Basic gives unfiltered shadow maps - fastest, but lowest quality'),
                  ('PCF', 'PCF', 'PCF filters shadow maps using the Percentage-Closer Filtering (PCF) algorithm (default).'),
@@ -109,7 +115,11 @@ class NX_SceneProperties(bpy.types.PropertyGroup):
                 default='256'
         )
 
-
+    nx_injection_header : PointerProperty(
+            name="Injection header", 
+            description="Prepend header to injection file",
+            type=bpy.types.Text
+        )
 
 
 

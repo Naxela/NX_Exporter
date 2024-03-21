@@ -113,11 +113,16 @@ class NX_PT_Settings(bpy.types.Panel):
         row = layout.row(align=True)
         row.prop(scene.NX_SceneProperties, "nx_live_link")
         row = layout.row(align=True)
+        row.prop(scene.NX_SceneProperties, "nx_optimize")
+        row = layout.row(align=True)
         row.prop(scene.NX_SceneProperties, "nx_http_port")
         row = layout.row(align=True)
         row.prop(scene.NX_SceneProperties, "nx_tcp_port")
         row = layout.row(align=True)
         row.prop(scene.NX_SceneProperties, "nx_texture_quality", slider=True)
+        row = layout.row(align=True)
+        row.prop(scene.NX_SceneProperties, "nx_injection_header")
+        
         #row.operator("nx.compile")
 
 class NX_PT_Shadows(bpy.types.Panel):

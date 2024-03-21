@@ -140,7 +140,6 @@ function Models({data}) { // Receive the path as a prop
 
         }
         
-        
         if(meshData.active_action && meshData.active_action != "none") {
 
           child["default_action"] = meshData.active_action;

@@ -1,10 +1,6 @@
 import { Suspense, useEffect, useState } from 'react'
-import { Canvas, useFrame} from '@react-three/fiber'
-import { Bloom, DepthOfField, SMAA, ToneMapping, EffectComposer, Noise, Vignette, N8AO} from '@react-three/postprocessing'
-import { OrbitControls, Html, useProgress, StatsGl } from '@react-three/drei'
-import { useThree } from '@react-three/fiber'
-import { BlendFunction } from 'postprocessing'
-import * as THREE from 'three';
+import { Canvas } from '@react-three/fiber'
+import { Html, useProgress, StatsGl } from '@react-three/drei'
 
 import RenderController from './RenderController'
 import EnvironmentSetup from './Environment';
@@ -15,6 +11,7 @@ import Cameras from './Camera';
 import Speakers from './Speaker';
 import { ScriptManagerProvider } from './Scripts'
 import Postprocessing from './Postprocess'
+import ComponentInjection from '../ComponentInjection';
 
 function Loader() {
     const { progress } = useProgress()
@@ -66,20 +63,21 @@ export default function SceneManager({ projectData }) {
     // Render scene using sceneData
     return (
         <ScriptManagerProvider>
-            <Canvas shadows flat>
+            <Canvas flat gl={{ antialias: false }}>
                 <Bridge />
                 <Suspense fallback={<Loader />}>
                     <EnvironmentSetup key={currentScene} environmentData={sceneData.environment} />
                     <RenderController data={projectData.options} />
                     <Cameras cameraData={sceneData.scene_cameras} />
-                    <Lights lightData={sceneData.scene_lights} />
+                    <Lights lightData={sceneData.scene_lights } />
                     <Speakers />
-                    <OrbitControls />
                     <Models data={{modelPath: sceneData.glb_groups[0], sceneManifest: sceneData }} />
                     <Postprocessing PostprocessData={projectData.options} />
 
-                    {/* NAX-POST-EFFECT START */}
+                    <StatsGl className="stats" />
 
+                    {/* NAX-POST-EFFECT START */}
+                    <ComponentInjection />
                     {/* NAX-POST-EFFECT END */}
 
 
@@ -89,7 +87,5 @@ export default function SceneManager({ projectData }) {
         </ScriptManagerProvider>
         
     );
-
-
 
 }
