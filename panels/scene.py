@@ -52,6 +52,7 @@ class NX_PT_Panel(bpy.types.Panel):
             row.operator("nx.clean")
             row.operator("nx.explore")
             row.operator("nx.compile_start")
+            row.operator("nx.generate")
 
 
             #Here we check if 

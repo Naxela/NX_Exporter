@@ -10,6 +10,7 @@ classes = [
     operators.NX_Explore,
     operators.NX_Run,
     operators.NX_Stop,
+    operators.NX_Generate,
     operators.NX_ModuleListNewItem,
     operators.NX_ModuleListRemoveItem,
     operators.NX_NewJavascriptFile,

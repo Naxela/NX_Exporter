@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import SceneManager from './data/SceneManager';
+import SceneManagerXR from './data/SceneManagerXR';
 import './NAXApp.css';
 
 function SocketManager(){
@@ -73,8 +74,16 @@ export default function NAXApp() {
 
   return (
     <>
-    <SocketManager />
-    <SceneManager projectData={projectManifest} />
+    {/* <SocketManager /> */}
+
+
+    {projectManifest.options.xr && (
+        <SceneManagerXR projectData={projectManifest} />
+    )}
+
+    {!projectManifest.options.xr && (
+        <SceneManager projectData={projectManifest} />
+    )}
     </>
   );
 }

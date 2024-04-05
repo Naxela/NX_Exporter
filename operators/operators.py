@@ -20,7 +20,7 @@ def start_server(bin_path, out_path, livelink, production):  # Changed parameter
         if bpy.data.scenes["Scene"].NX_SceneProperties.nx_optimize:
             cmd_run_dev = [bin_path, "run", "dev3"]
         else:
-            cmd_run_dev = [bin_path, "run", "dev2"]
+            cmd_run_dev = [bin_path, "run", "dev"]
 
     with open('server_output.log', 'w') as f:
         gbl.global_dev_server_process = subprocess.Popen(cmd_run_dev, cwd=out_path)
@@ -119,6 +119,16 @@ class NX_Start(bpy.types.Operator):
 
         return {"FINISHED"}
 
+class NX_Generate(bpy.types.Operator):
+    bl_idname = "nx.generate"
+    bl_label = "Generate"
+    bl_description = "Generates the project (pre-generated dependencies and files)"
+    bl_options = {"REGISTER", "UNDO"}
+
+    def execute(self, context):
+
+        return {"FINISHED"}
+
 class NX_Run(bpy.types.Operator):
     bl_idname = "nx.compile_run"
     bl_label = "Start"
@@ -200,7 +210,7 @@ class NX_Run(bpy.types.Operator):
         # # so we won't use communicate() which waits for the process to complete.
         print(f"Development server should now be running for {out_path}.")
 
-        webbrowser.open("http://localhost:" + str(3001))
+        webbrowser.open("https://localhost:" + str(5173))
 
 
         return {"FINISHED"}

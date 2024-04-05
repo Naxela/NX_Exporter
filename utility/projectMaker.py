@@ -8,7 +8,7 @@ def createPackageJson(name, version):
     "version": "0.0.0",
     "type": "module",
     "scripts": {
-      "dev": "vite",
+      "dev": "vite --host",
       "dev2": "node server.js",
       "dev3": "gltf-transform optimize public/Scene.glb public/Scene.glb --texture-compress webp && node server.js",
       "build": "tsc && vite build",
@@ -21,10 +21,12 @@ def createPackageJson(name, version):
       "@react-three/drei": "^9.101.0",
       "@react-three/fiber": "^8.15.19",
       "@react-three/postprocessing": "^2.16.2",
+      "@react-three/xr": "^5.7.1",
       "express": "^4.18.3",
       "postprocessing": "^6.35.2",
       "react": "^18.2.0",
       "react-dom": "^18.2.0",
+      "selfsigned": "^2.4.1",
       "three": "^0.162.0",
       "ws": "^8.16.0"
     },
@@ -38,7 +40,8 @@ def createPackageJson(name, version):
       "eslint-plugin-react-hooks": "^4.6.0",
       "eslint-plugin-react-refresh": "^0.4.5",
       "typescript": "^5.2.2",
-      "vite": "^5.1.4"
+      "vite": "^5.1.4",
+      "vite-plugin-mkcert": "^1.17.5"
     }
   }
 
@@ -55,9 +58,11 @@ import express from 'express';
 import { createServer as createViteServer } from 'vite';
 import * as path from 'path';
 import { fileURLToPath } from 'url';
-import { createServer as createHttpServer } from 'http';
+import { createServer as createHttpsServer } from 'http';
 import { createServer as createNetServer } from 'net';
 import { WebSocketServer, WebSocket } from 'ws';
+import fs from 'fs'; // To read the certificate files
+import selfsigned from 'selfsigned';
 
 async function startServer() {
 
@@ -77,8 +82,18 @@ async function startServer() {
     app.use(vite.middlewares);
   }
 
-  const httpServer = createHttpServer(app);
-  const wss = new WebSocketServer({ server: httpServer });
+  const attrs = [{ name: 'commonName', value: 'localhost' }];
+  const pems = selfsigned.generate(attrs, { days: 365 });
+
+  // Read certificate and key for HTTPS
+  const options = {
+    key: pems.private,
+    cert: pems.cert
+  };
+
+  //const httpServer = createHttpServer(app);
+  const httpsServer = createHttpsServer(options, app);
+  const wss = new WebSocketServer({ server: httpsServer });
 
   // WebSocket connection handling
   wss.on('connection', (ws) => {
@@ -111,13 +126,13 @@ async function startServer() {
   });
 
   const tcpport = """ + str(tcpport) + """;
-  tcpServer.listen(tcpport, () => {
+  tcpServer.listen(tcpport, '0.0.0.0', () => {
     console.log('TCP server listening for Blender/Python connections');
   });
 
   const port = """ + str(port) + """;
-  httpServer.listen(port, () => {
-    console.log(`HTTP/WebSocket server listening on http://localhost:${port}`);
+  httpsServer.listen(port, '0.0.0.0', () => {
+    console.log(`HTTPS/WebSocket server listening on https://localhost:${port}`);
   });
   
 }
