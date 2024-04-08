@@ -70,7 +70,13 @@ class NX_Start(bpy.types.Operator):
         #    os.mkdir(out_path)
 
         # Copy files in folder addon/assets/template to out folder
-        shutil.copytree(os.path.join(util.get_addon_path(), "assets", "template"), out_path)
+        # TODO - CHECK IF IT EXISTS FIRST!
+
+        if not os.path.exists(out_path):
+            shutil.copytree(os.path.join(util.get_addon_path(), "assets", "template"), out_path)
+        else:
+            print("IT ALREADY EXISTS!")
+            pass
 
         # Copy assets folder to out folder (nx-build/assets) to out/assets
         shutil.copytree(os.path.join(util.get_build_path()), os.path.join(out_path, "assets"))
@@ -90,6 +96,7 @@ class NX_Start(bpy.types.Operator):
             server_file.write(server_config_content)
 
         # Step 1: Install dependencies with pnpm
+        # TODO - ONLY IF REGEN IS ENABLED!
         cmd_install = [bin_path, "install"]
         install_process = subprocess.Popen(cmd_install, cwd=out_path, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
 

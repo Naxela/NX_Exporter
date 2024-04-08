@@ -15,6 +15,12 @@ class NX_SceneProperties(bpy.types.PropertyGroup):
         default=False
     )
 
+    nx_regen_project : BoolProperty(
+        name="Regenerate Project",
+        description="Regenerate project files every time you press start",
+        default=False
+    )
+
     nx_debug_mode : BoolProperty(
         name="Enable debug",
         description="Enable debug",
