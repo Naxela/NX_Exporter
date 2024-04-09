@@ -196,7 +196,7 @@ class NX_Run(bpy.types.Operator):
             package_file.write(json.dumps(package_json_content, indent=4))
 
         server_config_path = os.path.join(out_path, "server.js")
-        server_config_content = projectMaker.createExpressServer(util.get_build_path(), 3001, 3002)
+        server_config_content = projectMaker.createExpressServer(util.get_build_path(), 5173, 5174)
 
         # Write server.js to the project directory
         with open(server_config_path, 'w') as server_file:

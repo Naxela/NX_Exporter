@@ -10,7 +10,8 @@ def createPackageJson(name, version):
     "scripts": {
       "dev": "vite --host",
       "dev2": "node server.js",
-      "dev3": "gltf-transform optimize public/Scene.glb public/Scene.glb --texture-compress webp && node server.js",
+      "dev3": "node server.js",
+      "dev4": "gltf-transform optimize public/Scene.glb public/Scene.glb --texture-compress webp && node server.js",
       "build": "tsc && vite build",
       "build-free": "vite build",
       "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
@@ -22,6 +23,7 @@ def createPackageJson(name, version):
       "@react-three/fiber": "^8.15.19",
       "@react-three/postprocessing": "^2.16.2",
       "@react-three/xr": "^5.7.1",
+      "mkcert": "^3.2.0",
       "express": "^4.18.3",
       "postprocessing": "^6.35.2",
       "react": "^18.2.0",
@@ -48,7 +50,7 @@ def createPackageJson(name, version):
     return package_json_content
 
 
-def createExpressServer(assetsPath, port=3002, tcpport=3003):
+def createExpressServer(assetsPath, port=5173, tcpport=5174):
 
   convertedPath = assetsPath.replace(os.sep, '/')
 
@@ -58,15 +60,44 @@ import express from 'express';
 import { createServer as createViteServer } from 'vite';
 import * as path from 'path';
 import { fileURLToPath } from 'url';
-import { createServer as createHttpsServer } from 'http';
+import { createServer as createHttpsServer } from 'https';
 import { createServer as createNetServer } from 'net';
 import { WebSocketServer, WebSocket } from 'ws';
 import fs from 'fs'; // To read the certificate files
-import selfsigned from 'selfsigned';
+import { createCA, createCert } from "mkcert";
+//const https = require("https");
+
+
+/*
+https://github.com/remix-run/remix/discussions/8046
+
+import https from "node:https";
+import { createServer } from "vite";
+
+const server = https.createServer(
+  {
+    key: fs.readFileSync("localhost-key.pem"),
+    cert: fs.readFileSync("localhost.pem"),
+  },
+  app
+);
+
+let vite = await createServer({
+  server: {
+    middlewareMode: true,
+    hmr: {
+      server,        // <=========  user `server.hmr.server`
+    }
+  }
+})
+*/
+
+
 
 async function startServer() {
 
   const app = express();
+
   const __filename = fileURLToPath(import.meta.url);
   const __dirname = path.dirname(__filename);
 
@@ -82,17 +113,34 @@ async function startServer() {
     app.use(vite.middlewares);
   }
 
-  const attrs = [{ name: 'commonName', value: 'localhost' }];
-  const pems = selfsigned.generate(attrs, { days: 365 });
+  const ca = await createCA({
+    organization: "Naxela",
+    countryCode: "DK",
+    state: "Greenland",
+    locality: "Nuuk",
+    validity: 365
+  });
 
-  // Read certificate and key for HTTPS
-  const options = {
-    key: pems.private,
-    cert: pems.cert
+  const cert = await createCert({
+    ca: { key: ca.key, cert: ca.cert },
+    domains: ["127.0.0.1", "localhost"],
+    validity: 365
+  });
+
+  const sslOptions = {
+    //key: readFileSync('ca.key'),
+    //cert: readFileSync('ca.crt')
+    key: cert.key,
+    cert: cert.cert
   };
 
+  //const options = {
+  //  key: fs.readFileSync('ca.key'),
+  //  cert: fs.readFileSync('ca.crt')
+  //};
+
   //const httpServer = createHttpServer(app);
-  const httpsServer = createHttpsServer(options, app);
+  const httpsServer = createHttpsServer(sslOptions, app);
   const wss = new WebSocketServer({ server: httpsServer });
 
   // WebSocket connection handling

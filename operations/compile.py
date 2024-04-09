@@ -1,7 +1,7 @@
 import bpy, os, shutil, json, math
 
 from .. utility import util
-from .. utility import projectMaker
+from ..utility import projectMaker_w
 
 def get_scene():
     pass

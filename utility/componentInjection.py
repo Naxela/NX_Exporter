@@ -10,7 +10,8 @@ def createInjectionFile(filepath, injectionHeader, injectionData):
 
     f = open(filepath, "w")
 
-    f.write(injectionHeader[0])
+    if injectionHeader is not None:
+        f.write(injectionHeader[0])
 
     f.write("\n")
 
