@@ -18,3 +18,22 @@ def clean_soft():
 
     if(os.path.exists(out_folder)):
         shutil.rmtree(out_folder, ignore_errors=True)
+
+def clean_hard():
+
+    currentSavePath = bpy.data.filepath
+    currentSaveDir = os.path.dirname(currentSavePath)
+
+    os.chdir(currentSaveDir)
+
+    #Create a "nx-build" folder
+    project_folder = "nx-build"
+
+    #Output folder
+    out_folder = "out"
+
+    if(os.path.exists(project_folder)):
+        os.system('rm -fr "%s"' % project_folder)
+
+    if(os.path.exists(out_folder)):
+        os.system('rm -fr "%s"' % out_folder)

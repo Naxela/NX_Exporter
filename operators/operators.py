@@ -144,8 +144,9 @@ class NX_Run(bpy.types.Operator):
 
     def execute(self, context):
 
-        clean.clean_soft()
+        #clean.clean_soft()
         injection_data = compile.build_assets()
+        injection_header = componentInjection.fetchInjectionHeader()
 
         global global_dev_server_process
 
@@ -160,14 +161,26 @@ class NX_Run(bpy.types.Operator):
         #    os.mkdir(out_path)
 
         # Copy files in folder addon/assets/template to out folder
-        shutil.copytree(os.path.join(util.get_addon_path(), "assets", "template"), out_path, dirs_exist_ok=True)
+        # TODO - CHECK IF IT EXISTS FIRST!
+
+        if not os.path.exists(out_path):
+            shutil.copytree(os.path.join(util.get_addon_path(), "assets", "template"), out_path)
+        else:
+            print("IT ALREADY EXISTS!")
+            pass
+
+        #If it exists, remove ComponentInjection.tsx
+        if os.path.exists(os.path.join(out_path,"src","ComponentInjection.tsx")):
+            os.remove(os.path.join(out_path,"src","ComponentInjection.tsx"))
+
+        componentInjection.createInjectionFile(os.path.join(out_path,"src","ComponentInjection.tsx"), injection_header, injection_data)
 
         # Insert injection component data into the ComponentInjection file
-        componentInjection.insertInjectionData(os.path.join(out_path,"src","ComponentInjection.tsx"), injection_data, 8)
+        #componentInjection.insertInjectionData(os.path.join(out_path,"src","ComponentInjection.tsx"), injection_data, 8)
 
         # Insert injection component headers into the ComponentInjection file
-        injection_header = componentInjection.fetchInjectionHeader()
-        componentInjection.insertInjectionData(os.path.join(out_path,"src","ComponentInjection.tsx"), injection_header, 0)
+        #injection_header = componentInjection.fetchInjectionHeader()
+        #componentInjection.insertInjectionData(os.path.join(out_path,"src","ComponentInjection.tsx"), injection_header, 0)
 
         # Copy assets folder to out folder (nx-build/assets) to public
         shutil.copytree(os.path.join(util.get_build_path()), os.path.join(out_path, "public"), dirs_exist_ok=True)
@@ -247,6 +260,7 @@ class NX_Clean(bpy.types.Operator):
         stop_server(bpy.context.scene.NX_SceneProperties.nx_live_link)
 
         clean.clean_soft()
+        #clean.clean_hard()
 
         #compiled = json.dumps(compile_project_data())
         #print(compiled)

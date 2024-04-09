@@ -5,6 +5,35 @@ def fetchInjectionHeader():
     if bpy.data.scenes["Scene"].NX_SceneProperties.nx_injection_header is not None:
 
         return [bpy.data.scenes["Scene"].NX_SceneProperties.nx_injection_header.as_string()]
+    
+def createInjectionFile(filepath, injectionHeader, injectionData):
+
+    f = open(filepath, "w")
+
+    f.write(injectionHeader[0])
+
+    f.write("\n")
+
+    f.write(
+"""export default function ComponentInjection(){
+    
+    return (
+        <>
+""")
+    
+
+    for item in injectionData:
+        f.write(item)
+    
+
+    f.write(
+"""        </>
+    )
+}
+""")
+
+
+    f.close()
 
 def insertInjectionData(filepath, data, line):
     if data is not None:
