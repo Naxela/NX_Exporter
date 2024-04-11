@@ -46,11 +46,18 @@ class NX_ObjectProperties(bpy.types.PropertyGroup):
         default=""
     )
 
-    nx_object_injection : StringProperty(
-        name="Injection",
+    nx_object_injection_code : StringProperty(
+        name="Injection Code",
         description="React Injection component - For instance '<OrbitControls />'",
         default=""
     )
+
+    nx_object_injection : EnumProperty(
+        items = [('Custom', 'Custom', 'Write a custom component'),
+                ('Bundled', 'Bundled', 'Enable a bundled component')],
+                name = "Injection type", 
+                description="Select the injection type", 
+                default='Custom')
 
     # Speaker settings
 

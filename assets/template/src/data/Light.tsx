@@ -101,12 +101,12 @@ function Light({ lightData }: { lightData: LightData }) {
       case "AREA":
         // Note: RectAreaLightHelper requires a second argument: the scene
         helper = new RectAreaLightHelper(lightRef.current);
-        if (lightRef.current) lightRef.current.add(helper);
+        //if (lightRef.current) lightRef.current.add(helper);
         break;
     }
     
     if (helper && lightData.type !== "AREA") {
-      scene.add(helper);
+      //scene.add(helper);
     }
     
     return () => {

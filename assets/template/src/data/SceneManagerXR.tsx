@@ -1,7 +1,8 @@
 import { Suspense, useEffect, useState } from 'react'
-import { Canvas } from '@react-three/fiber'
-import { Html, useProgress, StatsGl } from '@react-three/drei'
+import { Canvas, useThree } from '@react-three/fiber'
+import { Html, useProgress, StatsGl, PerspectiveCamera } from '@react-three/drei'
 import { ARButton, XR, useHitTest, useXR, Interactive } from '@react-three/xr';
+
 
 import RenderController from './RenderController'
 import EnvironmentSetup from './Environment';
@@ -16,6 +17,25 @@ import ComponentInjection from '../ComponentInjection';
 function Loader() {
     const { progress } = useProgress()
     return <Html center>{progress} % loaded</Html>
+}
+
+function MyCamera() {
+    return (
+        <PerspectiveCamera makeDefault near={0.001} />
+    )
+}
+
+function AdjustARCamera({ near }) {
+    const { camera } = useThree();
+
+    useEffect(() => {
+        if (camera && camera.isPerspectiveCamera) {
+        camera.near = near;
+        camera.updateProjectionMatrix();
+        }
+    }, [camera, near]);
+
+return null;
 }
 
 export default function SceneManager({ projectData }) {
@@ -63,7 +83,13 @@ export default function SceneManager({ projectData }) {
     // Render scene using sceneData
     return (
         <ScriptManagerProvider>
-            <ARButton sessionInit={{ requiredFeatures: ['hit-test'] }} />
+            <ARButton sessionInit={{ optionalFeatures: [
+                'local-floor', 
+                'bounded-floor', 
+                'hand-tracking', 
+                'layers', 
+                'dom-overlay'
+            ] }} />
             <Canvas flat gl={{ antialias: false }}>
                 <Bridge />
                 <Suspense fallback={<Loader />}>
@@ -71,7 +97,9 @@ export default function SceneManager({ projectData }) {
                     <XR>
                     <EnvironmentSetup key={currentScene} environmentData={sceneData.environment} />
                     <RenderController data={projectData.options} />
-                    <Cameras cameraData={sceneData.scene_cameras} />
+                    {/* <Cameras cameraData={sceneData.scene_cameras} /> */}
+                    <MyCamera />
+                    <AdjustARCamera near={0.01} />
                     <Lights lightData={sceneData.scene_lights } />
                     <Speakers />
 

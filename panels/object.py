@@ -22,8 +22,16 @@ class NX_PT_ObjectMenu(bpy.types.Panel):
         row = layout.row(align=True)
         
         if "NX_InjectionComponent" in obj:
-            row.prop(obj.NX_ObjectProperties, "nx_object_injection")
+            row.prop(obj.NX_ObjectProperties, "nx_object_injection", expand=True)
             row = layout.row(align=True)
+
+            if obj.NX_ObjectProperties.nx_object_injection == "Custom":
+                row.prop(obj.NX_ObjectProperties, "nx_object_injection_code")
+            else:
+                row.label(text="BUNDLED!")
+
+
+
         else:
             row.prop(obj.NX_ObjectProperties, "nx_object_spawn")
             row = layout.row(align=True)
