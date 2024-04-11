@@ -2,6 +2,7 @@ import { Suspense, useEffect, useState } from 'react'
 import { Canvas, useThree } from '@react-three/fiber'
 import { Html, useProgress, StatsGl, PerspectiveCamera } from '@react-three/drei'
 import { ARButton, XR, useHitTest, useXR, Interactive } from '@react-three/xr';
+import * as THREE from 'three'
 
 
 import RenderController from './RenderController'
@@ -37,6 +38,20 @@ function AdjustARCamera({ near }) {
 
 return null;
 }
+
+function ToneMapping() {
+    const { gl, scene } = useThree(({ gl, scene }) => ({ gl, scene }));
+    useEffect(() => {
+      gl.toneMapping = THREE.ACESFilmicToneMapping;
+      gl.toneMappingExposure = 1.0;
+      scene.traverse((object) => {
+        if (object.material) {
+          object.material.needsUpdate = true;
+        }
+      });
+    }, [gl, scene]);
+    return <></>;
+  }
 
 export default function SceneManager({ projectData }) {
 
@@ -95,6 +110,7 @@ export default function SceneManager({ projectData }) {
                 <Suspense fallback={<Loader />}>
                     
                     <XR>
+                    <ToneMapping />
                     <EnvironmentSetup key={currentScene} environmentData={sceneData.environment} />
                     <RenderController data={projectData.options} />
                     {/* <Cameras cameraData={sceneData.scene_cameras} /> */}
