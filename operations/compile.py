@@ -430,7 +430,10 @@ def compile_project_data():
                     
                     if obj["NX_InjectionComponent"]:
 
-                        injection_components.append(obj.NX_ObjectProperties.nx_object_injection)
+                        if obj.NX_ObjectProperties.nx_object_injection == "Custom":
+                            injection_components.append(obj.NX_ObjectProperties.nx_object_injection_code)
+                        else:
+                            injection_components.append("BUNDLED!")
 
                 else:
 

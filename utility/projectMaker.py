@@ -10,7 +10,7 @@ def createPackageJson(name, version):
     "scripts": {
       "dev": "vite --host",
       "dev2": "node server.js",
-      "dev3": "node server.js",
+      "dev3": "gltf-transform optimize public/Scene.glb public/Scene.glb --texture-compress webp && vite --host",
       "dev4": "gltf-transform optimize public/Scene.glb public/Scene.glb --texture-compress webp && node server.js",
       "build": "tsc && vite build",
       "build-free": "vite build",

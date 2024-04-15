@@ -5,6 +5,7 @@ class ScriptManager {
     constructor() {
         this.scripts = new Map();
         this.initializedScripts = new Set(); // Use a Set to track initialized script identifiers
+        this.instances = new Map(); // Track instances to prevent multiple constructions
     }
 
     addScript(object, script, identifier) {
@@ -23,13 +24,21 @@ class ScriptManager {
         this.scripts.get(object).push(script);
     }
 
+    getOrCreateInstance(Module, object, identifier) {
+        if (this.instances.has(identifier)) {
+            return this.instances.get(identifier);
+        }
+
+        const instance = new Module.default(object);
+        this.instances.set(identifier, instance);
+        return instance;
+    }
+
     updateScripts() {
         this.scripts.forEach((scripts, object) => {
             scripts.forEach(script => script.NotifyOnUpdate());
         });
     }
-
-    // Implement removeScript if needed
 }
 
 // Context

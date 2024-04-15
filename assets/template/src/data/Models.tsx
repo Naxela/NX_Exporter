@@ -169,17 +169,31 @@ function Models({data}) { // Receive the path as a prop
 
         if (meshData && meshData.modules) {
           for (const moduleName of meshData.modules) {
-            try {
-              const Module = await import(`../Sources/${moduleName}.tsx`);
-              const moduleInstance = new Module.default(child);
-              const identifier = `${moduleName}_${child_id}`; // Construct a unique identifier
-              scriptManager.addScript(child, moduleInstance, identifier);
-            } catch (error) {
-              console.warn("NAX: Module not found:", moduleName,"Does it exist?");
-              //console.error(`Failed to load module: ${moduleName}`, error);
-            }
+              try {
+                  const Module = await import(`../Sources/${moduleName}.tsx`);
+                  const identifier = `${moduleName}_${child_id}`;
+                  
+                  const moduleInstance = scriptManager.getOrCreateInstance(Module, child, identifier);
+                  scriptManager.addScript(child, moduleInstance, identifier);
+      
+              } catch (error) {
+                  console.warn("NAX: Module not found:", moduleName, "Trying javascript");
+                  try {
+                      const Module = await import(`../Sources/${moduleName}.jsx`);
+                      const identifier = `${moduleName}_${child_id}`;
+      
+                      const moduleInstance = scriptManager.getOrCreateInstance(Module, child, identifier);
+                      scriptManager.addScript(child, moduleInstance, identifier);
+      
+                  } catch (error) {
+                      console.error(`Failed to load module: ${moduleName}`, error);
+                  }
+              }
           }
-        }
+      }      
+
+
+
 
       }
   
