@@ -28,7 +28,11 @@ class NX_PT_ObjectMenu(bpy.types.Panel):
             if obj.NX_ObjectProperties.nx_object_injection == "Custom":
                 row.prop(obj.NX_ObjectProperties, "nx_object_injection_code")
             else:
-                row.label(text="BUNDLED!")
+                row.prop(obj.NX_ObjectProperties, "nx_object_injection_bundle")
+
+                if(obj.NX_ObjectProperties.nx_object_injection_bundle == "OrbitControls"):
+                    row = layout.row(align=True)
+                    row.prop(obj.NX_ObjectProperties, "nx_object_injection_orbit")
 
 
 

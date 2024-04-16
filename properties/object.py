@@ -58,6 +58,13 @@ class NX_ObjectProperties(bpy.types.PropertyGroup):
                 name = "Injection type", 
                 description="Select the injection type", 
                 default='Custom')
+    
+    nx_object_injection_bundle : EnumProperty(
+        items = [('None', 'None', 'None'),
+                ('OrbitControls', 'OrbitControls', 'OrbitControls')],
+                name = "", 
+                description="Select the bundle type", 
+                default='None')
 
     # Speaker settings
 
