@@ -9,6 +9,7 @@ import Models from './Models';
 import Lights from './Light';
 import Cameras from './Camera';
 import Speakers from './Speaker';
+import Empty from './Empty';
 import { ScriptManagerProvider } from './Scripts'
 import Postprocessing from './Postprocess'
 import ComponentInjection from '../ComponentInjection';
@@ -72,6 +73,7 @@ export default function SceneManager({ projectData }) {
                     <Lights lightData={sceneData.scene_lights } />
                     <Speakers />
                     <Models data={{modelPath: sceneData.glb_groups[0], sceneManifest: sceneData }} />
+                    <Empty data={{modelPath: sceneData.glb_groups[0], sceneManifest: sceneData }} />
                     <Postprocessing PostprocessData={projectData.options} />
 
                     <StatsGl className="stats" />

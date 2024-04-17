@@ -11,6 +11,7 @@ import Bridge from './Bridge'
 import Models from './Models';
 import Lights from './Light';
 import Cameras from './Camera';
+import Empty from './Empty';
 import Speakers from './Speaker';
 import { ScriptManagerProvider } from './Scripts'
 import ComponentInjection from '../ComponentInjection';
@@ -121,6 +122,7 @@ export default function SceneManager({ projectData }) {
 
                     
                     <Models data={{modelPath: sceneData.glb_groups[0], sceneManifest: sceneData }} />
+                    <Empty data={{modelPath: sceneData.glb_groups[0], sceneManifest: sceneData }} />
 
                     <StatsGl className="stats" />
 
