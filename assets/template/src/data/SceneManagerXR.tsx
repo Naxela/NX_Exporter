@@ -99,13 +99,20 @@ export default function SceneManager({ projectData }) {
     // Render scene using sceneData
     return (
         <ScriptManagerProvider>
-            <ARButton sessionInit={{ optionalFeatures: [
+            {/* <ARButton sessionInit={{ optionalFeatures: [
                 'local-floor', 
                 'bounded-floor', 
                 'hand-tracking', 
                 'layers', 
                 'dom-overlay'
-            ] }} />
+            ] }} /> */}
+            <ARButton
+                sessionInit={{ 
+                    requiredFeatures: ['hit-test'],
+                    optionalFeatures: ['local-floor','dom-overlay', 'dom-overlay-for-handheld-ar'],
+                    domOverlay: { root: document.querySelector('#NAX-XR-Overlay') }
+                }}
+            />
             <Canvas flat gl={{ antialias: false }}>
                 <Bridge />
                 <Suspense fallback={<Loader />}>
@@ -124,7 +131,7 @@ export default function SceneManager({ projectData }) {
                     <Models data={{modelPath: sceneData.glb_groups[0], sceneManifest: sceneData }} />
                     <Empty data={{modelPath: sceneData.glb_groups[0], sceneManifest: sceneData }} />
 
-                    <StatsGl className="stats" />
+                    {/* <StatsGl className="stats" /> */}
 
                     {/* NAX-POST-EFFECT START */}
                     <ComponentInjection />

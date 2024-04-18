@@ -3,6 +3,15 @@ import SceneManager from './data/SceneManager';
 import SceneManagerXR from './data/SceneManagerXR';
 import './NAXApp.css';
 
+function OverlayDiv() {
+
+    return (
+        <>
+            <div id='NAX-XR-Overlay'></div>
+        </>
+    )
+}
+
 function SocketManager(){
 
   const port = 3001;
@@ -78,7 +87,10 @@ export default function NAXApp() {
 
 
     {projectManifest.options.xr && (
+        <>
+        <OverlayDiv></OverlayDiv>
         <SceneManagerXR projectData={projectManifest} />
+        </>
     )}
 
     {!projectManifest.options.xr && (

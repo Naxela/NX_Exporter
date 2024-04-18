@@ -76,7 +76,7 @@ export default function SceneManager({ projectData }) {
                     <Empty data={{modelPath: sceneData.glb_groups[0], sceneManifest: sceneData }} />
                     <Postprocessing PostprocessData={projectData.options} />
 
-                    <StatsGl className="stats" />
+                    {/* <StatsGl className="stats" /> */}
 
                     {/* NAX-POST-EFFECT START */}
                     <ComponentInjection />
