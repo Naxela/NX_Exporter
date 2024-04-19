@@ -28,7 +28,7 @@ export default function Bridge(){
 
     useEffect(() => {
         // Expose the scene globally
-        window.NAX = {
+        Object.assign(window.NAX, {
             "scene": scene,
             "renderer": gl,
             "camera": camera,
@@ -47,8 +47,8 @@ export default function Bridge(){
             "setEvents": setEvents,
             "onPointerMissed": onPointerMissed,
             "events": events,
-            "mixer":{}
-        };
+            "mixer": {}
+        });
 
         window.NAX.moveObject = (objID: any, location: any[]) => {
             Utility.findObjectById(NAX.scene, objID).position.set(location[0], location[1], location[2]);

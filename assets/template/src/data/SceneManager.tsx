@@ -24,6 +24,8 @@ export default function SceneManager({ projectData }) {
     let [currentScene, setCurrentScene] = useState(0);
     let [sceneData, setSceneData] = useState(null);
 
+    window.NAX = window.NAX || {};
+
     window.NAX.ChangeScene = function(scene) {
 
         //TODO! - Unload existing scene?
