@@ -6,7 +6,7 @@ export default class OrbitCamControls {
     }
 
     NotifyOnInit() {
-        new OrbitControls( this.object, app.renderManager.renderer.domElement );
+        new OrbitControls( this.object, NAX.renderer.domElement );
     }
 
     NotifyOnUpdate() {

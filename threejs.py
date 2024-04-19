@@ -182,12 +182,12 @@ import {EffectComposer, RenderPass, EffectPass, BloomEffect, SMAAPreset, SMAAEff
 
 let camera, scene, renderer, composer, controls, mixer, clock, bloomPass, outputPass;
 var parameters = {
-    exposure: """+ str(bpy.data.scenes["Scene"].nx_exposure) +""",
-    contrast: """+ str(bpy.data.scenes["Scene"].nx_contrast) +""",
-    bloom: """+ str(bpy.data.scenes["Scene"].nx_add_bloom).lower() +""",
-    antialiasing: """+ str(bpy.data.scenes["Scene"].nx_add_antialiasing).lower() +""",
-    chromaticaberration: """+ str(bpy.data.scenes["Scene"].nx_add_chromaticaberration).lower() +""",
-    vignette: """+ str(bpy.data.scenes["Scene"].nx_add_vignette).lower() +"""
+    exposure: """+ str(bpy.context.scene.nx_exposure) +""",
+    contrast: """+ str(bpy.context.scene.nx_contrast) +""",
+    bloom: """+ str(bpy.context.scene.nx_add_bloom).lower() +""",
+    antialiasing: """+ str(bpy.context.scene.nx_add_antialiasing).lower() +""",
+    chromaticaberration: """+ str(bpy.context.scene.nx_add_chromaticaberration).lower() +""",
+    vignette: """+ str(bpy.context.scene.nx_add_vignette).lower() +"""
 }
 
 init();

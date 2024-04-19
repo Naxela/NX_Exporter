@@ -2,9 +2,9 @@ import bpy
 
 def fetchInjectionHeader():
 
-    if bpy.data.scenes["Scene"].NX_SceneProperties.nx_injection_header is not None:
+    if bpy.context.scene.NX_SceneProperties.nx_injection_header is not None:
 
-        return [bpy.data.scenes["Scene"].NX_SceneProperties.nx_injection_header.as_string()]
+        return [bpy.context.scene.NX_SceneProperties.nx_injection_header.as_string()]
     
 def createInjectionFile(filepath, injectionHeader, injectionData):
 

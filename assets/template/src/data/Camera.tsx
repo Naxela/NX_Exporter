@@ -30,19 +30,50 @@ function Camera({ cameraData }) {
         camera.updateProjectionMatrix();
 
         if (cameraData && cameraData.modules) {
-          (async () => {
-            for (const moduleName of cameraData.modules) {
+          for (const moduleName of cameraData.modules) {
+
+            (async () => {
+              
               try {
                 const Module = await import(`../Sources/${moduleName}.tsx`);
-                const moduleInstance = new Module.default(camera);
-                const identifier = `${moduleName}_${camera}`; // Construct a unique identifier
+                const identifier = `${moduleName}_${camera}`;
+                
+                const moduleInstance = scriptManager.getOrCreateInstance(Module, camera, identifier);
                 scriptManager.addScript(camera, moduleInstance, identifier);
-              } catch (error) {
-                console.error(`Failed to load module: ${moduleName}`, error);
-              }
+    
+            } catch (error) {
+                console.warn("NAX: Module not found:", moduleName, "Trying javascript");
+                try {
+                    const Module = await import(`../Sources/${moduleName}.jsx`);
+                    const identifier = `${moduleName}_${camera}`;
+    
+                    const moduleInstance = scriptManager.getOrCreateInstance(Module, camera, identifier);
+                    scriptManager.addScript(camera, moduleInstance, identifier);
+    
+                } catch (error) {
+                    console.error(`Failed to load module: ${moduleName}`, error);
+                }
             }
-          })();
-        }
+
+            })();
+
+          }
+      } 
+
+        // if (cameraData && cameraData.modules) {
+        //   (async () => {
+        //     for (const moduleName of cameraData.modules) {
+        //       try {
+        //         const Module = await import(`../Sources/${moduleName}.tsx`);
+        //         const moduleInstance = new Module.default(camera);
+        //         const identifier = `${moduleName}_${camera}`; // Construct a unique identifier
+        //         scriptManager.addScript(camera, moduleInstance, identifier);
+        //       } catch (error) {
+        //         console.error(`Failed to load module: ${moduleName}`, error);
+        //       }
+        //     }
+        //   })();
+        // }
 
     }, [cameraData]);
 

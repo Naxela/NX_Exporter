@@ -189,7 +189,7 @@ def getBundledScripts():
 
             print("Testing in: ", sources_path)
 
-            for file in glob.glob('**/*.js', recursive=True):
+            for file in glob.glob('**/*.jsx', recursive=True):
 
                 mod = file.rsplit('.', 1)[0]
                 mod = mod.replace('\\', '/')

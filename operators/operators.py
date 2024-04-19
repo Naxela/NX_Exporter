@@ -17,7 +17,7 @@ def start_server(bin_path, out_path, livelink, production):  # Changed parameter
         cmd_run_dev = [bin_path, "run", "preview"]  # Make sure this path is correctly pointing to pnpm
     else:
         print("Development!")
-        if bpy.data.scenes["Scene"].NX_SceneProperties.nx_optimize:
+        if bpy.context.scene.NX_SceneProperties.nx_optimize:
             cmd_run_dev = [bin_path, "run", "dev3"]
         else:
             cmd_run_dev = [bin_path, "run", "dev"]

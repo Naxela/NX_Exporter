@@ -121,8 +121,7 @@ export default function SceneManager({ projectData }) {
                     <ToneMapping />
                     <EnvironmentSetup key={currentScene} environmentData={sceneData.environment} />
                     <RenderController data={projectData.options} />
-                    {/* <Cameras cameraData={sceneData.scene_cameras} /> */}
-                    <MyCamera />
+                    <Cameras cameraData={sceneData.scene_cameras} />
                     <AdjustARCamera near={0.01} />
                     <Lights lightData={sceneData.scene_lights } />
                     <Speakers />
