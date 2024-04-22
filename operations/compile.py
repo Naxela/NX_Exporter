@@ -166,7 +166,7 @@ def iterateObjectModules(obj):
         if module.nx_module_type == 'Bundled':
             #We need to copy over the bundled module
             addon_bundled_path = util.get_bundled_path()
-            module_path = os.path.join(addon_bundled_path, module.nx_module_script + ".jsx")
+            module_path = os.path.join(addon_bundled_path, module.nx_module_script + ".tsx")
             shutil.copy(module_path, bpy.path.abspath("//Sources"))
 
             print("Copying from: " + module_path + " to " + bpy.path.abspath("//Sources"))

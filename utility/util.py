@@ -172,6 +172,17 @@ def get_file_name():
     
     return None
 
+def fetchBundledScriptProps(bundled_script):
+
+    print("Fetching bundled script props")
+    print(bundled_script, bundled_script.nx_module_script, bundled_script.nx_module_script_format)
+
+    #with open(filename, 'r', encoding='utf-8') as sourcefile:
+    #    source = sourcefile.read()
+
+    #if source == '':
+    #    return
+
 def getBundledScripts():
 
     world = bpy.data.worlds['NX']
@@ -189,7 +200,7 @@ def getBundledScripts():
 
             print("Testing in: ", sources_path)
 
-            for file in glob.glob('**/*.jsx', recursive=True):
+            for file in glob.glob('**/*.tsx', recursive=True):
 
                 mod = file.rsplit('.', 1)[0]
                 mod = mod.replace('\\', '/')

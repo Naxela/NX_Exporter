@@ -402,6 +402,8 @@ class NX_NewJavascriptFile(bpy.types.Operator):
             obj.NX_UL_ModuleList[index].nx_module_script = self.filename
             obj.NX_UL_ModuleList[index].nx_module_script_format = self.fileformat
 
+            util.fetchBundledScriptProps(obj.NX_UL_ModuleList[index])
+
             print("Javascript file created")
 
         else:

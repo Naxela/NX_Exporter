@@ -97,73 +97,44 @@ class NX_PT_Modules(bpy.types.Panel):
 
         row = layout.row()
 
-        row.label(text="TODO: CHECK SAVES")
+        file_path = bpy.data.filepath
 
-        row = layout.row()
+        if file_path:
 
-        rows = 2
-        if len(moduleList) > 1:
-            rows = 4
-        row.template_list("NX_UL_ModuleList", "Module List", obj, "NX_UL_ModuleList", obj, "NX_UL_ModuleListItem", rows=rows)
-        col = row.column(align=True)
-        col.operator("nx_modulelist.new_item", icon='ADD', text="")
-        col.operator("nx_modulelist.delete_item", icon='REMOVE', text="")
+            row = layout.row()
 
-        if moduleListItem >= 0 and len(moduleList) > 0:
-            item = moduleList[moduleListItem]
+            rows = 2
+            if len(moduleList) > 1:
+                rows = 4
+            row.template_list("NX_UL_ModuleList", "Module List", obj, "NX_UL_ModuleList", obj, "NX_UL_ModuleListItem", rows=rows)
+            col = row.column(align=True)
+            col.operator("nx_modulelist.new_item", icon='ADD', text="")
+            col.operator("nx_modulelist.delete_item", icon='REMOVE', text="")
 
-            layout.prop(item, "nx_module_type", expand=True)
+            if moduleListItem >= 0 and len(moduleList) > 0:
+                item = moduleList[moduleListItem]
 
-            if item.nx_module_type == "Bundled":
+                layout.prop(item, "nx_module_type", expand=True)
 
-                row = layout.row()
-                row.label(text="Bundled Module")
-                row = layout.row()
-                col = row.column(align=True)
-                row.operator("nx_modulelist.edit_script")
-                row.operator("nx_modulelist.refresh_scripts")
-                row = layout.row()
-                row.prop_search(item, "nx_module_script", bpy.data.worlds['NX'], "NX_bundled_list", text="Class")
+                if item.nx_module_type == "Bundled":
 
-            elif item.nx_module_type == "JavaScript":
+                    row = layout.row()
+                    row.label(text="Bundled Module")
+                    row = layout.row()
+                    col = row.column(align=True)
+                    row.operator("nx_modulelist.edit_script")
+                    row.operator("nx_modulelist.refresh_scripts")
+                    row = layout.row()
+                    row.prop_search(item, "nx_module_script", bpy.data.worlds['NX'], "NX_bundled_list", text="Class")
 
-                row = layout.row()
-                row.label(text="JavaScript Component")
-                row = layout.row()
-                col = row.column(align=True)
-                col.operator("nx_modulelist.new_script")
-                row.operator("nx_modulelist.edit_script")
-                row.operator("nx_modulelist.refresh_scripts")
-                row = layout.row()
-                row.prop_search(item, "nx_module_script", bpy.data.worlds['NX'], "NX_scripts_list", text="Class")
+                elif item.nx_module_type == "JavaScript":
 
-    #bpy.data.objects["Superconduction_Movement"].NX_UL_ModuleList[0].nx_module_script
-
-    # if obj.arm_traitlist_index >= 0 and len(obj.arm_traitlist) > 0:
-    #     item = obj.arm_traitlist[obj.arm_traitlist_index]
-
-    #     row = layout.row(align=True)
-    #     row.alignment = 'EXPAND'
-    #     row.scale_y = 1.2
-
-    #     if item.type_prop == 'Haxe Script' or item.type_prop == 'Bundled Script':
-    #         if item.type_prop == 'Haxe Script':
-    #             row.operator("arm.new_script", icon="FILE_NEW").is_object = is_object
-    #             column = row.column(align=True)
-    #             column.enabled = item.class_name_prop != ''
-    #             column.operator("arm.edit_script", icon_value=ICON_HAXE).is_object = is_object
-
-    #         # Bundled scripts
-    #         else:
-    #             row.enabled = item.class_name_prop != ''
-    #             row.operator("arm.edit_bundled_script", icon_value=ICON_HAXE).is_object = is_object
-
-    #         refresh_op = "arm.refresh_object_scripts" if is_object else "arm.refresh_scripts"
-    #         row.operator(refresh_op, text="Refresh", icon="FILE_REFRESH")
-
-    #         # Default props
-    #         row = layout.row()
-    #         if item.type_prop == 'Haxe Script':
-    #             row.prop_search(item, "class_name_prop", bpy.data.worlds['Arm'], "arm_scripts_list", text="Class")
-    #         else:
-    #             row.prop_search(item, "class_name_prop", bpy.data.worlds['Arm'], "arm_bundled_scripts_list", text="Class")
+                    row = layout.row()
+                    row.label(text="JavaScript Component")
+                    row = layout.row()
+                    col = row.column(align=True)
+                    col.operator("nx_modulelist.new_script")
+                    row.operator("nx_modulelist.edit_script")
+                    row.operator("nx_modulelist.refresh_scripts")
+                    row = layout.row()
+                    row.prop_search(item, "nx_module_script", bpy.data.worlds['NX'], "NX_scripts_list", text="Class")
