@@ -53,6 +53,7 @@ export default class Utility {
 
         scene.traverse(function (child) {
             if (child.name == name) {
+                console.log("Found", child);
                 object = child;
                 return;
             }
@@ -64,12 +65,14 @@ export default class Utility {
 
     static findObjectById(scene, id) {
 
+        console.log("Searching", id);
+
         let object = null;
 
         scene.traverse(function (child) {
 
-            //Maybe redo this? child.identifier?
             if (child.userData.nx_id == id) {
+                console.log("Found", child);
                 object = child;
                 return;
             }

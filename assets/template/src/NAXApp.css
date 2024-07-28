@@ -2,7 +2,10 @@
   text-align: center;
   width: 100vw;
   height: 100vh;
-  background: linear-gradient(180deg, #e6eaf5 0%, #f6f6f6 80%);
+}
+
+body {
+  background: goldenrod;
 }
 
 .logo {

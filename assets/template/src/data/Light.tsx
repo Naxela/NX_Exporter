@@ -2,9 +2,9 @@ import { useRef, useEffect } from 'react';
 import { useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 import { PointLightHelper, DirectionalLightHelper, SpotLightHelper } from 'three';
-import { RectAreaLightHelper }  from 'three/addons/helpers/RectAreaLightHelper.js';
+import { RectAreaLightHelper } from 'three/addons/helpers/RectAreaLightHelper.js';
 import { RectAreaLightUniformsLib } from 'three/examples/jsm/lights/RectAreaLightUniformsLib';
-//import Utility from './Utility';
+import Utility from './Utility';
 
 // Initialize RectAreaLight uniforms
 RectAreaLightUniformsLib.init();
@@ -21,12 +21,10 @@ interface LightData {
 }
 
 function Light({ lightData }: { lightData: LightData }) {
-
   const lightRef = useRef();
   const { scene } = useThree(); 
   
   useEffect(() => {
-
     if (!lightRef.current) return;
     if (!lightData) return;
 
@@ -47,6 +45,8 @@ function Light({ lightData }: { lightData: LightData }) {
     light.scale.copy(scale);
     light.updateMatrixWorld();
 
+    light.userData.nx_id = lightData.identifier;
+
     if(lightData.type == "POINT"){
         //Pass
     }
@@ -62,15 +62,15 @@ function Light({ lightData }: { lightData: LightData }) {
         // const dirLight = light as THREE.DirectionalLight;
 
         // dirLight.shadow.camera.near = 0.1;
-				// dirLight.shadow.camera.far = 500;
-				// dirLight.shadow.camera.right = 17;
-				// dirLight.shadow.camera.left = - 17;
-				// dirLight.shadow.camera.top	= 17;
-				// dirLight.shadow.camera.bottom = - 17;
-				// dirLight.shadow.mapSize.width = 512;
-				// dirLight.shadow.mapSize.height = 512;
-				// dirLight.shadow.radius = 4;
-				// dirLight.shadow.bias = - 0.0005;
+        // dirLight.shadow.camera.far = 500;
+        // dirLight.shadow.camera.right = 17;
+        // dirLight.shadow.camera.left = - 17;
+        // dirLight.shadow.camera.top = 17;
+        // dirLight.shadow.camera.bottom = - 17;
+        // dirLight.shadow.mapSize.width = 512;
+        // dirLight.shadow.mapSize.height = 512;
+        // dirLight.shadow.radius = 4;
+        // dirLight.shadow.bias = - 0.0005;
     }
 
     if(lightData.type == "SPOT"){
@@ -87,7 +87,7 @@ function Light({ lightData }: { lightData: LightData }) {
         //pass
     }
     
-    let helper:any;
+    let helper: any;
     switch (lightData.type) {
       case "POINT":
         helper = new PointLightHelper(lightRef.current, 0.5);
@@ -127,8 +127,8 @@ function Light({ lightData }: { lightData: LightData }) {
       return (
         <pointLight
           ref={lightRef}
-          color={new THREE.Color(lightData.color)}
-          intensity={wattToLumens(lightData.intensity)}
+          color={new THREE.Color(...lightData.color)}
+          intensity={Utility.wattToLumens(lightData.intensity)}
           castShadow={lightData.shadow}
           // Additional shadow and light properties would be set here
         />
@@ -137,8 +137,8 @@ function Light({ lightData }: { lightData: LightData }) {
       return (
         <directionalLight
           ref={lightRef}
-          color={new THREE.Color(lightData.color)}
-          intensity={wattToLumens(lightData.intensity) * 5}
+          color={new THREE.Color(...lightData.color)}
+          intensity={Utility.wattToLumens(lightData.intensity) * 5}
           castShadow={lightData.shadow}
           shadow-mapSize-height={1024}
           shadow-mapSize-width={1024}
@@ -156,8 +156,8 @@ function Light({ lightData }: { lightData: LightData }) {
       return (
         <spotLight
           ref={lightRef}
-          color={new THREE.Color(lightData.color)}
-          intensity={wattToLumens(lightData.intensity)}
+          color={new THREE.Color(...lightData.color)}
+          intensity={Utility.wattToLumens(lightData.intensity)}
           angle={Math.cos(lightData.spotSize / 2)}
           penumbra={2}
           decay={2}
@@ -176,8 +176,8 @@ function Light({ lightData }: { lightData: LightData }) {
       return (
         <rectAreaLight
           ref={lightRef}
-          color={new THREE.Color(lightData.color)}
-          intensity={wattToLumens(lightData.intensity)}
+          color={new THREE.Color(...lightData.color)}
+          intensity={Utility.wattToLumens(lightData.intensity)}
           width={lightData.areaSize[0]}
           height={lightData.areaSize[1]}
         />
@@ -185,13 +185,6 @@ function Light({ lightData }: { lightData: LightData }) {
     default:
       return null;
   }
-}
-
-function wattToLumens(watts: number){
-  return watts / 10;
-  //return (683 * watts)  / ( 4 * Math.pi)
-  //const LUMENS_PER_WATT = 683;
-  //watts * LUMENS_PER_WATT / (4 * Math.PI);
 }
 
 function Lights({ lightData}: { lightData:object }) {

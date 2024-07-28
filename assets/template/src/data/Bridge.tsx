@@ -50,17 +50,17 @@ export default function Bridge(){
             "mixer": {}
         });
 
-        window.NAX.moveObject = (objID: any, location: any[]) => {
-            Utility.findObjectById(NAX.scene, objID).position.set(location[0], location[1], location[2]);
-        };
+        // window.NAX.moveObject = (objID: any, location: any[]) => {
+        //     Utility.findObjectById(NAX.scene, objID).position.set(location[0], location[1], location[2]);
+        // };
 
-        window.NAX.rotateObject = (objID: any, rotation: any[]) => {
-            Utility.findObjectById(NAX.scene, objID).rotation.set(rotation[0], rotation[1], rotation[2]);
-        }
+        // window.NAX.rotateObject = (objID: any, rotation: any[]) => {
+        //     Utility.findObjectById(NAX.scene, objID).rotation.set(rotation[0], rotation[1], rotation[2]);
+        // }
 
-        window.NAX.scaleObject = (objID: any, scale: any[]) => {
-            Utility.findObjectById(NAX.scene, objID).scale.set(scale[0], scale[1], scale[2]);
-        }
+        // window.NAX.scaleObject = (objID: any, scale: any[]) => {
+        //     Utility.findObjectById(NAX.scene, objID).scale.set(scale[0], scale[1], scale[2]);
+        // }
 
         window.NAX.applyMatrix = (objID: any, matrixValues: number[]) => {
 
@@ -88,19 +88,41 @@ export default function Bridge(){
             
             const adjustmentQuat = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1, 0, 0), Math.PI / 2);
             object.quaternion.multiply(adjustmentQuat);
+
+            console.log("Object type", object.type);
+
+            if(object.type == "SpotLight"){
+                const direction = new THREE.Vector3(0, 0, -1);
+                direction.applyQuaternion(quaternion);
+                const lightTargetPosition = position.clone().add(direction);
+                object.target.position.copy(lightTargetPosition);
+                object.target.updateMatrixWorld();
+            }
+
         };
 
-        window.NAX.setLightColor = (lightID: any, color: any[]) => {
-
-            Utility.findObjectById(NAX.scene, lightID).color.set(color[0], color[1], color[2]);
-            
-        }
-
-        window.NAX.setLightStrength = (lightID: any, strength: any) => {
-
-            Utility.findObjectById(NAX.scene, lightID).intensity = strength;
-
-        }
+        window.NAX.setLightColor = (lightID, color) => {
+            console.log("Calling", lightID, color);
+          
+            const light = Utility.findObjectById(NAX.scene, lightID);
+            if (light && light.color) {
+                // Normalize color values if they are in the range [0, 255]
+                const normalizedColor = color.map(c => c / 255);
+                light.color.setRGB(normalizedColor[0], normalizedColor[1], normalizedColor[2]);
+            } else {
+                console.error("Light not found or light does not have a color property", lightID);
+            }
+        };
+          
+        window.NAX.setLightStrength = (lightID, strength) => {
+            const light = Utility.findObjectById(NAX.scene, lightID);
+            if (light) {
+                light.intensity = Utility.wattToLumens(strength);
+            } else {
+                console.error("Light not found", lightID);
+            }
+        };
+          
 
 
         console.log('Bridge active');

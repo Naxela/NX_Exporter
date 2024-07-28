@@ -1,6 +1,6 @@
 import { Suspense, useEffect, useState } from 'react'
 import { Canvas } from '@react-three/fiber'
-import { Html, useProgress, StatsGl } from '@react-three/drei'
+import { Html, useProgress, StatsGl, OrbitControls, Environment } from '@react-three/drei'
 
 import RenderController from './RenderController'
 import EnvironmentSetup from './Environment';
@@ -66,7 +66,7 @@ export default function SceneManager({ projectData }) {
     // Render scene using sceneData
     return (
         <ScriptManagerProvider>
-            <Canvas flat gl={{ antialias: false }}>
+            <Canvas /* flat gl={{ antialias: false }} */ >
                 <Bridge />
                 <Suspense fallback={<Loader />}>
                     <EnvironmentSetup key={currentScene} environmentData={sceneData.environment} />
@@ -76,7 +76,7 @@ export default function SceneManager({ projectData }) {
                     <Speakers />
                     <Models data={{modelPath: sceneData.glb_groups[0], sceneManifest: sceneData }} />
                     <Empty data={{modelPath: sceneData.glb_groups[0], sceneManifest: sceneData }} />
-                    <Postprocessing PostprocessData={projectData.options} />
+{/*                     <Postprocessing PostprocessData={projectData.options} /> */}
 
                     {/* <StatsGl className="stats" /> */}
 

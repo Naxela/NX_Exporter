@@ -8,75 +8,45 @@ export default function Postprocessing({PostprocessData}) {
     console.log("PostprocessData: ", PostprocessData);
 
     const [abc, setAbc] = useState(0.5);
+    const [tonemapMode, setTonemapMode] = useState(ToneMappingMode.LINEAR);
 
     // Use useEffect to set up a subscription or listener for changes to window.abc
     useEffect(() => {
-        const handleAbcChange = () => setAbc(window.abc || 0.5);
-        
-        // Optional: Setup a listener for a custom event if changes to window.abc are broadcasted that way
-        // window.addEventListener('abcChanged', handleAbcChange);
 
-        // Cleanup function to remove listener
+        window.setAbc = setAbc;
+        window.setTonemapMode = setTonemapMode;
+        window.ToneMappingMode = ToneMappingMode;
+
+        const handleAbcChange = () => setAbc(window.abc || 0.5);
+        const handleTonemapModeChange = () => setTonemapMode(window.tonemapMode || ToneMappingMode.LINEAR);
+
+        window.addEventListener('abcChanged', handleAbcChange);
+        window.addEventListener('tonemapModeChanged', handleTonemapModeChange);
+
         return () => {
-            // window.removeEventListener('abcChanged', handleAbcChange);
+            window.removeEventListener('abcChanged', handleAbcChange);
+            window.removeEventListener('tonemapModeChanged', handleTonemapModeChange);
+            delete window.setAbc;
+            delete window.setTonemapMode;
+            delete window.ToneMappingMode;
         };
     }, []);
 
     // Alternatively, directly update abc from window.abc on each frame
     useFrame(() => {
         setAbc(window.abc || 0.5);
+        setTonemapMode(window.tonemapMode || ToneMappingMode.LINEAR);
     });
 
-    if(PostprocessData.pipeline == "Standard") {
-
+    if (PostprocessData.pipeline === "Standard") {
         let multisampling = PostprocessData.graphics.antialiasing ? 4 : 0;
 
-        let tonemapMode = 0;
-        switch(PostprocessData.graphics.tonemapping_type) {
-            case "None":
-                tonemapMode = ToneMappingMode.LINEAR;
-                break;
-
-            case "Linear":
-                tonemapMode = ToneMappingMode.LINEAR;
-                break;
-
-            case "Reinhard":
-                tonemapMode = ToneMappingMode.REINHARD;
-                break;
-
-            case "Cineon":
-                tonemapMode = ToneMappingMode.OPTIMIZED_CINEON;
-                break;
-
-            case "Filmic":
-                tonemapMode = ToneMappingMode.ACES_FILMIC;
-                break;
-
-            case "AgX":
-                tonemapMode = ToneMappingMode.AGX;
-                break;
-
-            default:
-                tonemapMode = ToneMappingMode.LINEAR;
-                break;
-        }
-
         return (
-            <>
-                <EffectComposer multisampling={multisampling} disableNormalPass={false} autoClear={true} depthBuffer={true} stencilBuffer={false}>
-                    
-                    { PostprocessData.graphics.bloom &&
-                        <Bloom luminanceThreshold={0} luminanceSmoothing={0.9} height={300} />
-                    }
-                    { PostprocessData.graphics.ssao &&
-                        <N8AO aoRadius={0.5} intensity={abc} />
-                    }
-
-                    <ToneMapping mode={tonemapMode} />
-
-                </EffectComposer>
-            </>
+            <EffectComposer multisampling={multisampling} disableNormalPass={false} autoClear={true} depthBuffer={true} stencilBuffer={false}>
+                {PostprocessData.graphics.bloom && <Bloom luminanceThreshold={0} luminanceSmoothing={0.9} height={300} />}
+                {PostprocessData.graphics.ssao && <N8AO aoRadius={0.5} intensity={abc} />}
+                <ToneMapping mode={tonemapMode} />
+            </EffectComposer>
         );
     }
 

@@ -14,8 +14,8 @@ function OverlayDiv() {
 
 function SocketManager(){
 
-  const port = 3001;
-  const ws = new WebSocket('ws://localhost:'+port);
+  const port = 5173; //5173;
+  const ws = new WebSocket('wss://localhost:' + port);
 
   ws.onopen = () => {
       console.log('WebSocket connection established');
@@ -83,7 +83,7 @@ export default function NAXApp() {
 
   return (
     <>
-    {/* <SocketManager /> */}
+    <SocketManager />
 
 
     {projectManifest.options.xr && (

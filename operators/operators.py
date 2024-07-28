@@ -20,7 +20,7 @@ def start_server(bin_path, out_path, livelink, production):  # Changed parameter
         if bpy.context.scene.NX_SceneProperties.nx_optimize:
             cmd_run_dev = [bin_path, "run", "dev3"]
         else:
-            cmd_run_dev = [bin_path, "run", "dev"]
+            cmd_run_dev = [bin_path, "run", "dev2"]
 
     with open('server_output.log', 'w') as f:
         gbl.global_dev_server_process = subprocess.Popen(cmd_run_dev, cwd=out_path)

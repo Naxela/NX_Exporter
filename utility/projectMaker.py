@@ -174,7 +174,7 @@ async function startServer() {
   });
 
   const tcpport = """ + str(tcpport) + """;
-  tcpServer.listen(tcpport, '0.0.0.0', () => {
+  tcpServer.listen(12345, '0.0.0.0', () => {
     console.log('TCP server listening for Blender/Python connections');
   });
 

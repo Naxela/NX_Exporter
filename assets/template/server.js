@@ -76,8 +76,8 @@ async function startServer() {
 
   });
 
-  tcpServer.listen(12345, () => {
-    console.log('TCP server listening for Blender/Python connections');
+  tcpServer.listen(3001, () => {
+    console.log('TCP server listening for Blender/Python connections on 3001');
   });
 
   const port = 3001;

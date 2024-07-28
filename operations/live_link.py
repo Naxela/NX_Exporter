@@ -5,7 +5,7 @@ from ..utility import util
 
 # We presume that the TCP is running on the same machine
 host = '127.0.0.1'
-port = 3003  # Ensure this matches the port your TCP server is listening on
+port = 12345  # Ensure this matches the port your TCP server is listening on
 connection = None
 
 # Any object can act as a message bus owner
@@ -18,6 +18,7 @@ __running = False
 """Whether live patch is currently active"""
 
 def connect_to_server():
+    print("Connect...")
     """Attempt to connect to the server."""
     global connection
     try:
@@ -92,11 +93,11 @@ def depsgraph_update_handler(scene, depsgraph):
 
             objID = update.id["nx_id"]
 
-            cmd = f'app.moveObject("{objID}", [{loc[0]}, {loc[2]}, {-loc[1]}]); app.rotateObject("{objID}", [{rot[0]}, {rot[2]}, {-rot[1]}]); app.scaleObject("{objID}", [{scale[0]}, {scale[2]}, {scale[1]}]);'
+            #cmd = f'MAX.moveObject("{objID}", [{loc[0]}, {loc[2]}, {-loc[1]}]); app.rotateObject("{objID}", [{rot[0]}, {rot[2]}, {-rot[1]}]); app.scaleObject("{objID}", [{scale[0]}, {scale[2]}, {scale[1]}]);'
 
             #We don't know whether it was moved, rotated or scaled, so we copy the matrix
-            #matrix = util.get_object_matrix_y_axis(update.id)
-            #cmd = f'app.applyMatrix("{objID}", {matrix});'
+            matrix = util.get_object_matrix_y_axis(update.id)
+            cmd = f'NAX.applyMatrix("{objID}", {matrix});'
 
             #cmd = 
 
@@ -122,8 +123,11 @@ def send_event(event_id: str, opt_data: Any = None):
         objID = bpy.context.object["nx_id"]
         if bpy.context.object.mode == "OBJECT":
             if event_id == "obj_location":
-                vec = bpy.context.object.location
-                cmd = f'app.moveObject("{objID}", [{vec[0]}, {vec[2]}, {-vec[1]}]);'
+                #vec = bpy.context.object.location
+                #cmd = f'app.moveObject("{objID}", [{vec[0]}, {vec[2]}, {-vec[1]}]);'
+
+                matrix = util.get_object_matrix_y_axis(update.id)
+                cmd = f'NAX.applyMatrix("{objID}", {matrix});'
 
                 try:
                     connection.sendall(cmd.encode('utf-8'))
@@ -134,8 +138,11 @@ def send_event(event_id: str, opt_data: Any = None):
                     print(f"Unexpected error: {e}")
 
             if event_id == "obj_rotation":
-                vec = bpy.context.object.rotation_euler
-                cmd = f'app.rotateObject("{objID}", [{vec[0]}, {vec[2]}, {-vec[1]}]);'
+                #vec = bpy.context.object.rotation_euler
+                #cmd = f'app.rotateObject("{objID}", [{vec[0]}, {vec[2]}, {-vec[1]}]);'
+
+                matrix = util.get_object_matrix_y_axis(update.id)
+                cmd = f'NAX.applyMatrix("{objID}", {matrix});'
 
                 try:
                     connection.sendall(cmd.encode('utf-8'))
@@ -146,8 +153,11 @@ def send_event(event_id: str, opt_data: Any = None):
                     print(f"Unexpected error: {e}")
 
             if event_id == "obj_scale":
-                vec = bpy.context.object.scale
-                cmd = f'app.scaleObject("{objID}", [{vec[0]}, {vec[2]}, {vec[1]}]);'
+                #vec = bpy.context.object.scale
+                #cmd = f'app.scaleObject("{objID}", [{vec[0]}, {vec[2]}, {vec[1]}]);'
+
+                matrix = util.get_object_matrix_y_axis(update.id)
+                cmd = f'NAX.applyMatrix("{objID}", {matrix});'
 
                 try:
                     connection.sendall(cmd.encode('utf-8'))
@@ -157,22 +167,32 @@ def send_event(event_id: str, opt_data: Any = None):
                 except Exception as e:
                     print(f"Unexpected error: {e}")
 
-"""             elif event_id == 'light_color':
+            elif event_id == 'light_color':
+
                 light: bpy.types.Light = bpy.context.object.data
                 vec = light.color
-                js = f'var lRaw = iron.Scene.active.getLight("{light.name}").data.raw; lRaw.color[0]={vec[0]}; lRaw.color[1]={vec[1]}; lRaw.color[2]={vec[2]};'
-                write_patch(js)
+                
+                cmd = f'NAX.setLightColor("{objID}", [{vec[0]}, {vec[1]}, {vec[2]}]);'
+                
+                try:
+                    connection.sendall(cmd.encode('utf-8'))
+                except (BrokenPipeError, ConnectionResetError) as e:
+                    print(f"Connection error: {e}, attempting to reconnect...")
+                    connect_to_server()  # Attempt to reconnect
+                except Exception as e:
+                    print(f"Unexpected error: {e}")
 
             elif event_id == 'light_energy':
+
                 light: bpy.types.Light = bpy.context.object.data
+                vec = light.energy
+                
+                cmd = f'NAX.setLightStrength("{objID}", {vec});'
 
-                # Align strength to Armory, see exporter.export_light()
-                # TODO: Use exporter.export_light() and simply reload all raw light data in Iron?
-                strength_fac = 1.0
-                if light.type == 'SUN':
-                    strength_fac = 0.325
-                elif light.type in ('POINT', 'SPOT', 'AREA'):
-                    strength_fac = 0.01
-
-                js = f'var lRaw = iron.Scene.active.getLight("{light.name}").data.raw; lRaw.strength={light.energy * strength_fac};'
-                write_patch(js) """
+                try:
+                    connection.sendall(cmd.encode('utf-8'))
+                except (BrokenPipeError, ConnectionResetError) as e:
+                    print(f"Connection error: {e}, attempting to reconnect...")
+                    connect_to_server()  # Attempt to reconnect
+                except Exception as e:
+                    print(f"Unexpected error: {e}")
