@@ -29,6 +29,8 @@ function Camera({ cameraData }) {
 
         camera.updateProjectionMatrix();
 
+        camera.userData.nx_id = cameraData.identifier;
+
         if (cameraData && cameraData.modules) {
           for (const moduleName of cameraData.modules) {
 

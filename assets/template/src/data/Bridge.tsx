@@ -86,8 +86,10 @@ export default function Bridge(){
             object.quaternion.copy(quaternion);
             object.scale.copy(scale);
             
-            const adjustmentQuat = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1, 0, 0), Math.PI / 2);
-            object.quaternion.multiply(adjustmentQuat);
+            if(object.type == "Mesh"){
+                const adjustmentQuat = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1, 0, 0), Math.PI / 2);
+                object.quaternion.multiply(adjustmentQuat);
+            }
 
             console.log("Object type", object.type);
 
@@ -122,6 +124,8 @@ export default function Bridge(){
                 console.error("Light not found", lightID);
             }
         };
+
+        window.NAX.Utility = Utility;
           
 
 

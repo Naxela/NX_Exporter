@@ -45,11 +45,6 @@ function EnvironmentSetup({ environmentData }: { environmentData: EnvironmentDat
     }
     if(environmentData.backgroundType == "texture"){
 
-        if(generateIrradiance){
-            const pmremGenerator = new THREE.PMREMGenerator( gl );
-            scene.environment = pmremGenerator.fromScene(scene).texture;
-        }
-
         return (
             <>
             <Environment background files={environmentData.backgroundTexture} />

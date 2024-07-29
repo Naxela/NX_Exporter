@@ -31,7 +31,9 @@ export default function SceneManager({ projectData }) {
         //TODO! - Unload existing scene?
 
         if(typeof scene == "number") {
+
             setCurrentScene(scene);
+            
         } else if(typeof scene == "string") {
             
             for(let i = 0; i < projectData.manifest.scenes.length; i++) {
@@ -66,7 +68,7 @@ export default function SceneManager({ projectData }) {
     // Render scene using sceneData
     return (
         <ScriptManagerProvider>
-            <Canvas /* flat gl={{ antialias: false }} */ >
+            <Canvas /* flat gl={{ antialias: false }} */ shadows>
                 <Bridge />
                 <Suspense fallback={<Loader />}>
                     <EnvironmentSetup key={currentScene} environmentData={sceneData.environment} />
@@ -76,7 +78,7 @@ export default function SceneManager({ projectData }) {
                     <Speakers />
                     <Models data={{modelPath: sceneData.glb_groups[0], sceneManifest: sceneData }} />
                     <Empty data={{modelPath: sceneData.glb_groups[0], sceneManifest: sceneData }} />
-{/*                     <Postprocessing PostprocessData={projectData.options} /> */}
+                    <Postprocessing PostprocessData={projectData.options} />
 
                     {/* <StatsGl className="stats" /> */}
 

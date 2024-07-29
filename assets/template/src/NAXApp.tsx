@@ -19,7 +19,7 @@ function SocketManager(){
 
   ws.onopen = () => {
       console.log('WebSocket connection established');
-      ws.send('Hello from client');
+      ws.send('Client Connection Established');
   };
 
   ws.onmessage = (event) => {
